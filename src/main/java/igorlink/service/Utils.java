@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class Utils {
 
     @ExperimentalApi(message = "use in isBlackListed")
-    private static @NotNull String validateText (@NotNull String validationText) {
+    private static @NotNull String validateText(@NotNull String validationText) {
         for (String ss : MainConfig.listOfWhiteListedSubstrings) {
             if (validationText.contains(ss)) {
                 validationText = validationText.replace(ss, "");
@@ -33,12 +33,12 @@ public class Utils {
     public static Boolean isPluginActive;
 
     //Вывод сообщения в консоль
-    public static void logToConsole(String text){
+    public static void logToConsole(String text) {
         Bukkit.getConsoleSender().sendMessage("§c[DonationExecutor] §f" + text);
     }
 
     //Отправка сообщения игроку со стороны плагина
-    public static void sendSysMsgToPlayer(Player player, String text){
+    public static void sendSysMsgToPlayer(Player player, String text) {
         player.sendMessage("§c[DE] §f" + text);
     }
 
@@ -46,7 +46,7 @@ public class Utils {
         byte[] byteArray = new BigInteger(hexString, 16).toByteArray();
         if (byteArray[0] == 0) {
             byte[] output = new byte[byteArray.length - 1];
-            System.arraycopy(byteArray, 1, output,0, output.length);
+            System.arraycopy(byteArray, 1, output, 0, output.length);
             return output;
         }
         return byteArray;
@@ -67,7 +67,7 @@ public class Utils {
     public static void announce(String donaterName, String subText, String alterSubtext, Player player, Boolean bigAnnounce) {
         String _donaterName = donaterName;
 
-        if  (bigAnnounce) {
+        if (bigAnnounce) {
             if (donaterName.equals("")) {
                 _donaterName = "Кто-то";
             }
@@ -99,7 +99,7 @@ public class Utils {
 
     public static Vector genVec(Location a, Location b) {
         Vector vec = locToVec(b).clone().subtract(locToVec(a));
-            return vec.normalize();
+        return vec.normalize();
     }
 
     public static Vector locToVec(Location loc) {
@@ -115,7 +115,7 @@ public class Utils {
             if (donationAmountWithKopeykis.charAt(i) == ' ') {
                 continue;
             }
-                amountWithoutKopeykis.append(donationAmountWithKopeykis.charAt(i));
+            amountWithoutKopeykis.append(donationAmountWithKopeykis.charAt(i));
         }
         return amountWithoutKopeykis.toString();
     }
@@ -137,8 +137,8 @@ public class Utils {
         mapOfSynonimousChars.put('п', (Arrays.asList('p', 'n', 'и', 'р'))); //rus
         mapOfSynonimousChars.put('o', (Arrays.asList('о', '0'))); //eng
         mapOfSynonimousChars.put('о', (Arrays.asList('o', '0'))); //rus
-        mapOfSynonimousChars.put('a', (Arrays.asList('а'))); //eng
-        mapOfSynonimousChars.put('а', (Arrays.asList('a'))); //rus
+        mapOfSynonimousChars.put('a', (List.of('а'))); //eng
+        mapOfSynonimousChars.put('а', (List.of('a'))); //rus
         mapOfSynonimousChars.put('и', (Arrays.asList('i', 'n', 'e', 'е', '|', 'l', '!', '1', '3', 'й'))); //rus
         mapOfSynonimousChars.put('i', (Arrays.asList('1', 'и', 'e', 'е', '|', 'l', '!', 'й'))); //eng
         mapOfSynonimousChars.put('с', (Arrays.asList('c', 's', '$', '5'))); //rus
@@ -155,13 +155,13 @@ public class Utils {
         mapOfSynonimousChars.put('х', (Arrays.asList('x', 'h'))); //rus
         mapOfSynonimousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
         mapOfSynonimousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
-        mapOfSynonimousChars.put('ч', (Arrays.asList('4')));//rus
-        mapOfSynonimousChars.put('k', (Arrays.asList('к')));//eng
-        mapOfSynonimousChars.put('к', (Arrays.asList('k')));//rus
+        mapOfSynonimousChars.put('ч', (List.of('4')));//rus
+        mapOfSynonimousChars.put('k', (List.of('к')));//eng
+        mapOfSynonimousChars.put('к', (List.of('k')));//rus
         mapOfSynonimousChars.put('0', (Arrays.asList('o', 'о'))); //num
         mapOfSynonimousChars.put('1', (Arrays.asList('i', 'l'))); //num
-        mapOfSynonimousChars.put('3', (Arrays.asList('e', 'е','з')));
-        mapOfSynonimousChars.put('4', (Arrays.asList('ч')));
+        mapOfSynonimousChars.put('3', (Arrays.asList('e', 'е', 'з')));
+        mapOfSynonimousChars.put('4', (List.of('ч')));
         mapOfSynonimousChars.put('5', (Arrays.asList('с', 'c', 's')));
         mapOfSynonimousChars.put('9', (Arrays.asList('r', 'я')));
 
@@ -170,8 +170,8 @@ public class Utils {
 
         Pattern pattern = Pattern.compile("[l1i]*[\\-]*[l1i]*");
         Matcher matcher = pattern.matcher(validationText);
-        if ( (matcher.find()) && (matcher.group().length()>0) ) {
-           validationText = validationText.replace(matcher.group(), "н");
+        if ((matcher.find()) && (matcher.group().length() > 0)) {
+            validationText = validationText.replace(matcher.group(), "н");
         }
 
         validationText = validationText.replace(" ", "");
@@ -208,10 +208,10 @@ public class Utils {
                         }
                     }
 
-                    Boolean repeated = true;
-                    Boolean finishCycle = false;
+                    boolean repeated = true;
+                    boolean finishCycle = false;
                     while ((repeated) && (!finishCycle)) {
-                        if (j==0) {
+                        if (j == 0) {
                             break;
                         }
                         if (!(validationText.charAt(tempi + j) == validationText.charAt(tempi + j - 1))) {
@@ -224,8 +224,8 @@ public class Utils {
                             }
                         }
                         tempi++;
-                        if ((validationText.length()-tempi-j) < (ss.length()-j)) {
-                            finishCycle=true;
+                        if ((validationText.length() - tempi - j) < (ss.length() - j)) {
+                            finishCycle = true;
                             break;
                         }
                     }
@@ -241,14 +241,11 @@ public class Utils {
                             continue;
                         }
                     }
-
                     break;
-
                 }
             }
         }
         return false;
     }
-
 }
 

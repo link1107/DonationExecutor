@@ -5,9 +5,12 @@ import kotlin.Suppress;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
-import static igorlink.service.Utils.*;
+import static igorlink.service.Utils.logToConsole;
 
 public class MainConfig {
     private static final HashMap<String, HashMap<String, String>> donationAmountsHashMap = new HashMap<>();
@@ -17,8 +20,8 @@ public class MainConfig {
     public static int breadAmount = 0;
     public static int bigBoomRadius = 0;
     public static String token;
-    public static List<String> listOfBlackListedSubstrings = new ArrayList<>();
-    public static List<String> listOfWhiteListedSubstrings = new ArrayList<>();
+    public @SuppressWarnings("unchecked") static List<String> listOfBlackListedSubstrings = new ArrayList<>();
+    public @SuppressWarnings("unchecked") static List<String> listOfWhiteListedSubstrings = new ArrayList<>();
     private static Boolean twitchFilter;
 
     public MainConfig() {
@@ -26,12 +29,12 @@ public class MainConfig {
     }
 
     //Геттер конфига
-    public static FileConfiguration getConfig() {
+    public static FileConfiguration getConfig(){
         return config;
     }
 
     //Обновить данные из конфига
-    public static void reloadMainConfig() {
+    public @Suppress(names = "UNUSED_PARAMETER") static void reloadMainConfig() {
         loadMainConfig(true);
     }
 
@@ -52,8 +55,8 @@ public class MainConfig {
 
         config = DonationExecutor.getInstance().getConfig();
 
-        @NotNull String stringWithPlayersNames = Objects.requireNonNull(config.getString("StreamersNamesList"));
-        List<String> streamerPlayersNamesList = new ArrayList<>(Arrays.asList(stringWithPlayersNames.split(",")));
+        @SuppressWarnings("unchecked") List<String> streamerPlayersNamesList = (List<String>) getConfig().getList("StreamersNamesList");
+        assert streamerPlayersNamesList != null;
         for (String playerName : streamerPlayersNamesList) {
             DonationExecutor.getInstance().listOfStreamerPlayers.addStreamerPlayer(playerName);
         }
@@ -66,46 +69,46 @@ public class MainConfig {
         bigBoomRadius = Integer.parseInt(Objects.requireNonNull(config.getString("BigBoomRadius")));
 
         token = config.getString("DonationAlertsToken");
-        listOfBlackListedSubstrings = Arrays.asList(Objects.requireNonNull(config.getString("BlacklistedSubstrings")).split(","));
-        listOfWhiteListedSubstrings = Arrays.asList(Objects.requireNonNull(config.getString("WhitelistedSubstrings")).split(","));
+        listOfBlackListedSubstrings = (List<String>) config.getList("BlacklistedSubstrings");
+        listOfWhiteListedSubstrings = (List<String>) config.getList("WhitelistedSubstrings");
 
         if (Objects.equals(config.getString("TwitchFilter"), "true")) {
             twitchFilter = true;
-        } else if (Objects.equals(config.getString("TwitchFilter"), "false")) {
-            twitchFilter = false;
-        } else {
-            logToConsole("Ошибка при чтении значение TwitchFilter");
+            return;
         }
+        if (Objects.equals(config.getString("TwitchFilter"), "false")) {
+            twitchFilter = false;
+            return;
+        }
+        logToConsole("Ошибка при чтении значение TwitchFilter");
     }
 
     public static void turnFilterOn() {
         twitchFilter = true;
-        config.set("TwitchFilter", "true");
     }
 
     public static void turnFilterOff() {
         twitchFilter = false;
-        config.set("TwitchFilter", "false");
     }
 
-    @Suppress(names = "UNUSED_METHOD")
-    public static Boolean getFilterStatus() {
+    public @Suppress(names = "UNUSED") static Boolean getFilterStatus() {
         return twitchFilter;
     }
 
-    @Suppress(names = "UNUSED_METHOD")
-    public static HashMap<String, String> getNameAndExecution(@NotNull String donationAmount) {
-        @Suppress(names = "UNUSED_PARAMETER") String thisDonateForStreamerName = null;
+    public @Suppress(names = "UNUSED") static HashMap<String, String> getNameAndExecution (@NotNull String donationAmount) {
+        String thisDonateForStreamerName = null;
         String nameOfExecution = null;
         for (String p : donationAmountsHashMap.keySet()) {
             if (donationAmountsHashMap.get(p).containsKey(donationAmount)) {
-                HashMap<String, String> temp = new HashMap<>();
+                HashMap<String, String> temp = new HashMap<String, String>();
+                thisDonateForStreamerName = p;
                 nameOfExecution = donationAmountsHashMap.get(p).get(donationAmount);
                 temp.put("name", p);
                 temp.put("execution", nameOfExecution);
                 return temp;
             }
         }
+
         return null;
     }
 }
