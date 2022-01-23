@@ -31,7 +31,7 @@ public final class DonationExecutor extends JavaPlugin {
         if (CheckNameAndToken()) {
             try {
                 da = new DonationAlerts(DASERVER);
-                da.Connect(MainConfig.token);
+                da.connect(MainConfig.token);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -47,7 +47,7 @@ public final class DonationExecutor extends JavaPlugin {
     public void onDisable() {
         try {
             isRunning = false;
-            da.Disconnect();
+            da.disconnect();
             Thread.sleep(1000);
             da = null;
         } catch (Exception e) {

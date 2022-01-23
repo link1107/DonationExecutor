@@ -64,14 +64,14 @@ public class DonationAlerts {
                 .on("donation", donationListener);
     }
 
-    public void Connect (String token) throws JSONException {
+    public void connect(String token) throws JSONException {
         socket.connect();
         socket.emit("add-user", new JSONObject()
                 .put("token", token)
                 .put("type", "minor"));
     }
 
-    public void Disconnect() throws JSONException {
+    public void disconnect() throws JSONException {
         socket.disconnect();
     }
 
