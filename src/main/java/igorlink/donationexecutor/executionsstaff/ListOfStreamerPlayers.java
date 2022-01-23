@@ -4,8 +4,10 @@ import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.Executor;
 import igorlink.service.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,20 +25,18 @@ public class ListOfStreamerPlayers {
                 }
 
                 for (StreamerPlayer sp : listOfStreamerPlayers) {
-                    if ( !(Bukkit.getPlayer(sp.getName()) == null) ) {
-                        if (!(Bukkit.getPlayer(sp.getName()).isDead())) {
-                            Donation donation = sp.takeDonationFromQueue();
-                            if (donation==null) {
-                                continue;
-                            }
-                            Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getexecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
-                            Executor.DoExecute(donation.getSender(), sp.getName(), donation.getName(), donation.getAmount(), donation.getMessage(), donation.getexecutionName());
+                    Player p = Bukkit.getPlayer(sp.getName());
+                    if (p != null && !p.isDead()) {
+                        Donation donation = sp.takeDonationFromQueue();
+                        if (donation == null) {
+                            continue;
                         }
+                        Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getExecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
+                        Executor.DoExecute(donation.getSender(), sp.getName(), donation.getName(), donation.getAmount(), donation.getMessage(), donation.getExecutionName());
                     }
-
                 }
             }
-        }.runTaskTimer(DonationExecutor.getInstance(), 0, 40);
+        }.runTaskTimer(DonationExecutor.getInstance(), 0, 40L);
     }
 
     public int getNumberOfStreamers() {
@@ -67,8 +67,8 @@ public class ListOfStreamerPlayers {
         String execution;
         for (StreamerPlayer sp : listOfStreamerPlayers) {
             execution = sp.checkExecution(Utils.cutOffKopeykis(donation.getAmount()));
-            if (!(execution == null)) {
-                donation.setexecutionName(execution);
+            if ((execution != null)) {
+                donation.setExecutionName(execution);
                 sp.putDonationToQueue(donation);
                 Utils.logToConsole("Донат от §b" + donation.getName() + "§f в размере §b" + donation.getAmount() + " руб.§f был обработан и отправлен в очередь на выполнение.");
                 return;

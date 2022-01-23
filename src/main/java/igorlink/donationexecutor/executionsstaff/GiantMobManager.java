@@ -1,28 +1,29 @@
 package igorlink.donationexecutor.executionsstaff;
+
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import igorlink.donationexecutor.DonationExecutor;
+import igorlink.service.ItemStackUtils;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
-import static igorlink.service.Utils.*;
+import static igorlink.service.Utils.genVec;
 import static java.lang.Math.sqrt;
 import static org.bukkit.Bukkit.getPlayer;
-
-import org.bukkit.event.Listener;
 
 public class GiantMobManager {
     private HashMap<String, HashMap> listOfMobLists = new HashMap<String, HashMap>();
@@ -33,14 +34,14 @@ public class GiantMobManager {
     //Конструктор класса. Регистрируем в нем слушателя событий GiantEventListener
 
     public GiantMobManager(Plugin thisPlugin) {
-            Bukkit.getPluginManager().registerEvents(new GiantMobEventListener(this), thisPlugin);
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                for (Entity ent : p.getWorld().getEntities()) {
-                    if (ent instanceof Giant) {
-                        this.addMob((LivingEntity) ent);
-                    }
+        Bukkit.getPluginManager().registerEvents(new GiantMobEventListener(this), thisPlugin);
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            for (Entity ent : p.getWorld().getEntities()) {
+                if (ent instanceof Giant) {
+                    this.addMob((LivingEntity) ent);
                 }
             }
+        }
     }
 
 
@@ -68,12 +69,10 @@ public class GiantMobManager {
 
     //Добавляем моба в оответствующий его типу список
     private void addMobToList(@NotNull GiantMob newGiantMob) {
-        if (listOfMobLists.containsKey(newGiantMob.getName())) {
-            listOfMobLists.get(newGiantMob.getName()).put(newGiantMob.getUUID(), newGiantMob);
-        } else {
+        if (!listOfMobLists.containsKey(newGiantMob.getName())) {
             listOfMobLists.put(newGiantMob.getName(), new HashMap());
-            listOfMobLists.get(newGiantMob.getName()).put(newGiantMob.getUUID(), newGiantMob);
         }
+        listOfMobLists.get(newGiantMob.getName()).put(newGiantMob.getUUID(), newGiantMob);
 
     }
 
@@ -91,7 +90,7 @@ public class GiantMobManager {
         private int timesThisGiantMobIsOnOnePlace = 0;
         private String thisGiantMobPlayerCurrentTargetName = null;
         private int stepsAfterHiding = 0;
-        private LivingEntity giantMobLivingEntity = null;
+        private LivingEntity giantMobLivingEntity;
         private UUID thisGiantMobUUID = null;
 
         final private int howManySnowballsMobLaunches = 4;
@@ -112,8 +111,9 @@ public class GiantMobManager {
             playerDirection.setY(0);
             playerDirection.normalize();
             this.giantMobLivingEntity = (LivingEntity) playerLocation.getWorld().spawnEntity(playerLocation.clone().add(playerDirection.clone().multiply(5)).setDirection(playerDirection.multiply(-1)), EntityType.GIANT);
-            if (!(mobName == null)) {
+            if ((mobName != null)) {
                 this.giantMobLivingEntity.setCustomName(mobName);
+                this.giantMobLivingEntity.setCustomNameVisible(true);
             }
             this.giantMobLivingEntity.setGravity(true);
             this.giantMobLivingEntity.setRemoveWhenFarAway(false);
@@ -153,42 +153,30 @@ public class GiantMobManager {
         //Поиск ближайшей цели
         private LivingEntity findGiantMobTarget() {
             //получаем список ближайших врагов dв радиусе sralinShootingRadius
-            Double sralinShootingRadius = (double) giantMobTrackingRange;
+            double sralinShootingRadius = giantMobTrackingRange;
             List<Entity> listOfNearbyEntities = giantMobLivingEntity.getNearbyEntities(sralinShootingRadius, sralinShootingRadius, sralinShootingRadius);
             List<LivingEntity> listOfNearbyPlayers = new ArrayList<>();
             List<LivingEntity> listOfNearbyLivingEntities = new ArrayList<>();
 
             //Пробегаемся и ищем игроков
             for (Entity e : listOfNearbyEntities) {
-                RayTraceResult rtRes1 = null;
-                RayTraceResult rtRes2 = null;
-                RayTraceResult rtRes3 = null;
-                RayTraceResult rtRes4 = null;
-                RayTraceResult rtRes5 = null;
-                RayTraceResult rtRes6 = null;
-                RayTraceResult rtRes7 = null;
-                RayTraceResult rtRes8 = null;
+                List<RayTraceResult> rtRes = new ArrayList<>();
 
                 if (e instanceof LivingEntity) {
                     //Позиции псевдоглаз вокруг головы с каждой стороны
-                    Location rtGiantMobPseudoEyesPos1 = giantMobLivingEntity.getLocation().clone().add(2, 11, 0);
-                    Location rtGiantMobPseudoEyesPos2 = giantMobLivingEntity.getLocation().clone().add(-2, 11, 0);
-                    Location rtGiantMobPseudoEyesPos3 = giantMobLivingEntity.getLocation().clone().add(0, 11, 2);
-                    Location rtGiantMobPseudoEyesPos4 = giantMobLivingEntity.getLocation().clone().add(0, 11, -2);
+                    List<Location> rtGiantMobPseudoEyesPos = Arrays.asList(
+                            giantMobLivingEntity.getLocation().clone().add(2, 11, 0),
+                            giantMobLivingEntity.getLocation().clone().add(-2, 11, 0),
+                            giantMobLivingEntity.getLocation().clone().add(0, 11, 2),
+                            giantMobLivingEntity.getLocation().clone().add(0, 11, -2));
 
-                    //Пускаем лучи из каждой точки псевдоглаз до верха и низа каждой сущности
-                    rtRes1 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos1, genVec(rtGiantMobPseudoEyesPos1, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos1.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                    rtRes2 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos2, genVec(rtGiantMobPseudoEyesPos2, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos2.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                    rtRes3 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos3, genVec(rtGiantMobPseudoEyesPos3, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos3.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                    rtRes4 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos4, genVec(rtGiantMobPseudoEyesPos4, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos4.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                    rtRes5 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos1, genVec(rtGiantMobPseudoEyesPos1, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos1.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
-                    rtRes6 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos2, genVec(rtGiantMobPseudoEyesPos2, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos2.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
-                    rtRes7 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos3, genVec(rtGiantMobPseudoEyesPos3, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos3.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
-                    rtRes8 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos4, genVec(rtGiantMobPseudoEyesPos4, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos4.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
+                    for (int i = 0; i <= 7; i++) {
+                        rtRes.add(giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos.get(i % 4), genVec(rtGiantMobPseudoEyesPos.get(i % 4), ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos.get(i % 4).distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true));
+                    }
 
                     //Если Сталин может из любой позиции поврота голвоы увидеть верх или низ цели, то эта цель вносится в список кандидатов
-                    if ((rtRes1 == null) || (rtRes2 == null) || (rtRes3 == null) || (rtRes4 == null) || (rtRes5 == null) || (rtRes6 == null) || (rtRes7 == null) || (rtRes8 == null)) {
-                        if ((e instanceof Player) && (!(((Player) e).getGameMode() == GameMode.SPECTATOR)) && (!(((Player) e).getGameMode() == GameMode.CREATIVE))) {
+                    if (rtRes.stream().anyMatch(Objects::isNull)) {
+                        if ((e instanceof Player) && ((Player) e).getGameMode() != GameMode.SPECTATOR && ((Player) e).getGameMode() != GameMode.CREATIVE) {
                             listOfNearbyPlayers.add((LivingEntity) e);
                         } else if (!(e instanceof Player)) {
                             listOfNearbyLivingEntities.add((LivingEntity) e);
@@ -206,10 +194,7 @@ public class GiantMobManager {
 
                 //Если есть игроки - ищем среди них ближайшего
                 for (LivingEntity e : listOfNearbyPlayers) {
-                    if (target == null) {
-                        target = e;
-                        minDistance = giantMobLivingEntity.getLocation().distance(e.getLocation());
-                    } else if (minDistance > giantMobLivingEntity.getLocation().distance(e.getLocation())) {
+                    if (target == null || minDistance > giantMobLivingEntity.getLocation().distance(e.getLocation())) {
                         target = e;
                         minDistance = giantMobLivingEntity.getLocation().distance(e.getLocation());
                     }
@@ -221,32 +206,31 @@ public class GiantMobManager {
                     thisGiantMobPlayerCurrentTargetName = target.getName();
                 }
 
-            } else if (!(listOfNearbyLivingEntities.isEmpty()))  {
-                    //Если игроков рядом не было, проверяем все живые сущности
-                    for (LivingEntity e : listOfNearbyLivingEntities) {
-                        if (target == null) {
-                            target = e;
-                            minDistance = this.giantMobLivingEntity.getLocation().distance(e.getLocation());
-                        } else if (minDistance > this.giantMobLivingEntity.getLocation().distance(e.getLocation())) {
-                            target = e;
-                            minDistance = this.giantMobLivingEntity.getLocation().distance(e.getLocation());
-                        }
+            } else if (!(listOfNearbyLivingEntities.isEmpty())) {
+                //Если игроков рядом не было, проверяем все живые сущности
+                for (LivingEntity e : listOfNearbyLivingEntities) {
+                    if (target == null || minDistance > this.giantMobLivingEntity.getLocation().distance(e.getLocation())) {
+                        target = e;
+                        minDistance = this.giantMobLivingEntity.getLocation().distance(e.getLocation());
                     }
+                }
 
             }
 
-            if ( (!(target instanceof Player)) && (!(thisGiantMobPlayerCurrentTargetName == null)) ) {
+            if ((!(target instanceof Player)) && ((thisGiantMobPlayerCurrentTargetName != null))) {
                 //Если прошлая цель-игрок существует, и он не мертв и находится в том же мире, что и наш моб
-                if ( (!(getPlayer(thisGiantMobPlayerCurrentTargetName).isDead())) && (getPlayer(thisGiantMobPlayerCurrentTargetName).getWorld() == giantMobLivingEntity.getWorld()) ) {
+                Player p = getPlayer(thisGiantMobPlayerCurrentTargetName);
+                if (p != null && (!p.isDead()) && (p.getWorld().equals(giantMobLivingEntity.getWorld()))) {
 
                     //Если не подошло время забыть о нем и он не стал спектэйтором, фокусим моба на него
-                    if ((stepsAfterHiding <= timeBeforeThisGiantMobForgetHisTarget * 2) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.SPECTATOR)) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.CREATIVE))){
-                        target = getPlayer(thisGiantMobPlayerCurrentTargetName);
+                    if ((stepsAfterHiding <= timeBeforeThisGiantMobForgetHisTarget * 2) && (!(p.getGameMode() == GameMode.SPECTATOR)) && (!(p.getGameMode() == GameMode.CREATIVE))) {
                         stepsAfterHiding++;
                     } else {
                         //если подошло время забыть про него - забываем
                         stepsAfterHiding = 0;
                         thisGiantMobPlayerCurrentTargetName = null;
+
+                        return p;
                     }
 
                 }
@@ -272,10 +256,9 @@ public class GiantMobManager {
                 public void run() {
                     LivingEntity thisGiantMobLivingEntity = thisGiantMob.giantMobLivingEntity;
 
-                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                    if ((thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning))) {
                         //Если Сталин уже помер, отрубаем задание
                         this.cancel();
-                        return;
                     } else {
                         //Если не помер, находим ближайшую цель (игроки в приоритете)
                         LivingEntity target;
@@ -284,7 +267,7 @@ public class GiantMobManager {
                         //Если цели нет...
                         if (target == null) {
                             //Если моб не в воде, то прижимаем его к Земле, чтобы не улетел в небо на прыжке
-                            if (!(thisGiantMobLivingEntity.getEyeLocation().clone().add(0,2,0).getBlock().getType()==Material.WATER)) {
+                            if (!(thisGiantMobLivingEntity.getEyeLocation().clone().add(0, 2, 0).getBlock().getType() == Material.WATER)) {
                                 thisGiantMobLivingEntity.setVelocity(thisGiantMobLivingEntity.getLocation().getDirection().clone().normalize().setY(-4.5));
                             } else {
                                 //сли над мобом вода - всплываем
@@ -335,7 +318,7 @@ public class GiantMobManager {
                             double oldZ = thisGiantMobLoc.getZ();
                             //sendSysMsgToPlayer(Bukkit.getPlayer("Evropejets"), "ДВИЖЕНИЕ! До цели " + (int) (Math.round(thisGiantMobLoc.distance(target.getLocation()))) + "\nЦЕЛЬ: " + target.getName());
                             //Стандартное движение к цели, если она за радиусом досягаемости
-                            if (!(thisGiantMobLivingEntity.getEyeLocation().clone().add(0,1,0).getBlock().getType()==Material.WATER)) {
+                            if (!(thisGiantMobLivingEntity.getEyeLocation().clone().add(0, 1, 0).getBlock().getType() == Material.WATER)) {
                                 thisGiantMobLivingEntity.setRemainingAir(thisGiantMobLivingEntity.getMaximumAir());
                                 thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().setY(-4.5));
                             } else {
@@ -347,7 +330,7 @@ public class GiantMobManager {
                                 @Override
                                 public void run() {
 
-                                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                                    if ((thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning))) {
                                         this.cancel();
                                         return;
                                     }
@@ -401,7 +384,7 @@ public class GiantMobManager {
                     LivingEntity thisGiantMobLivingEntity = thisGiantMob.giantMobLivingEntity;
 
                     //Если моб уже не существует, отменяем стрельбу
-                    if ((thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                    if ((thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning))) {
                         this.cancel();
                         return;
                     }
@@ -434,7 +417,7 @@ public class GiantMobManager {
                     LivingEntity thisGiantMobLivingEntity = thisGiantMob.giantMobLivingEntity;
 
                     //Если моб уже не существует, отменяем стрельбу
-                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                    if ((thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning))) {
                         this.cancel();
                         return;
                     }
@@ -453,7 +436,7 @@ public class GiantMobManager {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if ( (thisGiantMob.giantMobLivingEntity.isDead())  || (!(DonationExecutor.isRunning)) ) {
+                                if ((thisGiantMob.giantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning))) {
                                     this.cancel();
                                     return;
                                 }
@@ -463,10 +446,7 @@ public class GiantMobManager {
                                 snowball = (Snowball) thisGiantMobLivingEntity.getWorld().spawnEntity(handHeightPoint.clone()
                                                 .add(handHeightPoint.getDirection().rotateAroundY(0.7).multiply(3.5)),
                                         EntityType.SNOWBALL);
-                                ItemStack itemStack = new ItemStack(Material.SNOWBALL, 1);
-                                ItemMeta meta = snowball.getItem().getItemMeta();
-                                meta.setLore(Arrays.asList("Stalinball"));
-                                itemStack.setItemMeta(meta);
+                                ItemStack itemStack = ItemStackUtils.buildItem(Material.SNOWBALL, 1, "&b&lStalinball", new String[0]);
                                 snowball.setItem(itemStack);
                                 snowball.setVelocity(genVec(snowball.getLocation(), finalTarget.getEyeLocation()).multiply(2.2));
                                 snowball.getWorld().playSound(snowball.getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 3, 2);
@@ -476,9 +456,8 @@ public class GiantMobManager {
                                     new BukkitRunnable() {
                                         @Override
                                         public void run() {
-                                            if ( (snowball.isDead()) || finalTarget.isDead() || (!(finalTarget.getWorld() == snowball.getWorld())) || (!(DonationExecutor.isRunning)) ) {
+                                            if ((snowball.isDead()) || finalTarget.isDead() || (!(finalTarget.getWorld() == snowball.getWorld())) || (!(DonationExecutor.isRunning))) {
                                                 this.cancel();
-                                                return;
                                             } else {
                                                 snowball.setVelocity(genVec(snowball.getLocation(), finalTarget.getEyeLocation()));
                                             }
@@ -500,9 +479,10 @@ public class GiantMobManager {
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //Проверка всех добавлений и удалений из мира, чтобы ловить и упаковывать подходящих гигантов или удалять их из списка
-    private class GiantMobEventListener implements Listener{
+    private class GiantMobEventListener implements Listener {
 
         GiantMobManager thisInstanceOfGiantMobManager;
+
         private GiantMobEventListener(GiantMobManager _thisInstanceOfGiantMobManager) {
             thisInstanceOfGiantMobManager = _thisInstanceOfGiantMobManager;
         }
@@ -522,14 +502,13 @@ public class GiantMobManager {
         }
 
         @EventHandler
-        public void onGiantMobDamage(EntityDamageEvent e){
+        public void onGiantMobDamage(EntityDamageEvent e) {
             //Нашему мобу отменяем дамаг от падения
-            if ( (e.getEntity() instanceof Giant) && ((e.getCause() == EntityDamageEvent.DamageCause.FALL) || (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE) ||  (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK))) {
+            if ((e.getEntity() instanceof Giant) && ((e.getCause() == EntityDamageEvent.DamageCause.FALL) || (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK))) {
                 e.setCancelled(true);
-               // sendSysMsgToPlayer(getPlayer(Executor.nameOfStreamerPlayer), "Cancelled DMG from: " + e.getCause().toString());
-            } else if (e.getEntity() instanceof Giant) {
-               // sendSysMsgToPlayer(getPlayer(Executor.nameOfStreamerPlayer), "Passed DMG from: " + e.getCause().toString());
+                // sendSysMsgToPlayer(getPlayer(Executor.nameOfStreamerPlayer), "Cancelled DMG from: " + e.getCause().toString());
             }
+            // sendSysMsgToPlayer(getPlayer(Executor.nameOfStreamerPlayer), "Passed DMG from: " + e.getCause().toString());
         }
 
         @EventHandler
@@ -538,8 +517,8 @@ public class GiantMobManager {
 
                 if ((e.getHitEntity()) instanceof LivingEntity) {
 
-                    if (((LivingEntity) e.getHitEntity()).getHealth()>1) {
-                        ((LivingEntity) e.getHitEntity()).setHealth(((LivingEntity) e.getHitEntity()).getHealth()-1);
+                    if (((LivingEntity) e.getHitEntity()).getHealth() > 1) {
+                        ((LivingEntity) e.getHitEntity()).setHealth(((LivingEntity) e.getHitEntity()).getHealth() - 1);
                     } else {
                         ((LivingEntity) e.getHitEntity()).setHealth(0);
                     }
@@ -558,7 +537,7 @@ public class GiantMobManager {
 
 
         @EventHandler
-        public void onComeTooClose(EntityMoveEvent e){
+        public void onComeTooClose(EntityMoveEvent e) {
             //дать пинка, если слишком близок к Сталину
             if (e.getEntity() instanceof Giant) {
                 for (Entity ent : e.getEntity().getNearbyEntities(1.9, 4, 1.9)) {

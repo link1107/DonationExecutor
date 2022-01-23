@@ -16,7 +16,7 @@ public class Donation {
 
     public Donation(CommandSender _sender, String _username, String _amount, String _message) {
         sender = _sender;
-        if (_username.equals("")) {
+        if (_username == null || _username.equals("")) {
             username = "Аноним";
         } else {
             username = _username;
@@ -41,11 +41,11 @@ public class Donation {
         return message;
     }
 
-    public String getexecutionName() {
+    public String getExecutionName() {
         return executionName;
     }
 
-    public void setexecutionName(String _executionName) {
+    public void setExecutionName(String _executionName) {
         executionName = _executionName;
     }
 

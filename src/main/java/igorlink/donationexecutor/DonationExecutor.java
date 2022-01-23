@@ -3,8 +3,10 @@ package igorlink.donationexecutor;
 import igorlink.command.DonationExecutorCommand;
 import igorlink.donationexecutor.executionsstaff.GiantMobManager;
 import igorlink.donationexecutor.executionsstaff.ListOfStreamerPlayers;
+import igorlink.donationexecutor.executionsstaff.StreamerPlayer;
 import igorlink.service.MainConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import igorlink.DonationAlerts.*;
 import java.net.URISyntaxException;
@@ -60,5 +62,11 @@ public final class DonationExecutor extends JavaPlugin {
         return instance;
     }
 
+    public StreamerPlayer getStreamerPlayer(String name) {
+        return listOfStreamerPlayers.getStreamerPlayer(name);
+    }
 
+    public StreamerPlayer getStreamerPlayer(Player player) {
+        return listOfStreamerPlayers.getStreamerPlayer(player.getName());
+    }
 }

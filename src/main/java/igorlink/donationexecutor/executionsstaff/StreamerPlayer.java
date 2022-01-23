@@ -19,21 +19,18 @@ public class StreamerPlayer {
     private String streamerPlayerName;
     private List<Item> listOfDeathDropItems = new ArrayList<Item>();
     private Queue<Donation> listOfQueuedDonations = new LinkedList<Donation>();
-    private HashMap<String, String> listOfAmounts = new HashMap<String, String>();
+    private HashMap<Integer, String> listOfAmounts = new HashMap<Integer, String>();
 
 
     //Инициализация нового объекта стримера-игрока
     public StreamerPlayer(@NotNull String _streamerPlayerName) {
         FileConfiguration config = MainConfig.getConfig();
         streamerPlayerName = _streamerPlayerName;
-        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(this), DonationExecutor.getInstance());
-
 
         //Заполняем список сумм для донатов
-        String amount;
         for (String execName : Executor.executionsList) {
-            amount = config.getString("DonationAmounts." + streamerPlayerName + "." + execName);
-            if (!(amount==null)) {
+            int amount = config.getInt("DonationAmounts." + streamerPlayerName + "." + execName);
+            if (amount != 0) {
                 listOfAmounts.put(amount, execName);
             } else {
                 Utils.logToConsole("Сумма доната, необходимая для " + execName + " для стримера " + streamerPlayerName + " не найдена. Проверьте правильность заполнения файла конфигурации DonationExecutor.yml в папке с именем плагина.");
@@ -42,10 +39,16 @@ public class StreamerPlayer {
     }
 
     public String checkExecution(@NotNull String amount) {
-        return listOfAmounts.get(amount);
+        int a;
+        try {
+            a = Integer.parseInt(amount);
+        } catch (NumberFormatException e) {
+            a = 0;
+        }
+        return listOfAmounts.get(a);
     }
 
-    public String getName(){
+    public String getName() {
         return streamerPlayerName;
     }
 
@@ -69,8 +72,8 @@ public class StreamerPlayer {
 
 
     //Удалить дроп игрока после смерти
-    public Boolean removeDeathDrop() {
-        Boolean wasAnythingDeleted = false;
+    public boolean removeDeathDrop() {
+        boolean wasAnythingDeleted = false;
         for (Item i : listOfDeathDropItems) {
             if (i.isDead()) {
                 continue;
@@ -82,28 +85,10 @@ public class StreamerPlayer {
     }
 
     //Замена дездропа при смерти игрока (через Listener)
-    private class PlayerDeathListener implements Listener{
-        StreamerPlayer thisStreamerPlayer;
 
-        //Передача родительского объекта в слушателя
-        private PlayerDeathListener(StreamerPlayer _thisStreamerPlayer) {
-            thisStreamerPlayer = _thisStreamerPlayer;
-        }
-
-        //Если данный игрок умер - запоминаем его посмертный дроп
-        @EventHandler
-        private void onPlayerDeath(PlayerDeathEvent event) {
-            List<Item> deathDrop = new ArrayList<>();
-            if (event.getPlayer().getName().equals(thisStreamerPlayer.getName())) {
-                for (ItemStack i : event.getDrops()) {
-                    deathDrop.add(event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), i));
-                }
-            }
-            event.getDrops().clear();
-            thisStreamerPlayer.setDeathDrop(deathDrop);
-        }
-    }
-
-
+    /***
+     * PlayerDeathListener переехал в EventListener >_<
+     * Регистрировать целый слушатель на каждого пользователя в данном контексте не обязательно.
+     */
 
 }

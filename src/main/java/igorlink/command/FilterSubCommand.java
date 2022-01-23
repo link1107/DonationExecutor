@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class FilterSubCommand {
     public static void onFilterCommand(CommandSender sender, String[] args) {
-        if (args[0].toLowerCase().equals("on")) {
+        if (args[0].equalsIgnoreCase("on")) {
             MainConfig.turnFilterOn();
             Utils.logToConsole("Фильтр никнеймов донатеров §bВКЛЮЧЕН");
             if (sender instanceof Player) {
