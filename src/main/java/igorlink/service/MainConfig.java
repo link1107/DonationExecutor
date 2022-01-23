@@ -77,17 +77,7 @@ public class MainConfig {
             DonationExecutor.getInstance().saveConfig();
         }
         urlFilter = config.getBoolean("URLFilter");
-
-        if (config.getString("TwitchFilter") == "true") {
-            twitchFilter = true;
-        } else if (config.getString("TwitchFilter") == "false") {
-            twitchFilter = false;
-        }
-        else {
-            logToConsole("Ошибка при чтении значение TwitchFilter");
-        }
-
-
+        twitchFilter = config.getBoolean("TwitchFilter");
     }
 
 
