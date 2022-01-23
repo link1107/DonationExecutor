@@ -1,0 +1,15 @@
+name: DonationExecutor
+version: 0.2 Beta
+main: igorlink.donationexecutor.DonationExecutor
+api-version: 1.18
+authors: [Igor Link]
+description: Executes donations
+commands:
+  donationexecutor: {
+    aliases: [d],
+    description: "Позволяет имитировать донаты для тестов или для воспроизведения события вручную",
+    usage: "§c[DonationExecutor] §fДоступные команды: \n
+    §c/d §7donate §b<СУММА> <ИМЯ> §7## §b<СООБЩЕНИЕ>§f - сымитировать донат\n
+    §c/d §7reload§f - перезагрузить настройки из конфига
+    "
+  }

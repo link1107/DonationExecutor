@@ -1,4 +1,4 @@
-package org.dark0ghost.annotations
+package org.dark0ghost.annotations.configs
 
 object Text {
     object RU {

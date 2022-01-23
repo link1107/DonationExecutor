@@ -1,7 +1,7 @@
 package igorlink.service;
 
 import com.destroystokyo.paper.Title;
-import org.dark0ghost.annotations.ExperimentalApi;
+import org.dark0ghost.annotations.annotations.ExperimentalApi;
 import igorlink.donationexecutor.DonationExecutor;
 import kotlin.Suppress;
 import org.bukkit.Bukkit;
