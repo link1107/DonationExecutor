@@ -3,13 +3,11 @@ package igorlink.service;
 import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
+import static igorlink.service.Utils.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import static igorlink.service.Utils.logToConsole;
 
 public class MainConfig {
     private static HashMap<String, HashMap<String, String>> donationAmountsHashMap = new HashMap<String, HashMap<String, String>>();
@@ -21,7 +19,7 @@ public class MainConfig {
     public static String token;
     public static List<String> listOfBlackListedSubstrings = new ArrayList<>();
     public static List<String> listOfWhiteListedSubstrings = new ArrayList<>();
-    public static Boolean twitchFilter;
+    private static Boolean twitchFilter;
     public static boolean urlFilter;
 
     public MainConfig() {
@@ -29,7 +27,7 @@ public class MainConfig {
     }
 
     //Геттер конфига
-    public static FileConfiguration getConfig() {
+    public static FileConfiguration getConfig(){
         return config;
     }
 
@@ -55,8 +53,8 @@ public class MainConfig {
 
         config = DonationExecutor.getInstance().getConfig();
 
-        String stringWithPlayersNames = config.getString("StreamersNamesList");
-        List<String> streamerPlayersNamesList = new ArrayList<String>(Arrays.asList(stringWithPlayersNames.split(",")));
+        List <String> streamerPlayersNamesList = new ArrayList<>();
+        streamerPlayersNamesList = (List<String>) getConfig().getList("StreamersNamesList");
         for (String playerName : streamerPlayersNamesList) {
             DonationExecutor.getInstance().listOfStreamerPlayers.addStreamerPlayer(playerName);
         }
@@ -72,8 +70,6 @@ public class MainConfig {
         listOfBlackListedSubstrings = Arrays.asList(config.getString("BlacklistedSubstrings").split(","));
         listOfWhiteListedSubstrings = Arrays.asList(config.getString("WhitelistedSubstrings").split(","));
 
-        twitchFilter = config.getBoolean("TwitchFilter");
-
         // Если у человека стоит старая версия плагина, и не указано значение ключа URLFilter - ставим по умолчанию нужный ключ, и сейвим конфиг.
         // Вообще конфиг по-хорошему полностью переделать, но как нибудь потом.
         if (config.get("URLFilter") == null) {
@@ -82,19 +78,24 @@ public class MainConfig {
         }
         urlFilter = config.getBoolean("URLFilter");
 
-    }
+        if (config.getString("TwitchFilter") == "true") {
+            twitchFilter = true;
+        } else if (config.getString("TwitchFilter") == "false") {
+            twitchFilter = false;
+        }
+        else {
+            logToConsole("Ошибка при чтении значение TwitchFilter");
+        }
 
 
-    public static void turnFilter(boolean status) {
-        twitchFilter = status;
-        config.set("TwitchFilter", status);
     }
+
 
     public static Boolean getFilterStatus() {
         return twitchFilter;
     }
 
-    public static HashMap<String, String> getNameAndExecution(@NotNull String donationAmount) {
+    public static HashMap<String, String> getNameAndExecution (@NotNull String donationAmount) {
         String thisDonateForStreamerName = null;
         String nameOfExecution = null;
         for (String p : donationAmountsHashMap.keySet()) {

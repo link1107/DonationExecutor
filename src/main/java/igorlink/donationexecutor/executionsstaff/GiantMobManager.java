@@ -272,7 +272,7 @@ public class GiantMobManager {
                 public void run() {
                     LivingEntity thisGiantMobLivingEntity = thisGiantMob.giantMobLivingEntity;
 
-                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning())) ) {
                         //Если Сталин уже помер, отрубаем задание
                         this.cancel();
                         return;
@@ -347,7 +347,7 @@ public class GiantMobManager {
                                 @Override
                                 public void run() {
 
-                                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning())) ) {
                                         this.cancel();
                                         return;
                                     }
@@ -401,7 +401,7 @@ public class GiantMobManager {
                     LivingEntity thisGiantMobLivingEntity = thisGiantMob.giantMobLivingEntity;
 
                     //Если моб уже не существует, отменяем стрельбу
-                    if ((thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                    if ((thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning())) ) {
                         this.cancel();
                         return;
                     }
@@ -434,7 +434,7 @@ public class GiantMobManager {
                     LivingEntity thisGiantMobLivingEntity = thisGiantMob.giantMobLivingEntity;
 
                     //Если моб уже не существует, отменяем стрельбу
-                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning)) ) {
+                    if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning())) ) {
                         this.cancel();
                         return;
                     }
@@ -453,7 +453,7 @@ public class GiantMobManager {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if ( (thisGiantMob.giantMobLivingEntity.isDead())  || (!(DonationExecutor.isRunning)) ) {
+                                if ( (thisGiantMob.giantMobLivingEntity.isDead())  || (!(DonationExecutor.isRunning())) ) {
                                     this.cancel();
                                     return;
                                 }
@@ -476,7 +476,7 @@ public class GiantMobManager {
                                     new BukkitRunnable() {
                                         @Override
                                         public void run() {
-                                            if ( (snowball.isDead()) || finalTarget.isDead() || (!(finalTarget.getWorld() == snowball.getWorld())) || (!(DonationExecutor.isRunning)) ) {
+                                            if ( (snowball.isDead()) || finalTarget.isDead() || (!(finalTarget.getWorld() == snowball.getWorld())) || (!(DonationExecutor.isRunning())) ) {
                                                 this.cancel();
                                                 return;
                                             } else {
