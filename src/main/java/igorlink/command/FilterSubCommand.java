@@ -1,6 +1,6 @@
 package igorlink.command;
 
-import igorlink.donationexecutor.Executor;
+import igorlink.executions.CallNKVD;
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
 import org.bukkit.command.CommandSender;
@@ -25,7 +25,7 @@ public class FilterSubCommand {
                 break;
             default:
                 if (sender instanceof Player) {
-                    Executor.callNKVD(((Player) sender), "Сервер");
+                    new CallNKVD().execute(((Player) sender), "СЕРВЕР");
                     sender.sendMessage("§7Вы ввели недопустимые аргументы команды. За это вы будете наказаны §cсотрудником НКВД§7.");
                 }
                 sender.sendMessage("§eДопустимые аргументы команды: §aon§7/§coff");
