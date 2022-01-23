@@ -2,9 +2,11 @@
 # Находится на Donation Alerts на странице "Настройки" -> "Основные настройки".
 DonationAlertsToken:
 
-# Никнеймы стримеров в игре ЧЕРЕЗ ЗАПЯТУЮ БЕЗ ПРОБЕЛОВ!
+# Никнеймы стримеров в игре
 # Не забудьте про цветовые коды, если используете их
-StreamersNamesList: Evropejets,mdenz3
+StreamersNamesList:
+    - Evropejets
+    - mdenz3
 
 # Точные суммы донатов для событий
 DonationAmounts:
@@ -88,9 +90,42 @@ BreadAmount: 4
 # Радиус взрыва от BigBoom
 BigBoomRadius: 20
 
+# Фильтр ников для твитча: true - вкл, false - выкл
 TwitchFilter: true
-BlacklistedSubstrings: негр,пидо,пида,niga,нигр,ниге,додик,петух,петуч,куколд,симп,kukold,cuckold,fag,хуе,хуй,даун,кады,кадь,kadb,4e4e,4e4n,cheche,chechn,4echn,che4n,4eche,4eche
-WhitelistedSubstrings: книг,нигерия
+# Блеклист субстрок для фильтра
+BlacklistedSubstrings:
+    - негр
+    - пидо
+    - пида
+    - niga
+    - нигр
+    - ниге
+    - додик
+    - петух
+    - петуч
+    - куколд
+    - симп
+    - kukold
+    - cuckold
+    - fag
+    - хуе
+    - хуй
+    - даун
+    - кады
+    - кадь
+    - kadb
+    - 4e4e
+    - 4e4n
+    - cheche
+    - chechn
+    - 4echn
+    - che4n
+    - 4eche
+    - 4eche
+# Вайтлист субстрок для фильтра
+WhitelistedSubstrings:
+    - книг
+    - нигерия
 
 
 

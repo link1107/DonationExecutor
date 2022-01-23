@@ -1,5 +1,4 @@
-package igorlink.DonationAlerts;
-
+package igorlink.donationalerts;
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.executionsstaff.Donation;
 import org.bukkit.Bukkit;
@@ -48,7 +47,6 @@ public class DonationAlerts {
             public void call(Object... arg0) {
 
                 JSONObject json = new JSONObject((String) arg0[0]);
-                json.toString();
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -86,14 +84,14 @@ public class DonationAlerts {
                 .on("donation", donationListener);
     }
 
-    public void Connect (String token) throws JSONException {
+    public void connect(String token) throws JSONException {
         socket.connect();
         socket.emit("add-user", new JSONObject()
                 .put("token", token)
                 .put("type", "minor"));
     }
 
-    public void Disconnect() throws JSONException {
+    public void disconnect() throws JSONException {
         socket.disconnect();
     }
 

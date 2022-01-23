@@ -52,8 +52,8 @@ public class MainConfig {
 
         config = DonationExecutor.getInstance().getConfig();
 
-        String stringWithPlayersNames = config.getString("StreamersNamesList");
-        List <String> streamerPlayersNamesList = new ArrayList<String>(Arrays.asList(stringWithPlayersNames.split(",")));
+        List <String> streamerPlayersNamesList = new ArrayList<>();
+        streamerPlayersNamesList = (List<String>) getConfig().getList("StreamersNamesList");
         for (String playerName : streamerPlayersNamesList) {
             DonationExecutor.getInstance().listOfStreamerPlayers.addStreamerPlayer(playerName);
         }
@@ -66,8 +66,8 @@ public class MainConfig {
         bigBoomRadius = Integer.valueOf(config.getString("BigBoomRadius"));
 
         token = config.getString("DonationAlertsToken");
-        listOfBlackListedSubstrings = Arrays.asList(config.getString("BlacklistedSubstrings").split(","));
-        listOfWhiteListedSubstrings = Arrays.asList(config.getString("WhitelistedSubstrings").split(","));
+        listOfBlackListedSubstrings = (List<String>) config.getList("BlacklistedSubstrings");
+        listOfWhiteListedSubstrings = (List<String>) config.getList("WhitelistedSubstrings");
 
         if (config.getString("TwitchFilter") == "true") {
             twitchFilter = true;
@@ -85,12 +85,10 @@ public class MainConfig {
 
     public static void turnFilterOn() {
         twitchFilter = true;
-        config.set("TwitchFilter", "true");
     }
 
     public static void turnFilterOff() {
         twitchFilter = false;
-        config.set("TwitchFilter", "false");
     }
 
     public static Boolean getFilterStatus() {

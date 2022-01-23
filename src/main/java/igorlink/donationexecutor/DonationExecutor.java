@@ -1,12 +1,11 @@
 package igorlink.donationexecutor;
-
 import igorlink.command.DonationExecutorCommand;
+import igorlink.donationalerts.DonationAlerts;
 import igorlink.donationexecutor.executionsstaff.GiantMobManager;
 import igorlink.donationexecutor.executionsstaff.ListOfStreamerPlayers;
 import igorlink.service.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import igorlink.DonationAlerts.*;
 import java.net.URISyntaxException;
 import static igorlink.service.Utils.*;
 
@@ -15,9 +14,9 @@ public final class DonationExecutor extends JavaPlugin {
 
     public static final String DASERVER = "https://socket.donationalerts.ru:443";
     private static DonationExecutor instance;
-    public static DonationAlerts da;
+    public static igorlink.donationalerts.DonationAlerts da;
     public static GiantMobManager giantMobManager;
-    public static Boolean isRunning = true;
+    private static Boolean isRunningStatus = true;
     public ListOfStreamerPlayers listOfStreamerPlayers;
 
 
@@ -31,7 +30,7 @@ public final class DonationExecutor extends JavaPlugin {
         if (CheckNameAndToken()) {
             try {
                 da = new DonationAlerts(DASERVER);
-                da.Connect(MainConfig.token);
+                da.connect(MainConfig.token);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -46,8 +45,8 @@ public final class DonationExecutor extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            isRunning = false;
-            da.Disconnect();
+            isRunningStatus = false;
+            da.disconnect();
             Thread.sleep(1000);
             da = null;
         } catch (Exception e) {
@@ -55,9 +54,13 @@ public final class DonationExecutor extends JavaPlugin {
         }
     }
 
-
     public static DonationExecutor getInstance() {
         return instance;
+    }
+
+
+    public static Boolean isRunning() {
+        return isRunningStatus;
     }
 
 
