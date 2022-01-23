@@ -29,8 +29,8 @@ public class ListOfStreamerPlayers {
                             if (donation==null) {
                                 continue;
                             }
-                            Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getexecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
-                            Executor.DoExecute(donation.getSender(), sp.getName(), donation.getName(), donation.getAmount(), donation.getMessage(), donation.getexecutionName());
+                            Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getExecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
+                            Executor.DoExecute(donation.getSender(), sp.getName(), donation.getName(), donation.getAmount(), donation.getMessage(), donation.getExecutionName());
                         }
                     }
 
@@ -68,7 +68,7 @@ public class ListOfStreamerPlayers {
         for (StreamerPlayer sp : listOfStreamerPlayers) {
             execution = sp.checkExecution(Utils.cutOffKopeykis(donation.getAmount()));
             if (!(execution == null)) {
-                donation.setexecutionName(execution);
+                donation.setExecutionName(execution);
                 sp.putDonationToQueue(donation);
                 Utils.logToConsole("Донат от §b" + donation.getName() + "§f в размере §b" + donation.getAmount() + " руб.§f был обработан и отправлен в очередь на выполнение.");
                 return;
