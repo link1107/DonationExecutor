@@ -2,15 +2,14 @@ package igorlink.DonationAlerts;
 
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.executionsstaff.Donation;
-import io.socket.emitter.Emitter;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-import io.socket.emitter.Emitter.Listener;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import org.checkerframework.framework.qual.Unused;
+import io.socket.emitter.Emitter.Listener;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
@@ -34,7 +33,6 @@ public class DonationAlerts {
         Listener donationListener = arg0 -> {
 
             JSONObject json = new JSONObject((String) arg0[0]);
-            json.toString();
             new BukkitRunnable() {
                 @Override
                 public void run() {
