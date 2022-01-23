@@ -23,8 +23,8 @@ repositories {
 }
 
 jar {
-    archiveBaseName = 'DonationExecutor'
-    archiveVersion =  '1.0-SNAPSHOT'
+    archiveBaseName = 'DonationExecutor' as Property<String>
+    archiveVersion = '1.0-SNAPSHOT' as Property<String>
 }
 
 dependencies {
