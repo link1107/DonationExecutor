@@ -12,7 +12,7 @@ import static igorlink.service.Utils.*;
 
 public class EventListener implements Listener {
 
-    private Map<Integer, BukkitTask> projectiles = new HashMap<Integer, BukkitTask>();
+    private final Map<Integer, BukkitTask> projectiles = new HashMap<>();
 
     //Отмена горения НКВДшников
     @EventHandler

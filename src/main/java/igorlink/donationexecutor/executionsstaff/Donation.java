@@ -5,6 +5,8 @@ import kotlin.Suppress;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
+import static org.dark0ghost.annotations.configs.Text.RU.DonationText.DEFAULT_NAME;
+
 public class Donation {
     private CommandSender sender;
     private String username;
@@ -20,7 +22,7 @@ public class Donation {
     public Donation(CommandSender _sender, String _username, String _amount, String _message) {
         sender = _sender;
         if (_username.equals("")) {
-            username = "Аноним";
+            username = DEFAULT_NAME;
         } else {
             username = _username;
         }
