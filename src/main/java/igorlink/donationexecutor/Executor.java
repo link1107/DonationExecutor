@@ -1,6 +1,6 @@
 package igorlink.donationexecutor;
 
-import org.dark0ghost.annotations.annotations.MagicConst;
+import org.dark0ghost.annotations.MagicConst;
 import igorlink.service.MainConfig;
 import kotlin.Suppress;
 import org.bukkit.Location;
@@ -24,7 +24,7 @@ import static igorlink.service.Utils.*;
 import static java.lang.Math.random;
 import static java.lang.Math.round;
 import static org.bukkit.Bukkit.getPlayer;
-import static org.dark0ghost.annotations.configs.Text.RU.ExecutorText.*;
+import static org.dark0ghost.configs.Text.RU.ExecutorText.*;
 
 public class Executor {
 

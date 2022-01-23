@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
-import static org.dark0ghost.annotations.configs.Text.RU.ReloadSubCommandText.UPDATE_SETTINGS_TEXT;
+import static org.dark0ghost.configs.Text.RU.ReloadSubCommandText.UPDATE_SETTINGS_TEXT;
 
 public class ReloadSubCommand {
     public static void onReloadCommand(CommandSender sender){
