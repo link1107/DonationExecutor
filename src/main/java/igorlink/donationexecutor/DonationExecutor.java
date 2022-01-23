@@ -17,7 +17,7 @@ public final class DonationExecutor extends JavaPlugin {
     private static DonationExecutor instance;
     public static DonationAlerts da;
     public static GiantMobManager giantMobManager;
-    public static Boolean isRunning = true;
+    public static Boolean isRunningStatus = true;
     public ListOfStreamerPlayers listOfStreamerPlayers;
 
 
@@ -46,7 +46,7 @@ public final class DonationExecutor extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            isRunning = false;
+            isRunningStatus = false;
             da.disconnect();
             Thread.sleep(1000);
             da = null;

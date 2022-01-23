@@ -18,7 +18,7 @@ public class ListOfStreamerPlayers {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!DonationExecutor.isRunning) {
+                if (!DonationExecutor.isRunningStatus) {
                     this.cancel();
                     return;
                 }
