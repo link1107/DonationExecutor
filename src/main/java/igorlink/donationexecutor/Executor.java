@@ -1,6 +1,6 @@
 package igorlink.donationexecutor;
 
-import dark0ghost.annotations.MagicConst;
+import org.dark0ghost.annotations.MagicConst;
 import igorlink.service.MainConfig;
 import kotlin.Suppress;
 import org.bukkit.Location;
@@ -24,6 +24,7 @@ import static igorlink.service.Utils.*;
 import static java.lang.Math.random;
 import static java.lang.Math.round;
 import static org.bukkit.Bukkit.getPlayer;
+import static org.dark0ghost.annotations.Text.RU.ExecutorText.*;
 
 public class Executor {
 
@@ -44,7 +45,7 @@ public class Executor {
         //Если имя донатера не указано - устанавливаем в качестве имени "Кто-то"
         @Suppress(names = "UNUSED_PARAMETER") String _donationUsername;
         if (donationUsername.equals("")) {
-            _donationUsername = "Кто-то";
+            _donationUsername = UNIDENTIFIED_USER_NAME;
         } else {
             _donationUsername = donationUsername;
         }
@@ -89,12 +90,12 @@ public class Executor {
     }
 
     public static void shitToInventory(Player player, String donationUsername) {
-        announce(donationUsername, "насрал тебе в инвентарь", "насрал в инвентарь", player, true);
+        announce(donationUsername, SHIT_INVENTORY_EVENT_TEXT, SHIT_INVENTORY_EVENT_TEXT, player, true);
         Material itemType = Material.DIRT;
         ItemStack itemStack = new ItemStack(itemType, 64);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName("§cГОВНО ОТ §f" + donationUsername.toUpperCase());
-        meta.setLore(List.of("§7Это говно ужасно вонюче и занимает много места"));
+        meta.setLore(List.of(SHIT_INVENTORY_LORE));
         itemStack.setItemMeta(meta);
 
         for (int i = 0; i < MainConfig.dirtAmount; i++) {
@@ -104,16 +105,16 @@ public class Executor {
 
     public static void dropActiveItem(Player player, String donationUsername) {
         if (player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
-            announce(donationUsername, "безуспешно пытался выбить у тебя предмет из рук", "безуспешно пытался выбить предмет из рук", player, true);
-        } else {
-            announce(donationUsername, "выбил у тебя предмет из рук", "выбил предмет из рук", player, true);
-            player.dropItem(true);
-            player.updateInventory();
+            announce(donationUsername, FAIL_DROP_EVENT_TEXT, FAIL_DROP_EVENT_TEXT, player, true);
+            return;
         }
+        announce(donationUsername, SUCCESS_DROP_EVENT_TEXT, SUCCESS_DROP_EVENT_TEXT, player, true);
+        player.dropItem(true);
+        player.updateInventory();
     }
 
     public static void lesch(Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе леща", "дал леща", player, true);
+        announce(donationUsername, LESH_EVENT_TEXT, LESH_EVENT_TEXT, player, true);
         Vector direction = player.getLocation().getDirection();
         direction.setY(0);
         direction.normalize();
@@ -128,7 +129,7 @@ public class Executor {
     }
 
     public static void powerKick(Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе смачного пинка под зад", "дал смачного пинка под зад", player, true);
+        announce(donationUsername,  KICK_EVENT_TEXT,  KICK_EVENT_TEXT, player, true);
         Vector direction = player.getLocation().getDirection();
         direction.setY(0);
         direction.normalize();
@@ -145,25 +146,24 @@ public class Executor {
     public static void clearLastDeathDrop(Player player, String donationUsername) {
         //Remove Last Death Dropped Items
         if (DonationExecutor.getInstance().listOfStreamerPlayers.getStreamerPlayer(player.getName()).removeDeathDrop()) {
-            announce(donationUsername, "уничтожил твой посмертный дроп...", "уничтожил посмертный дроп", player, true);
-        } else {
-            announce(donationUsername, "безуспешно пытался уничтожить твой посмертный дроп...", "безуспешно пытался уничтожить посмертный дроп", player, true);
+            announce(donationUsername, SUCCESS_CLEAR_DROP_EVENT_TEXT + SPECIAL_END_TEXT, SUCCESS_CLEAR_DROP_EVENT_TEXT, player, true);
+            return;
         }
+        announce(donationUsername, FAIL_CLEAR_DROP_EVENT_TEXT + SPECIAL_END_TEXT, FAIL_CLEAR_DROP_EVENT_TEXT, player, true);
     }
 
     public static void spawnCreeper(Player player, String donationUsername) {
         //Spawn Creepers
         Vector direction = player.getLocation().getDirection();
-        announce(donationUsername, "прислал тебе в подарок крипера...", "прислал крипера в подарок", player, true);
+        announce(donationUsername, SPAWN_CREEPER_EVENT_TEXT + SPECIAL_END_TEXT, SPAWN_CREEPER_EVENT_TEXT, player, true);
         direction.setY(0);
         direction.normalize();
         player.getWorld().spawnEntity(player.getLocation().clone().subtract(direction.multiply(1)), EntityType.CREEPER);
-
     }
 
     public static void giveDiamonds(Player player, String donationUsername) {
         //Give some diamonds to the player
-        announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
+        announce(donationUsername, GIVE_DIAMOND_EVENT_TEXT, GIVE_DIAMOND_EVENT_TEXT, player, true);
         Material itemType = Material.DIAMOND;
         ItemStack itemStack = new ItemStack(itemType, MainConfig.diamondsAmount);
         ItemMeta meta = itemStack.getItemMeta();
@@ -174,7 +174,7 @@ public class Executor {
     }
 
     public static void giveStackOfDiamonds(Player player, String donationUsername) {
-        announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
+        announce(donationUsername, GIVE_DIAMOND_EVENT_TEXT, GIVE_DIAMOND_EVENT_TEXT, player, true);
         Material itemType = Material.DIAMOND;
         ItemStack itemStack = new ItemStack(itemType, 64);
         ItemMeta meta = itemStack.getItemMeta();
@@ -185,7 +185,7 @@ public class Executor {
     }
 
     public static void giveBread(Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе хлеба!", "дал хлеба", player, true);
+        announce(donationUsername, BREAD_EVENT_SUBTEXT, BREAD_EVENT_ALERT_TEXT, player, true);
         Material itemType = Material.BREAD;
         ItemStack itemStack = new ItemStack(itemType, 4);
         ItemMeta meta = itemStack.getItemMeta();
@@ -198,7 +198,7 @@ public class Executor {
     public static void callNKVD(Player player, String donationUsername) {
         Vector direction = player.getLocation().getDirection();
         LivingEntity nkvdMob;
-        announce(donationUsername, "хочет отправить тебя в ГУЛАГ!", "хочет отправить в ГУЛАГ", player, true);
+        announce(donationUsername, NKVD_EVENT_TEXT, NKVD_EVENT_TEXT, player, true);
         direction.setY(0);
         direction.normalize();
         for (int i = 1; i <= 3; i++) {
@@ -215,12 +215,12 @@ public class Executor {
     }
 
     public static void callStalin(Player player, String donationUsername) {
-        announce(donationUsername, "призвал Сталина разобраться с тобой!", "призвал Сталина разобраться с", player, true);
+        announce(donationUsername, STALING_EVENT_TEXT + "тобой!" , STALING_EVENT_TEXT, player, true);
         DonationExecutor.giantMobManager.addMob(player.getLocation(), "§cИосиф Сталин");
     }
 
     public static void randomChange(Player player, String donationUsername) {
-        announce(donationUsername, "подменил тебе кое-что на камни...", "призвал Сталина разобраться с", player, true);
+        announce(donationUsername, RANDOM_EVENT_TEXT, STALING_EVENT_TEXT, player, true);
         int[] randoms = new int[5];
         for (int i = 0; i <= 4; i++) {
 
@@ -273,18 +273,18 @@ public class Executor {
 
         if (replacedCounter == 0) {
             sendSysMsgToPlayer(player, "§cТебе повезло: все камни попали в пустые слоты!");
-        } else {
-            sendSysMsgToPlayer(player, "§cБыли заменены следующие предметусы: §f" + replacedItems);
+            return;
         }
+        sendSysMsgToPlayer(player, "§cБыли заменены следующие предметусы: §f" + replacedItems);
     }
 
     public static void halfHeart(Player player, String donationUsername) {
         player.setHealth(eventOneHealth);
-        announce(donationUsername, "оставил тебе лишь полсердечка...", "оставил лишь полсердечка", player, true);
+        announce(donationUsername, HALF_HEART_EVENT_TEXT + SPECIAL_END_TEXT, HALF_HEART_EVENT_TEXT, player, true);
     }
 
     public static void tamedBecomesEnemies(Player player, String donationUsername) {
-        announce(donationUsername, "настроил твоих питомцев против тебя!", "настроил прирученных питомцев против", player, true);
+        announce(donationUsername, ENEMIES_EVENT_TEXT, ENEMIES_EVENT_TEXT, player, true);
         for (Entity e : player.getWorld().getEntitiesByClasses(Wolf.class, Cat.class)) {
             if (((Tameable) e).isTamed() && Objects.equals(Objects.requireNonNull(((Tameable) e).getOwner()).getName(), player.getName())) {
                 if (e instanceof Cat) {
@@ -302,7 +302,7 @@ public class Executor {
     }
 
     public static void bigBoom(Player player, String donationUsername) {
-        announce(donationUsername, "сейчас тебя РАЗНЕСЕТ В КЛОЧЬЯ!!!", "сейчас РАЗНЕСЕТ В КЛОЧЬЯ", player, true);
+        announce(donationUsername, BOOM_EVENT_TEXT, BOOM_EVENT_TEXT, player, true);
         player.getWorld().createExplosion(player.getLocation(), MainConfig.bigBoomRadius, true);
     }
 }

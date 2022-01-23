@@ -8,9 +8,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ListOfStreamerPlayers {
-    private List<StreamerPlayer> listOfStreamerPlayers = new ArrayList<StreamerPlayer>();
+    private final List<StreamerPlayer> listOfStreamerPlayers = new ArrayList<StreamerPlayer>();
 
     //Таймер будет выполнять донаты из очередей игроков каждые 2 сек, если они живы и онлайн - выполняем донат и убираем его из очереди
     public ListOfStreamerPlayers() {
@@ -24,7 +25,7 @@ public class ListOfStreamerPlayers {
 
                 for (StreamerPlayer sp : listOfStreamerPlayers) {
                     if ( !(Bukkit.getPlayer(sp.getName()) == null) ) {
-                        if (!(Bukkit.getPlayer(sp.getName()).isDead())) {
+                        if (!(Objects.requireNonNull(Bukkit.getPlayer(sp.getName())).isDead())) {
                             Donation donation = sp.takeDonationFromQueue();
                             if (donation==null) {
                                 continue;

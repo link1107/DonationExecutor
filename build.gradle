@@ -3,8 +3,8 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'igorlink'
+version '1.18'
 
 repositories {
     mavenCentral()
@@ -21,6 +21,7 @@ repositories {
     }
 }
 
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
@@ -28,8 +29,6 @@ dependencies {
     implementation 'io.socket:engine.io-client:2.0.0'
     implementation 'io.socket:socket.io-client:2.0.1'
     implementation "org.json:json:20190722"
-
-
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'

@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class StreamerPlayer {
-    private String streamerPlayerName;
-    private List<Item> listOfDeathDropItems = new ArrayList<Item>();
-    private Queue<Donation> listOfQueuedDonations = new LinkedList<Donation>();
-    private HashMap<String, String> listOfAmounts = new HashMap<String, String>();
+    private final String streamerPlayerName;
+    private final List<Item> listOfDeathDropItems = new ArrayList<Item>();
+    private final Queue<Donation> listOfQueuedDonations = new LinkedList<Donation>();
+    private final HashMap<String, String> listOfAmounts = new HashMap<String, String>();
 
 
     //Инициализация нового объекта стримера-игрока

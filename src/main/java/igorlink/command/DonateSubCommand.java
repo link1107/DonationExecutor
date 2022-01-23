@@ -34,7 +34,9 @@ public class DonateSubCommand {
             donationMessage.append(args[i]).append(' ');
         }
 
+        String amount = donationAmount + ".00";
+
         //Отправляем Донат на исполнение
-        DonationExecutor.getInstance().listOfStreamerPlayers.addToDonationsQueue(new Donation(sender, donationUsername.toString(), donationAmount + ".00", donationMessage.toString()));
+        DonationExecutor.getInstance().listOfStreamerPlayers.addToDonationsQueue(new Donation(sender, donationUsername.toString(), amount, donationMessage.toString()));
     }
 }

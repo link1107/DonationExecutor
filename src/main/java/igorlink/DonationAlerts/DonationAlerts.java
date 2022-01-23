@@ -28,7 +28,7 @@ public class DonationAlerts {
 
         Listener connectListener = arg0 -> logToConsole("Произведено успешное подключение!");
 
-        Listener disconectListener = arg0 -> logToConsole("Соединение разорвано!");
+        Listener disconnectListener = arg0 -> logToConsole("Соединение разорвано!");
 
         Listener donationListener = arg0 -> {
 
@@ -59,7 +59,7 @@ public class DonationAlerts {
         Listener errorListener = arg0 -> logToConsole("Произошла ошибка подключения к Donation Alerts!");
 
         socket.on(Socket.EVENT_CONNECT, connectListener)
-                .on(Socket.EVENT_DISCONNECT, disconectListener)
+                .on(Socket.EVENT_DISCONNECT, disconnectListener)
                 .on(Socket.EVENT_CONNECT_ERROR, errorListener)
                 .on("donation", donationListener);
     }
