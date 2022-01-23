@@ -51,8 +51,8 @@ public class MainConfig {
 
         config = DonationExecutor.getInstance().getConfig();
 
-        String stringWithPlayersNames = config.getString("StreamersNamesList");
-        List <String> streamerPlayersNamesList = new ArrayList<String>(Arrays.asList(stringWithPlayersNames.split(",")));
+        @NotNull String stringWithPlayersNames = Objects.requireNonNull(config.getString("StreamersNamesList"));
+        List <String> streamerPlayersNamesList = new ArrayList<>(Arrays.asList(stringWithPlayersNames.split(",")));
         for (String playerName : streamerPlayersNamesList) {
             DonationExecutor.getInstance().listOfStreamerPlayers.addStreamerPlayer(playerName);
         }
