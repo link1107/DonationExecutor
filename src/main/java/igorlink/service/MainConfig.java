@@ -3,11 +3,13 @@ package igorlink.service;
 import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
-import static igorlink.service.Utils.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import static igorlink.service.Utils.logToConsole;
 
 public class MainConfig {
     private static HashMap<String, HashMap<String, String>> donationAmountsHashMap = new HashMap<String, HashMap<String, String>>();
@@ -19,14 +21,14 @@ public class MainConfig {
     public static String token;
     public static List<String> listOfBlackListedSubstrings = new ArrayList<>();
     public static List<String> listOfWhiteListedSubstrings = new ArrayList<>();
-    private static Boolean twitchFilter;
+    public static Boolean twitchFilter;
 
     public MainConfig() {
 
     }
 
     //Геттер конфига
-    public static FileConfiguration getConfig(){
+    public static FileConfiguration getConfig() {
         return config;
     }
 
@@ -53,7 +55,7 @@ public class MainConfig {
         config = DonationExecutor.getInstance().getConfig();
 
         String stringWithPlayersNames = config.getString("StreamersNamesList");
-        List <String> streamerPlayersNamesList = new ArrayList<String>(Arrays.asList(stringWithPlayersNames.split(",")));
+        List<String> streamerPlayersNamesList = new ArrayList<String>(Arrays.asList(stringWithPlayersNames.split(",")));
         for (String playerName : streamerPlayersNamesList) {
             DonationExecutor.getInstance().listOfStreamerPlayers.addStreamerPlayer(playerName);
         }
@@ -73,8 +75,7 @@ public class MainConfig {
             twitchFilter = true;
         } else if (config.getString("TwitchFilter") == "false") {
             twitchFilter = false;
-        }
-        else {
+        } else {
             logToConsole("Ошибка при чтении значение TwitchFilter");
         }
 
@@ -82,22 +83,16 @@ public class MainConfig {
     }
 
 
-
-    public static void turnFilterOn() {
-        twitchFilter = true;
-        config.set("TwitchFilter", "true");
-    }
-
-    public static void turnFilterOff() {
-        twitchFilter = false;
-        config.set("TwitchFilter", "false");
+    public static void turnFilter(boolean status) {
+        twitchFilter = status;
+        config.set("TwitchFilter", status);
     }
 
     public static Boolean getFilterStatus() {
         return twitchFilter;
     }
 
-    public static HashMap<String, String> getNameAndExecution (@NotNull String donationAmount) {
+    public static HashMap<String, String> getNameAndExecution(@NotNull String donationAmount) {
         String thisDonateForStreamerName = null;
         String nameOfExecution = null;
         for (String p : donationAmountsHashMap.keySet()) {
