@@ -3,14 +3,13 @@ package igorlink.service;
 import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
+
+import java.util.*;
+
 import static igorlink.service.Utils.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 public class MainConfig {
-    private static HashMap<String, HashMap<String, String>> donationAmountsHashMap = new HashMap<String, HashMap<String, String>>();
+    private static final HashMap<String, HashMap<String, String>> donationAmountsHashMap = new HashMap<>();
     private static FileConfiguration config = DonationExecutor.getInstance().getConfig();
     public static int dirtAmount = 0;
     public static int diamondsAmount = 0;
@@ -60,18 +59,18 @@ public class MainConfig {
 
         logToConsole("При чтении файла конфигурации было добавлено §b" + DonationExecutor.getInstance().listOfStreamerPlayers.getNumberOfStreamers() + "§f стримеров.");
 
-        dirtAmount = Integer.valueOf(config.getString("DirtAmount"));
-        diamondsAmount = Integer.valueOf(config.getString("DiamondsAmount"));
-        breadAmount = Integer.valueOf(config.getString("BreadAmount"));
-        bigBoomRadius = Integer.valueOf(config.getString("BigBoomRadius"));
+        dirtAmount = Integer.parseInt(Objects.requireNonNull(config.getString("DirtAmount")));
+        diamondsAmount = Integer.parseInt(Objects.requireNonNull(config.getString("DiamondsAmount")));
+        breadAmount = Integer.parseInt(Objects.requireNonNull(config.getString("BreadAmount")));
+        bigBoomRadius = Integer.parseInt(Objects.requireNonNull(config.getString("BigBoomRadius")));
 
         token = config.getString("DonationAlertsToken");
-        listOfBlackListedSubstrings = Arrays.asList(config.getString("BlacklistedSubstrings").split(","));
-        listOfWhiteListedSubstrings = Arrays.asList(config.getString("WhitelistedSubstrings").split(","));
+        listOfBlackListedSubstrings = Arrays.asList(Objects.requireNonNull(config.getString("BlacklistedSubstrings")).split(","));
+        listOfWhiteListedSubstrings = Arrays.asList(Objects.requireNonNull(config.getString("WhitelistedSubstrings")).split(","));
 
-        if (config.getString("TwitchFilter") == "true") {
+        if (Objects.equals(config.getString("TwitchFilter"), "true")) {
             twitchFilter = true;
-        } else if (config.getString("TwitchFilter") == "false") {
+        } else if (Objects.equals(config.getString("TwitchFilter"), "false")) {
             twitchFilter = false;
         }
         else {

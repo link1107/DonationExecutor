@@ -1,5 +1,7 @@
 package igorlink.donationexecutor.executionsstaff;
 
+
+import kotlin.Suppress;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -10,6 +12,7 @@ public class Donation {
     private String message;
     private String executionName = null;
 
+    @Suppress(names = "Unused constructor")
     public Donation(String _username, String _amount, String _message) {
         new Donation(Bukkit.getConsoleSender(), _username, _amount, _message);
     }
@@ -41,13 +44,11 @@ public class Donation {
         return message;
     }
 
-    public String getexecutionName() {
+    public String getExecutionName() {
         return executionName;
     }
 
-    public void setexecutionName(String _executionName) {
+    public void setExecutionName(String _executionName) {
         executionName = _executionName;
     }
-
-
 }
