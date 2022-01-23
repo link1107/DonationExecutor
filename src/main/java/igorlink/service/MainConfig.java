@@ -1,6 +1,7 @@
 package igorlink.service;
 
 import igorlink.donationexecutor.DonationExecutor;
+import kotlin.Suppress;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,7 @@ public class MainConfig {
     }
 
     //Геттер конфига
-    public static FileConfiguration getConfig(){
+    public static FileConfiguration getConfig() {
         return config;
     }
 
@@ -52,7 +53,7 @@ public class MainConfig {
         config = DonationExecutor.getInstance().getConfig();
 
         @NotNull String stringWithPlayersNames = Objects.requireNonNull(config.getString("StreamersNamesList"));
-        List <String> streamerPlayersNamesList = new ArrayList<>(Arrays.asList(stringWithPlayersNames.split(",")));
+        List<String> streamerPlayersNamesList = new ArrayList<>(Arrays.asList(stringWithPlayersNames.split(",")));
         for (String playerName : streamerPlayersNamesList) {
             DonationExecutor.getInstance().listOfStreamerPlayers.addStreamerPlayer(playerName);
         }
@@ -72,15 +73,10 @@ public class MainConfig {
             twitchFilter = true;
         } else if (Objects.equals(config.getString("TwitchFilter"), "false")) {
             twitchFilter = false;
-        }
-        else {
+        } else {
             logToConsole("Ошибка при чтении значение TwitchFilter");
         }
-
-
     }
-
-
 
     public static void turnFilterOn() {
         twitchFilter = true;
@@ -92,26 +88,24 @@ public class MainConfig {
         config.set("TwitchFilter", "false");
     }
 
+    @Suppress(names = "UNUSED_METHOD")
     public static Boolean getFilterStatus() {
         return twitchFilter;
     }
 
-    public static HashMap<String, String> getNameAndExecution (@NotNull String donationAmount) {
-        String thisDonateForStreamerName = null;
+    @Suppress(names = "UNUSED_METHOD")
+    public static HashMap<String, String> getNameAndExecution(@NotNull String donationAmount) {
+        @Suppress(names = "UNUSED_PARAMETER") String thisDonateForStreamerName = null;
         String nameOfExecution = null;
         for (String p : donationAmountsHashMap.keySet()) {
             if (donationAmountsHashMap.get(p).containsKey(donationAmount)) {
-                HashMap<String, String> temp = new HashMap<String, String>();
-                thisDonateForStreamerName = p;
+                HashMap<String, String> temp = new HashMap<>();
                 nameOfExecution = donationAmountsHashMap.get(p).get(donationAmount);
                 temp.put("name", p);
                 temp.put("execution", nameOfExecution);
                 return temp;
             }
         }
-
         return null;
     }
-
-
 }

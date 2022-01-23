@@ -36,7 +36,7 @@ public class Executor {
             _donationUsername = donationUsername;
         }
 
-        Boolean canContinue = true;
+        boolean canContinue = true;
         //Определяем игрока (если он оффлайн - не выполняем донат и пишем об этом в консоль), а также определяем мир, местоположение и направление игрока
         Player streamerPlayer = getPlayer(streamerName);
         if (streamerPlayer == null) {

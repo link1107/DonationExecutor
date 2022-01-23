@@ -1,19 +1,35 @@
 package igorlink.service;
 
 import com.destroystokyo.paper.Title;
+import dark0ghost.annotations.ExperimentalApi;
 import igorlink.donationexecutor.DonationExecutor;
+import kotlin.Suppress;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    @ExperimentalApi(message = "use in isBlackListed")
+    private static @NotNull String validateText (@NotNull String validationText) {
+        for (String ss : MainConfig.listOfWhiteListedSubstrings) {
+            if (validationText.contains(ss)) {
+                validationText = validationText.replace(ss, "");
+            }
+        }
+        return validationText;
+    }
+
     public static Boolean isPluginActive;
 
     //Вывод сообщения в консоль
@@ -38,10 +54,10 @@ public class Utils {
 
     public static Boolean CheckNameAndToken() {
         isPluginActive = true;
-        if ((DonationExecutor.getInstance().getConfig().getString("DonationAlertsToken") == "") || (DonationExecutor.getInstance().getConfig().getString("DonationAlertsToken") == null)) {
+        if ((Objects.equals(DonationExecutor.getInstance().getConfig().getString("DonationAlertsToken"), "")) || (DonationExecutor.getInstance().getConfig().getString("DonationAlertsToken") == null)) {
             logToConsole("Вы не указали свой токен DonationAlerts в файле конфигурации плагина, поэтому сейчас плагин не работает.");
             isPluginActive = false;
-        } else if ((DonationExecutor.getInstance().getConfig().getString("Nickname") == "") || (DonationExecutor.getInstance().getConfig().getString("Nickname") == "")) {
+        } else if ((Objects.equals(DonationExecutor.getInstance().getConfig().getString("Nickname"), "")) || (Objects.equals(DonationExecutor.getInstance().getConfig().getString("Nickname"), ""))) {
             logToConsole("Вы не указали свой игровой никнейм в файле конфигурации плагина, поэтому сейчас плагин не работает.");
             isPluginActive = false;
         }
@@ -60,11 +76,11 @@ public class Utils {
             player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText);
         }
 
-        if (_donaterName == "") {
+        if (Objects.equals(_donaterName, "")) {
             _donaterName = "Кто-то";
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!(p.getName() == player.getName())) {
+            if (!(p.getName().equals(player.getName()))) {
                 p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName());
             }
         }
@@ -87,25 +103,24 @@ public class Utils {
     }
 
     public static Vector locToVec(Location loc) {
-        Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
-        return vec;
+        return new Vector(loc.getX(), loc.getY(), loc.getZ());
     }
 
     public static String cutOffKopeykis(String donationAmountWithKopeykis) {
-        String amountWithoutKopeykis = "";
+        StringBuilder amountWithoutKopeykis = new StringBuilder();
         for (int i = 0; i <= donationAmountWithKopeykis.length() - 1; i++) {
             if (donationAmountWithKopeykis.charAt(i) == '.') {
                 break;
-            } else if (donationAmountWithKopeykis.charAt(i) == ' ') {
-                continue;
-            } else {
-                amountWithoutKopeykis = amountWithoutKopeykis + donationAmountWithKopeykis.charAt(i);
             }
+            if (donationAmountWithKopeykis.charAt(i) == ' ') {
+                continue;
+            }
+                amountWithoutKopeykis.append(donationAmountWithKopeykis.charAt(i));
         }
-
-        return amountWithoutKopeykis;
+        return amountWithoutKopeykis.toString();
     }
 
+    @Suppress(names = "UNUSED_PARAMETER")
     public static Boolean isBlackListed(String text) {
         HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<Character, List<Character>>();
 
@@ -171,13 +186,6 @@ public class Utils {
             return false;
         }
 
-//        for (String ss : MainConfig.listOfWhiteListedSubstrings) {
-//            if (validationText.contains(ss)) {
-//                validationText = validationText.replace(ss, "");
-//            }
-//        }
-
-
         if (!(validationText.matches("[a-zа-я0-9$!ё]*"))) {
             return true;
         }
@@ -239,10 +247,8 @@ public class Utils {
                 }
             }
         }
-
         return false;
     }
-
 
 }
 
