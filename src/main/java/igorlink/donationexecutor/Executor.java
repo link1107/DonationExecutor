@@ -1,21 +1,26 @@
 package igorlink.donationexecutor;
+
 import igorlink.service.MainConfig;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
+import igorlink.service.Patterns;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static igorlink.service.Utils.*;
-import static java.lang.Math.*;
+import static java.lang.Math.random;
+import static java.lang.Math.round;
 import static org.bukkit.Bukkit.getPlayer;
 
 public class Executor {
@@ -45,10 +50,23 @@ public class Executor {
             canContinue = false;
         }
 
+
         if (!canContinue) {
             logToConsole("Донат от §b" + donationUsername + " §f в размере §b" + fullDonationAmount + "§f выполнен из-за того, что целевой стример был недоступен.");
             return;
         }
+
+        if (MainConfig.urlFilter) {
+            if (Patterns.WEB_URL.matcher(donationUsername).matches()) {
+                donationMessage = Patterns.WEB_URL.matcher(donationUsername).replaceAll("*ССЫЛКА УДАЛЕНА*");
+            }
+
+            // Пусть будет на будущее. Удаление ссылок из сообщения доната. На данный момент donationMessage нигде не использовался.
+            if (Patterns.WEB_URL.matcher(donationMessage).matches()) {
+                donationMessage = Patterns.WEB_URL.matcher(donationMessage).replaceAll("*ССЫЛКА УДАЛЕНА*");
+            }
+        }
+
 
         Location streamerPlayerLocation = streamerPlayer.getLocation();
         World world = streamerPlayer.getWorld();
@@ -107,9 +125,7 @@ public class Executor {
     }
 
 
-
-
-    public static void shitToInventory (Player player, String donationUsername) {
+    public static void shitToInventory(Player player, String donationUsername) {
         announce(donationUsername, "насрал тебе в инвентарь", "насрал в инвентарь", player, true);
         Material itemType = Material.DIRT;
         ItemStack itemStack = new ItemStack(itemType, 64);
@@ -123,7 +139,7 @@ public class Executor {
         }
     }
 
-    public static void dropActiveItem (Player player, String donationUsername) {
+    public static void dropActiveItem(Player player, String donationUsername) {
         if (player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
             announce(donationUsername, "безуспешно пытался выбить у тебя предмет из рук", "безуспешно пытался выбить предмет из рук", player, true);
         } else {
@@ -133,37 +149,37 @@ public class Executor {
         }
     }
 
-    public static void lesch (Player player, String donationUsername) {
+    public static void lesch(Player player, String donationUsername) {
         announce(donationUsername, "дал тебе леща", "дал леща", player, true);
         Vector direction = player.getLocation().getDirection();
         direction.setY(0);
         direction.normalize();
         direction.setY(0.3);
         player.setVelocity(direction.multiply(0.8));
-        if (player.getHealth()>2.0D) {
-            player.setHealth(player.getHealth()-2);
+        if (player.getHealth() > 2.0D) {
+            player.setHealth(player.getHealth() - 2);
         } else {
             player.setHealth(0);
         }
         ((org.bukkit.entity.Player) player).playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
     }
 
-    public static void powerKick (Player player, String donationUsername) {
+    public static void powerKick(Player player, String donationUsername) {
         announce(donationUsername, "дал тебе смачного пинка под зад", "дал смачного пинка под зад", player, true);
         Vector direction = player.getLocation().getDirection();
         direction.setY(0);
         direction.normalize();
         direction.setY(0.5);
         player.setVelocity(direction.multiply(1.66));
-        if (player.getHealth()>3.0D) {
-            player.setHealth(player.getHealth()-3);
+        if (player.getHealth() > 3.0D) {
+            player.setHealth(player.getHealth() - 3);
         } else {
             player.setHealth(0);
         }
         ((org.bukkit.entity.Player) player).playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
     }
 
-    public static void clearLastDeathDrop (Player player, String donationUsername) {
+    public static void clearLastDeathDrop(Player player, String donationUsername) {
         //Remove Last Death Dropped Items
         if (DonationExecutor.getInstance().listOfStreamerPlayers.getStreamerPlayer(player.getName()).removeDeathDrop()) {
             announce(donationUsername, "уничтожил твой посмертный дроп...", "уничтожил посмертный дроп", player, true);
@@ -172,7 +188,7 @@ public class Executor {
         }
     }
 
-    public static void spawnCreeper (Player player, String donationUsername) {
+    public static void spawnCreeper(Player player, String donationUsername) {
         //Spawn Creepers
         Vector direction = player.getLocation().getDirection();
         announce(donationUsername, "прислал тебе в подарок крипера...", "прислал крипера в подарок", player, true);
@@ -182,7 +198,7 @@ public class Executor {
 
     }
 
-    public static void giveDiamonds (Player player, String donationUsername) {
+    public static void giveDiamonds(Player player, String donationUsername) {
         //Give some diamonds to the player
         announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
         Material itemType = Material.DIAMOND;
@@ -194,7 +210,7 @@ public class Executor {
         Item diamonds = player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
     }
 
-    public static void giveStackOfDiamonds (Player player, String donationUsername) {
+    public static void giveStackOfDiamonds(Player player, String donationUsername) {
         announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
         Material itemType = Material.DIAMOND;
         ItemStack itemStack = new ItemStack(itemType, 64);
@@ -205,7 +221,7 @@ public class Executor {
         Item diamonds = player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
     }
 
-    public static void giveBread (Player player, String donationUsername) {
+    public static void giveBread(Player player, String donationUsername) {
         announce(donationUsername, "дал тебе хлеба!", "дал хлеба", player, true);
         Material itemType = Material.BREAD;
         ItemStack itemStack = new ItemStack(itemType, 4);
@@ -216,7 +232,7 @@ public class Executor {
         Item bread = player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
     }
 
-    public static void callNKVD (Player player, String donationUsername) {
+    public static void callNKVD(Player player, String donationUsername) {
         Vector direction = player.getLocation().getDirection();
         LivingEntity nkvdMob;
         announce(donationUsername, "хочет отправить тебя в ГУЛАГ!", "хочет отправить в ГУЛАГ", player, true);
@@ -235,12 +251,12 @@ public class Executor {
 
     }
 
-    public static void callStalin (Player player, String donationUsername) {
+    public static void callStalin(Player player, String donationUsername) {
         announce(donationUsername, "призвал Сталина разобраться с тобой!", "призвал Сталина разобраться с", player, true);
         DonationExecutor.giantMobManager.addMob(player.getLocation(), "§cИосиф Сталин");
     }
 
-    public static void randomChange (Player player, String donationUsername) {
+    public static void randomChange(Player player, String donationUsername) {
         announce(donationUsername, "подменил тебе кое-что на камни...", "призвал Сталина разобраться с", player, true);
         int[] randoms = new int[5];
         for (int i = 0; i <= 4; i++) {
@@ -276,18 +292,18 @@ public class Executor {
         }
 
         if (replacedCounter == 0) {
-            sendSysMsgToPlayer(player,"§cТебе повезло: все камни попали в пустые слоты!");
+            sendSysMsgToPlayer(player, "§cТебе повезло: все камни попали в пустые слоты!");
         } else {
-            sendSysMsgToPlayer(player,"§cБыли заменены следующие предметусы: §f" + replacedItems);
+            sendSysMsgToPlayer(player, "§cБыли заменены следующие предметусы: §f" + replacedItems);
         }
     }
 
-    public static void halfHeart (Player player, String donationUsername) {
+    public static void halfHeart(Player player, String donationUsername) {
         player.setHealth(1);
         announce(donationUsername, "оставил тебе лишь полсердечка...", "оставил лишь полсердечка", player, true);
     }
 
-    public static void tamedBecomesEnemies (Player player, String donationUsername) {
+    public static void tamedBecomesEnemies(Player player, String donationUsername) {
         announce(donationUsername, "настроил твоих питомцев против тебя!", "настроил прирученных питомцев против", player, true);
         for (Entity e : player.getWorld().getEntitiesByClasses(Wolf.class, Cat.class)) {
             if (((Tameable) e).isTamed() && ((Tameable) e).getOwner().getName().equals(player.getName())) {
@@ -305,7 +321,7 @@ public class Executor {
         }
     }
 
-    public static void bigBoom (Player player, String donationUsername) {
+    public static void bigBoom(Player player, String donationUsername) {
         announce(donationUsername, "сейчас тебя РАЗНЕСЕТ В КЛОЧЬЯ!!!", "сейчас РАЗНЕСЕТ В КЛОЧЬЯ", player, true);
         player.getWorld().createExplosion(player.getLocation(), MainConfig.bigBoomRadius, true);
 

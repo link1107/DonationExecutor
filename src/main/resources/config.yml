@@ -88,7 +88,12 @@ BreadAmount: 4
 # Радиус взрыва от BigBoom
 BigBoomRadius: 20
 
+
 TwitchFilter: true
+
+# Фильтр ссылок в имени пользователя
+URLFilter: true
+
 BlacklistedSubstrings: негр,пидо,пида,niga,нигр,ниге,додик,петух,петуч,куколд,симп,kukold,cuckold,fag,хуе,хуй,даун,кады,кадь,kadb,4e4e,4e4n,cheche,chechn,4echn,che4n,4eche,4eche
 WhitelistedSubstrings: книг,нигерия
 
