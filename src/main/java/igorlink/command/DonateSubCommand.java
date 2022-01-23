@@ -9,12 +9,9 @@ public class DonateSubCommand {
         int i;
 
         //Getting donation's amount
-        String donationAmount = new String();
-        String donationUsername = new String();
-        String donationMessage = new String();
-
-        //Getting donation's amount
-        donationAmount = args[0];
+        String donationAmount = args[0];
+        StringBuilder donationUsername = new StringBuilder();
+        StringBuilder donationMessage = new StringBuilder();
 
         //Получаем имя донатера
         for (i = 1; i <= args.length - 1; i++) {
@@ -23,10 +20,10 @@ public class DonateSubCommand {
             }
             else {
                 if (i==1) {
-                    donationUsername = donationUsername + args[i];
+                    donationUsername.append(args[i]);
                 }
                 else {
-                    donationUsername = ' ' + donationUsername + args[i];
+                    donationUsername.append(' ').append(donationUsername).append(args[i]);
                 }
             }
         }
@@ -34,10 +31,10 @@ public class DonateSubCommand {
         //Все, что после символов ## - это сообщение
         for (i = i+1; i <= args.length - 1; i++)
         {
-            donationMessage = donationMessage + args[i] + ' ';
+            donationMessage.append(donationMessage).append(args[i]).append(' ');
         }
 
         //Отправляем донат на исполнение
-        DonationExecutor.getInstance().listOfStreamerPlayers.addToDonationsQueue(new Donation(sender, donationUsername, donationAmount+".00", donationMessage));
+        DonationExecutor.getInstance().listOfStreamerPlayers.addToDonationsQueue(new Donation(sender, donationUsername.toString(), donationAmount+".00", donationMessage.toString()));
     }
 }
