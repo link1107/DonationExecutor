@@ -60,7 +60,8 @@ publishing {
         }
         maven {
             name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/dark0ghost/DonationExecutor"
+            def username_github = System.getenv("USERNAME")
+            url = "https://maven.pkg.github.com/$username_github/DonationExecutor"
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
