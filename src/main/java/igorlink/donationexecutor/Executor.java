@@ -202,11 +202,11 @@ public class Executor {
         direction.setY(0);
         direction.normalize();
         for (int i = 1; i <= 3; i++) {
-            Location newloc = player.getLocation().clone();
+            Location newLoc = player.getLocation().clone();
             Vector newdir = direction.clone();
             newdir = newdir.rotateAroundY(rotateAroundY * i).multiply(2);
-            newloc.add(newdir);
-            nkvdMob = (LivingEntity) player.getWorld().spawnEntity(newloc, EntityType.ZOMBIE);
+            newLoc.add(newdir);
+            nkvdMob = (LivingEntity) player.getWorld().spawnEntity(newLoc, EntityType.ZOMBIE);
             nkvdMob.setCustomName("§cСотрудник НКВД");
             Objects.requireNonNull(nkvdMob.getEquipment()).setItem(EquipmentSlot.HAND, new ItemStack(Material.IRON_SWORD));
             Objects.requireNonNull(nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(0.3);

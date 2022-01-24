@@ -5,6 +5,7 @@ import igorlink.donationexecutor.executionsstaff.Donation;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter.Listener;
+import kotlin.Suppress;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
@@ -75,7 +76,7 @@ public class DonationAlerts {
         socket.disconnect();
     }
 
-    @Deprecated
+    @Suppress(names = "UNUSED")
     public boolean getConnected() {
         return socket.connected();
     }
