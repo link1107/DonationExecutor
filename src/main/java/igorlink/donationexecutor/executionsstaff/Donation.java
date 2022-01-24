@@ -2,55 +2,39 @@ package igorlink.donationexecutor.executionsstaff;
 
 
 import kotlin.Suppress;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import static org.dark0ghost.configs.Text.RU.DonationText.DEFAULT_NAME;
 
 public class Donation {
+    @Getter
     private CommandSender sender;
+    @Getter
     private String username;
+    @Getter
     private String amount;
+    @Getter
     private String message;
+    @Getter
+    @Setter
     private String executionName = null;
 
     @Suppress(names = "Unused constructor")
-    public Donation(String _username, String _amount, String _message) {
-        new Donation(Bukkit.getConsoleSender(), _username, _amount, _message);
+    public Donation(String username, String amount, String message) {
+        new Donation(Bukkit.getConsoleSender(), username, amount, message);
     }
 
-    public Donation(CommandSender _sender, String _username, String _amount, String _message) {
-        sender = _sender;
-        if (_username.equals("")) {
-            username = DEFAULT_NAME;
-        } else {
-            username = _username;
+    public Donation(CommandSender sender, String username, String amount, String message) {
+        this.sender = sender;
+        this.amount = amount;
+        this.message = message;
+        if (username.equals("")) {
+            this.username = DEFAULT_NAME;
+            return;
         }
-        amount = _amount;
-        message = _message;
-    }
-
-    public CommandSender getSender() {
-        return sender;
-    }
-
-    public String getName() {
-        return username;
-    }
-
-    public String getAmount() {
-        return amount;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getExecutionName() {
-        return executionName;
-    }
-
-    public void setExecutionName(String _executionName) {
-        executionName = _executionName;
+        this.username = username;
     }
 }
