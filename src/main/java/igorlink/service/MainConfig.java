@@ -72,14 +72,7 @@ public class MainConfig {
         listOfBlackListedSubstrings = (List<String>) config.getList("BlacklistedSubstrings");
         listOfWhiteListedSubstrings = (List<String>) config.getList("WhitelistedSubstrings");
 
-        if (Objects.equals(config.getString("TwitchFilter"), "true")) {
-            twitchFilter = true;
-            return;
-        }
-        if (Objects.equals(config.getString("TwitchFilter"), "false")) {
-            twitchFilter = false;
-            return;
-        }
+        twitchFilter = config.getBoolean("TwitchFilter");
         logToConsole("Ошибка при чтении значение TwitchFilter");
     }
 
