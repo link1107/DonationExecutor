@@ -21,9 +21,9 @@ public class DonationAlerts {
 
     private final Socket socket;
 
-    public DonationAlerts(String server) throws URISyntaxException {
+    public DonationAlerts(String apiLink) throws URISyntaxException {
 
-        URI url = new URI(server);
+        URI url = new URI(apiLink);
         socket = IO.socket(url);
 
         Listener connectListener = arg0 -> logToConsole("Произведено успешное подключение!");

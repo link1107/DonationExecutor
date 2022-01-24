@@ -13,7 +13,7 @@ import static igorlink.service.Utils.*;
 
 public final class DonationExecutor extends JavaPlugin {
 
-    public static final String DASERVER = "https://socket.donationalerts.ru:443";
+    public static final String apiLink = "https://socket.donationalerts.ru:443";
     private static DonationExecutor instance;
     public static DonationAlerts da;
     public static GiantMobManager giantMobManager;
@@ -30,7 +30,7 @@ public final class DonationExecutor extends JavaPlugin {
 
         if (CheckNameAndToken()) {
             try {
-                da = new DonationAlerts(DASERVER);
+                da = new DonationAlerts(apiLink);
                 da.connect(MainConfig.token);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
@@ -38,8 +38,7 @@ public final class DonationExecutor extends JavaPlugin {
             new DonationExecutorCommand();
         }
 
-
-        Bukkit.getPluginManager().registerEvents(new EventListener(),this);
+        Bukkit.getPluginManager().registerEvents(new EventListener(), this);
 
     }
 
@@ -55,10 +54,7 @@ public final class DonationExecutor extends JavaPlugin {
         }
     }
 
-
     public static DonationExecutor getInstance() {
         return instance;
     }
-
-
 }
