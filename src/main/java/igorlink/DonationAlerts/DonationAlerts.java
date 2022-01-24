@@ -5,6 +5,7 @@ import igorlink.donationexecutor.executionsstaff.Donation;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter.Listener;
+import kotlin.Suppress;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
@@ -21,9 +22,9 @@ public class DonationAlerts {
 
     private final Socket socket;
 
-    public DonationAlerts(String server) throws URISyntaxException {
+    public DonationAlerts(String apiLink) throws URISyntaxException {
 
-        URI url = new URI(server);
+        URI url = new URI(apiLink);
         socket = IO.socket(url);
 
         Listener connectListener = arg0 -> logToConsole("Произведено успешное подключение!");
@@ -75,7 +76,7 @@ public class DonationAlerts {
         socket.disconnect();
     }
 
-    @Deprecated
+    @Suppress(names = "UNUSED")
     public boolean getConnected() {
         return socket.connected();
     }

@@ -7,13 +7,15 @@ import igorlink.service.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import igorlink.DonationAlerts.*;
+import org.json.JSONException;
+
 import java.net.URISyntaxException;
 import static igorlink.service.Utils.*;
 
 
 public final class DonationExecutor extends JavaPlugin {
 
-    public static final String DASERVER = "https://socket.donationalerts.ru:443";
+    public static final String apiLink = "https://socket.donationalerts.ru:443";
     private static DonationExecutor instance;
     public static DonationAlerts da;
     public static GiantMobManager giantMobManager;
@@ -30,17 +32,14 @@ public final class DonationExecutor extends JavaPlugin {
 
         if (CheckNameAndToken()) {
             try {
-                da = new DonationAlerts(DASERVER);
+                da = new DonationAlerts(apiLink);
                 da.connect(MainConfig.token);
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
             new DonationExecutorCommand();
         }
-
-
-        Bukkit.getPluginManager().registerEvents(new EventListener(),this);
-
+        Bukkit.getPluginManager().registerEvents(new EventListener(), this);
     }
 
     @Override
@@ -49,16 +48,16 @@ public final class DonationExecutor extends JavaPlugin {
             isRunningStatus = false;
             da.disconnect();
             Thread.sleep(1000);
-            da = null;
-        } catch (Exception e) {
+        } catch (JSONException e) {
             logToConsole("Какая-то ебаная ошибка, похуй на нее вообще");
+        } catch (Exception e){
+            logToConsole("Произошла неустановленная ошибка, как такое могло произойти?");
+        }  finally {
+            da = null;
         }
     }
-
 
     public static DonationExecutor getInstance() {
         return instance;
     }
-
-
 }
