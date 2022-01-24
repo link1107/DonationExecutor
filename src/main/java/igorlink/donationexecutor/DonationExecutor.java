@@ -7,6 +7,8 @@ import igorlink.service.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import igorlink.DonationAlerts.*;
+import org.json.JSONException;
+
 import java.net.URISyntaxException;
 import static igorlink.service.Utils.*;
 
@@ -37,9 +39,7 @@ public final class DonationExecutor extends JavaPlugin {
             }
             new DonationExecutorCommand();
         }
-
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
-
     }
 
     @Override
@@ -48,9 +48,12 @@ public final class DonationExecutor extends JavaPlugin {
             isRunningStatus = false;
             da.disconnect();
             Thread.sleep(1000);
-            da = null;
-        } catch (Exception e) {
+        } catch (JSONException e) {
             logToConsole("Какая-то ебаная ошибка, похуй на нее вообще");
+        } catch (Exception e){
+            logToConsole("Произошла неустановленная ошибка, как такое могло произойти?");
+        }  finally {
+            da = null;
         }
     }
 
