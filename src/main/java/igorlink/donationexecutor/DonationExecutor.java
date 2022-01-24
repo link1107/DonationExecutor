@@ -35,7 +35,7 @@ public final class DonationExecutor extends JavaPlugin {
                 da = new DonationAlerts(apiLink);
                 da.connect(MainConfig.token);
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
             new DonationExecutorCommand();
         }
