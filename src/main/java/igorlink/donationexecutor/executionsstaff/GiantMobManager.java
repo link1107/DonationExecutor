@@ -115,20 +115,17 @@ public class GiantMobManager {
             if (!(mobName == null)) {
                 this.giantMobLivingEntity.setCustomName(mobName);
             }
-            this.giantMobLivingEntity.setGravity(true);
             this.giantMobLivingEntity.setRemoveWhenFarAway(false);
             this.thisGiantMobUUID = giantMobLivingEntity.getUniqueId();
             this.giantMobLivingEntity.getEquipment().setItem(EquipmentSlot.HAND, new ItemStack(Material.IRON_SWORD));
 
             //Заставляем бегать и стрелять
-            this.makeGiantMobAttackWithFireballs();
-            this.forceGiantMobToMove();
-            this.makeGiantMobAttackWithSnowballs();
+            this.turnOnGiantMobAi();
         }
 
         //Добавляем существующего
-        public GiantMob(@NotNull LivingEntity _stalinMob) {
-            this.giantMobLivingEntity = _stalinMob;
+        private GiantMob(@NotNull LivingEntity giantMobLivingEntity) {
+            this.giantMobLivingEntity = giantMobLivingEntity;
 
             //Заставляем бегать и стрелять
             this.turnOnGiantMobAi();
@@ -188,7 +185,7 @@ public class GiantMobManager {
 
                     //Если Сталин может из любой позиции поврота голвоы увидеть верх или низ цели, то эта цель вносится в список кандидатов
                     if ((rtRes1 == null) || (rtRes2 == null) || (rtRes3 == null) || (rtRes4 == null) || (rtRes5 == null) || (rtRes6 == null) || (rtRes7 == null) || (rtRes8 == null)) {
-                        if ((e instanceof Player) && (!(((Player) e).getGameMode() == GameMode.SPECTATOR)) && (!(((Player) e).getGameMode() == GameMode.CREATIVE))) {
+                        if ((e instanceof Player) && (!(((Player) e).getGameMode() == GameMode.SPECTATOR)) && (!(((Player) e).getGameMode() == GameMode.CREATIVE)) ) {
                             listOfNearbyPlayers.add((LivingEntity) e);
                         } else if (!(e instanceof Player)) {
                             listOfNearbyLivingEntities.add((LivingEntity) e);
@@ -240,7 +237,7 @@ public class GiantMobManager {
                 if ( (!(getPlayer(thisGiantMobPlayerCurrentTargetName).isDead())) && (getPlayer(thisGiantMobPlayerCurrentTargetName).getWorld() == giantMobLivingEntity.getWorld()) ) {
 
                     //Если не подошло время забыть о нем и он не стал спектэйтором, фокусим моба на него
-                    if ((stepsAfterHiding <= timeBeforeThisGiantMobForgetHisTarget * 2) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.SPECTATOR)) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.CREATIVE))){
+                    if ((stepsAfterHiding <= timeBeforeThisGiantMobForgetHisTarget * 2) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.SPECTATOR)) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.CREATIVE)) ){
                         target = getPlayer(thisGiantMobPlayerCurrentTargetName);
                         stepsAfterHiding++;
                     } else {
@@ -509,7 +506,7 @@ public class GiantMobManager {
 
         @EventHandler
         private void onGiantMobAddTOWorld(EntityAddToWorldEvent e) {
-            if (e.getEntity() instanceof Giant) {
+            if ((e.getEntity() instanceof Giant) && (e.getEntity().getCustomName() != null)) {
                 thisInstanceOfGiantMobManager.addMob((LivingEntity) e.getEntity());
             }
         }
@@ -538,11 +535,7 @@ public class GiantMobManager {
 
                 if ((e.getHitEntity()) instanceof LivingEntity) {
 
-                    if (((LivingEntity) e.getHitEntity()).getHealth()>1) {
-                        ((LivingEntity) e.getHitEntity()).setHealth(((LivingEntity) e.getHitEntity()).getHealth()-1);
-                    } else {
-                        ((LivingEntity) e.getHitEntity()).setHealth(0);
-                    }
+                    ((LivingEntity) e.getHitEntity()).damage(1.0D);
                 }
 
 
