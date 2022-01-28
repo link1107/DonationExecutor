@@ -6,6 +6,7 @@ import igorlink.service.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +24,14 @@ public class ListOfStreamerPlayers {
                 }
 
                 for (StreamerPlayer sp : listOfStreamerPlayers) {
-                    if ( !(Bukkit.getPlayer(sp.getName()) == null) ) {
+                    if (!(Bukkit.getPlayer(sp.getName()) == null)) {
                         if (!(Bukkit.getPlayer(sp.getName()).isDead())) {
                             Donation donation = sp.takeDonationFromQueue();
-                            if (donation==null) {
+                            if (donation == null) {
                                 continue;
                             }
                             Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getexecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
-                            Executor.DoExecute(donation.getSender(), sp.getName(), donation.getName(), donation.getAmount(), donation.getMessage(), donation.getexecutionName());
+                            Executor.execute(donation.getSender(), sp, donation);
                         }
                     }
 

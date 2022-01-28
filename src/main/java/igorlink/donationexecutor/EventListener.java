@@ -25,8 +25,8 @@ public class EventListener implements Listener {
     //Закачка ресурспака и оповещение о том, что плагин не активен, если он не активен
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/4923efe27212858f64c3ba65ff4bd35a42dadfb0.zip", Utils.decodeUsingBigInteger("4923efe27212858f64c3ba65ff4bd35a42dadfb0"));
         if (!isPluginActive) {
+            e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/4923efe27212858f64c3ba65ff4bd35a42dadfb0.zip", Utils.decodeUsingBigInteger("4923efe27212858f64c3ba65ff4bd35a42dadfb0"));
             sendSysMsgToPlayer(e.getPlayer(), " плагин не активен. Укажите токен и свой никнейм в файле конфигурации плагина и перезапустите сервер.");
         }
     }

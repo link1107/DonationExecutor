@@ -10,7 +10,7 @@ public class ReloadSubCommand {
         MainConfig.loadMainConfig(true);
         Utils.logToConsole("Настройки успешно обновлены!");
         if (sender instanceof Player) {
-            Utils.sendSysMsgToPlayer(((Player) sender).getPlayer(), "Настройки успешно обновлены!");
+            Utils.sendSysMsgToPlayer(((Player) sender), "Настройки успешно обновлены!");
         }
     }
 }

@@ -20,6 +20,7 @@ public class MainConfig {
     public static List<String> listOfBlackListedSubstrings = new ArrayList<>();
     public static List<String> listOfWhiteListedSubstrings = new ArrayList<>();
     private static Boolean twitchFilter;
+    public static boolean urlFilter;
 
     public MainConfig() {
 
@@ -66,30 +67,19 @@ public class MainConfig {
         bigBoomRadius = Integer.valueOf(config.getString("BigBoomRadius"));
 
         token = config.getString("DonationAlertsToken");
-        listOfBlackListedSubstrings = (List<String>) config.getList("BlacklistedSubstrings");
-        listOfWhiteListedSubstrings = (List<String>) config.getList("WhitelistedSubstrings");
+        listOfBlackListedSubstrings = Arrays.asList(config.getString("BlacklistedSubstrings").split(","));
+        listOfWhiteListedSubstrings = Arrays.asList(config.getString("WhitelistedSubstrings").split(","));
 
-        if (config.getString("TwitchFilter") == "true") {
-            twitchFilter = true;
-        } else if (config.getString("TwitchFilter") == "false") {
-            twitchFilter = false;
+        // Если у человека стоит старая версия плагина, и не указано значение ключа URLFilter - ставим по умолчанию нужный ключ, и сейвим конфиг.
+        // Вообще конфиг по-хорошему полностью переделать, но как нибудь потом.
+        if (config.get("URLFilter") == null) {
+            config.set("URLFilter", true);
+            DonationExecutor.getInstance().saveConfig();
         }
-        else {
-            logToConsole("Ошибка при чтении значение TwitchFilter");
-        }
-
-
+        urlFilter = config.getBoolean("URLFilter");
+        twitchFilter = config.getBoolean("TwitchFilter");
     }
 
-
-
-    public static void turnFilterOn() {
-        twitchFilter = true;
-    }
-
-    public static void turnFilterOff() {
-        twitchFilter = false;
-    }
 
     public static Boolean getFilterStatus() {
         return twitchFilter;

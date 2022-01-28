@@ -90,8 +90,12 @@ BreadAmount: 4
 # Радиус взрыва от BigBoom
 BigBoomRadius: 20
 
+# Фильтр ссылок в имени пользователя
+URLFilter: true
+
 # Фильтр ников для твитча: true - вкл, false - выкл
 TwitchFilter: true
+
 # Блеклист субстрок для фильтра
 BlacklistedSubstrings:
     - негр
