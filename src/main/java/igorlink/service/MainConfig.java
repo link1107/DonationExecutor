@@ -3,11 +3,8 @@ package igorlink.service;
 import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
-import static igorlink.service.Utils.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 
 public class MainConfig {
     private static HashMap<String, HashMap<String, String>> donationAmountsHashMap = new HashMap<String, HashMap<String, String>>();
@@ -31,34 +28,26 @@ public class MainConfig {
     }
 
     //Обновить данные из конфига
-    public static void reloadMainConfig() {
+    public static void reloadMainConfig() throws InterruptedException {
         loadMainConfig(true);
     }
 
     //Загрузить данные из конфига без указания параметра перезагрузки
-    public static void loadMainConfig() {
+    public static void loadMainConfig() throws InterruptedException {
         loadMainConfig(false);
     }
 
     //Загрузка данных из конфигфайла с указанным параметром перезагрузки
-    public static void loadMainConfig(Boolean isReload) {
+    public static void loadMainConfig(Boolean isReload) throws InterruptedException {
         DonationExecutor.getInstance().saveDefaultConfig();
 
         //Если это перезагрузка, обновляем данные, очищаем список игроков
         if (isReload) {
             DonationExecutor.getInstance().reloadConfig();
-            DonationExecutor.getInstance().listOfStreamerPlayers.clear();
+            DonationExecutor.getInstance().streamerPlayersManager.reload();
         }
 
         config = DonationExecutor.getInstance().getConfig();
-
-        List <String> streamerPlayersNamesList = new ArrayList<>();
-        streamerPlayersNamesList = (List<String>) getConfig().getList("StreamersNamesList");
-        for (String playerName : streamerPlayersNamesList) {
-            DonationExecutor.getInstance().listOfStreamerPlayers.addStreamerPlayer(playerName);
-        }
-
-        logToConsole("При чтении файла конфигурации было добавлено §b" + DonationExecutor.getInstance().listOfStreamerPlayers.getNumberOfStreamers() + "§f стримеров.");
 
         dirtAmount = Integer.valueOf(config.getString("DirtAmount"));
         diamondsAmount = Integer.valueOf(config.getString("DiamondsAmount"));
@@ -66,21 +55,12 @@ public class MainConfig {
         bigBoomRadius = Integer.valueOf(config.getString("BigBoomRadius"));
 
         token = config.getString("DonationAlertsToken");
-        listOfBlackListedSubstrings = (List<String>) config.getList("BlacklistedSubstrings");
-        listOfWhiteListedSubstrings = (List<String>) config.getList("WhitelistedSubstrings");
+        listOfBlackListedSubstrings = config.getStringList("BlacklistedSubstrings");
+        listOfWhiteListedSubstrings = config.getStringList("WhitelistedSubstrings");
 
-        if (config.getString("TwitchFilter") == "true") {
-            twitchFilter = true;
-        } else if (config.getString("TwitchFilter") == "false") {
-            twitchFilter = false;
-        }
-        else {
-            logToConsole("Ошибка при чтении значение TwitchFilter");
-        }
-
+        twitchFilter = config.getBoolean("TwitchFilter");
 
     }
-
 
 
     public static void turnFilterOn() {

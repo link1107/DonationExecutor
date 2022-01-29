@@ -1,7 +1,5 @@
 package igorlink.donationexecutor;
 import igorlink.service.MainConfig;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
@@ -9,7 +7,6 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -21,7 +18,7 @@ import static org.bukkit.Bukkit.getPlayer;
 public class Executor {
     public static String nameOfStreamerPlayer;
     public static String nameOfSecondStreamerPlayer;
-    public static List<String> executionsList = new ArrayList<>(Arrays.asList("ShitToInventory", "Lesch", "DropActiveItem",
+    public static List<String> executionsNamesList = new ArrayList<>(Arrays.asList("ShitToInventory", "Lesch", "DropActiveItem",
             "PowerKick", "ClearLastDeathDrop", "SpawnCreeper", "GiveDiamonds", "GiveStackOfDiamonds", "GiveBread",
             "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom"));
 
@@ -165,7 +162,7 @@ public class Executor {
 
     public static void clearLastDeathDrop (Player player, String donationUsername) {
         //Remove Last Death Dropped Items
-        if (DonationExecutor.getInstance().listOfStreamerPlayers.getStreamerPlayer(player.getName()).removeDeathDrop()) {
+        if (DonationExecutor.getInstance().streamerPlayersManager.getStreamerPlayer(player.getName()).removeDeathDrop()) {
             announce(donationUsername, "уничтожил твой посмертный дроп...", "уничтожил посмертный дроп", player, true);
         } else {
             announce(donationUsername, "безуспешно пытался уничтожить твой посмертный дроп...", "безуспешно пытался уничтожить посмертный дроп", player, true);

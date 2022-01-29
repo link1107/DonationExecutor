@@ -10,11 +10,12 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
-    public static Boolean isPluginActive;
+    private static Boolean _isPluginActive = true;
 
     //Вывод сообщения в консоль
     public static void logToConsole(String text){
@@ -36,16 +37,19 @@ public class Utils {
         return byteArray;
     }
 
-    public static Boolean CheckNameAndToken() {
-        isPluginActive = true;
-        if ((DonationExecutor.getInstance().getConfig().getString("DonationAlertsToken") == "") || (DonationExecutor.getInstance().getConfig().getString("DonationAlertsToken") == null)) {
+   public static Boolean CheckNameAndToken() {
+        Set<String> tokensSet = MainConfig.getConfig().getConfigurationSection("DonationAmounts").getKeys(false);
+        if ((tokensSet.contains("xxxxxxxxxxxxxxxxxxxx")) && (tokensSet.size() == 1)) {
             logToConsole("Вы не указали свой токен DonationAlerts в файле конфигурации плагина, поэтому сейчас плагин не работает.");
-            isPluginActive = false;
-        } else if ((DonationExecutor.getInstance().getConfig().getString("Nickname") == "") || (DonationExecutor.getInstance().getConfig().getString("Nickname") == "")) {
-            logToConsole("Вы не указали свой игровой никнейм в файле конфигурации плагина, поэтому сейчас плагин не работает.");
-            isPluginActive = false;
+            _isPluginActive = false;
+        } else {
+            _isPluginActive = true;
         }
-        return isPluginActive;
+        return _isPluginActive;
+    }
+
+    public static Boolean isPluginActive() {
+        return _isPluginActive;
     }
 
     public static void announce(String donaterName, String subText, String alterSubtext, Player player, Boolean bigAnnounce) {

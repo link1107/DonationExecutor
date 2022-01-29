@@ -21,6 +21,7 @@ import java.util.*;
 import static igorlink.service.Utils.*;
 import static java.lang.Math.sqrt;
 import static org.bukkit.Bukkit.getPlayer;
+import static org.bukkit.Bukkit.getPlayerExact;
 
 import org.bukkit.event.Listener;
 
@@ -94,18 +95,18 @@ public class GiantMobManager {
         private LivingEntity giantMobLivingEntity = null;
         private UUID thisGiantMobUUID = null;
 
-        final private int howManySnowballsMobLaunches = 4;
+        final private int NUMBER_OF_SNOWBALLS_AT_ONE_LAUNCH = 4;
         final private Boolean SnowballsFollowingTarget = false;
-        final private int giantMobTrackingRange = 40;
-        final private static int timeBeforeThisGiantMobForgetHisTarget = 5;
-        final private static int ticksBetweenSnowballsShots = 7;
+        final private int GIANT_MOBS_TRACKING_RANGE = 40;
+        final private static int TIME_BEFORE_THIS_GIANT_MOB_FORGET_HIS_TARGET = 4;
+        final private static int TICKS_BETWEEN_SNOWBALLS_SHOTS = 7;
 
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //Конструктор гигантского моба
 
         //Создаем моба, заспавнив его и указав Имя-тип
-        public GiantMob(@NotNull Location playerLocation, String mobName) {
+        private GiantMob(@NotNull Location playerLocation, String mobName) {
 
             //Определяем направление игрока и спавним моба перед ним, повернутым к игроку лицом
             Vector playerDirection = playerLocation.getDirection();
@@ -147,10 +148,10 @@ public class GiantMobManager {
 
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        //Поиск ближайшей цели
+        //Поиск ближайшей цели ( приоритете - игроки)
         private LivingEntity findGiantMobTarget() {
             //получаем список ближайших врагов dв радиусе sralinShootingRadius
-            Double sralinShootingRadius = (double) giantMobTrackingRange;
+            Double sralinShootingRadius = (double) GIANT_MOBS_TRACKING_RANGE;
             List<Entity> listOfNearbyEntities = giantMobLivingEntity.getNearbyEntities(sralinShootingRadius, sralinShootingRadius, sralinShootingRadius);
             List<LivingEntity> listOfNearbyPlayers = new ArrayList<>();
             List<LivingEntity> listOfNearbyLivingEntities = new ArrayList<>();
@@ -185,7 +186,7 @@ public class GiantMobManager {
 
                     //Если Сталин может из любой позиции поврота голвоы увидеть верх или низ цели, то эта цель вносится в список кандидатов
                     if ((rtRes1 == null) || (rtRes2 == null) || (rtRes3 == null) || (rtRes4 == null) || (rtRes5 == null) || (rtRes6 == null) || (rtRes7 == null) || (rtRes8 == null)) {
-                        if ((e instanceof Player) && (!(((Player) e).getGameMode() == GameMode.SPECTATOR)) && (!(((Player) e).getGameMode() == GameMode.CREATIVE)) ) {
+                        if ((e instanceof Player) && (!(((Player) e).getGameMode() == GameMode.SPECTATOR)) ) {
                             listOfNearbyPlayers.add((LivingEntity) e);
                         } else if (!(e instanceof Player)) {
                             listOfNearbyLivingEntities.add((LivingEntity) e);
@@ -234,10 +235,10 @@ public class GiantMobManager {
 
             if ( (!(target instanceof Player)) && (!(thisGiantMobPlayerCurrentTargetName == null)) ) {
                 //Если прошлая цель-игрок существует, и он не мертв и находится в том же мире, что и наш моб
-                if ( (!(getPlayer(thisGiantMobPlayerCurrentTargetName).isDead())) && (getPlayer(thisGiantMobPlayerCurrentTargetName).getWorld() == giantMobLivingEntity.getWorld()) ) {
+                if ((getPlayer(thisGiantMobPlayerCurrentTargetName) != null) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).isDead()))&& (getPlayer(thisGiantMobPlayerCurrentTargetName).getWorld() == giantMobLivingEntity.getWorld()) ) {
 
                     //Если не подошло время забыть о нем и он не стал спектэйтором, фокусим моба на него
-                    if ((stepsAfterHiding <= timeBeforeThisGiantMobForgetHisTarget * 2) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.SPECTATOR)) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.CREATIVE)) ){
+                    if ((stepsAfterHiding <= TIME_BEFORE_THIS_GIANT_MOB_FORGET_HIS_TARGET * 2) && (!(getPlayer(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.SPECTATOR)) ){
                         target = getPlayer(thisGiantMobPlayerCurrentTargetName);
                         stepsAfterHiding++;
                     } else {
@@ -290,28 +291,18 @@ public class GiantMobManager {
                             return;
                         }
 
-                        //Поворачиваем в плоскости XZ
-                        float newYaw = (float) Math.toDegrees(
-                                Math.atan2(
-                                        target.getLocation().getZ() - thisGiantMobLivingEntity.getLocation().getZ(),
-                                        target.getLocation().getX() - thisGiantMobLivingEntity.getLocation().getX()))
-                                - 90;
 
-                        //Поворачиваем по вертикальной оси Y (не работает из-за зачатков AI, которые сами крутят моба)
+                        //Поворачиваем по вертикальной оси Y (вертикальный поворот головы конфликтует с дефолтной системой позиционирования)
                         double xDiff = target.getEyeLocation().getX() - thisGiantMobLivingEntity.getEyeLocation().getX();
                         double yDiff = target.getEyeLocation().getY() - thisGiantMobLivingEntity.getEyeLocation().getY();
                         double zDiff = target.getEyeLocation().getZ() - thisGiantMobLivingEntity.getEyeLocation().getZ();
-
                         double distanceXZ = sqrt(xDiff * xDiff + zDiff * zDiff);
                         double distanceY = sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
 
-                        double yaw = Math.toDegrees(Math.acos(xDiff / distanceXZ));
-                        double pitch = Math.toDegrees(Math.acos(yDiff / distanceY)) - 90.0D;
-                        if (zDiff < 0.0D) {
-                            yaw += Math.abs(180.0D - yaw) * 2.0D;
-                        }
+                        float newYaw = (float) Math.toDegrees(Math.atan2(zDiff, xDiff)) - 90; //Новый угол рысканья (панорамирование)
+                        float newPitch = (float) Math.toDegrees(Math.acos(yDiff / distanceY)) - 90; //Новый угол тангажа (вертикальный наклон головы)
 
-                        thisGiantMobLivingEntity.setRotation(newYaw, (float) pitch);
+                        thisGiantMobLivingEntity.setRotation(newYaw, newPitch);
 
 
                         //Готовимся к совершению движения
@@ -327,16 +318,19 @@ public class GiantMobManager {
 
 
                         //Совершаем движение, если мы далеко от цели, либо если мы сильно под ней
-                        if ((thisGiantMobLocXZ.distance(targetLocXZ) > 1) || (((targetY - thisGiantMobLocY) > 20) && (thisGiantMobLocY < targetY))) {
+                        if ((thisGiantMobLocXZ.distance(targetLocXZ) > 1) || ( ((targetY - thisGiantMobLocY) > 20) && (thisGiantMobLocY < targetY)) ) {
                             double oldX = thisGiantMobLoc.getX();
                             double oldZ = thisGiantMobLoc.getZ();
-                            //sendSysMsgToPlayer(Bukkit.getPlayer("Evropejets"), "ДВИЖЕНИЕ! До цели " + (int) (Math.round(thisGiantMobLoc.distance(target.getLocation()))) + "\nЦЕЛЬ: " + target.getName());
                             //Стандартное движение к цели, если она за радиусом досягаемости
+                            //Если моб не под водой - даем ему вдохнуть полной грудью и прижимаем вниз, чтобы не улетал слишком высоко вверх после прыжков
                             if (!(thisGiantMobLivingEntity.getEyeLocation().clone().add(0,1,0).getBlock().getType()==Material.WATER)) {
                                 thisGiantMobLivingEntity.setRemainingAir(thisGiantMobLivingEntity.getMaximumAir());
                                 thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().setY(-4.5));
+                                //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ШАГ ВПЕРЕД");
                             } else {
+                                //Если моб под водой - помогаем ему вынырнуть, толкая его вверх
                                 thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().setY(1.4));
+                                //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ПОПЫТКА ВСПЛЫТЬ");
                                 return;
                             }
 
@@ -349,27 +343,36 @@ public class GiantMobManager {
                                         return;
                                     }
 
-                                    //Если моб не сдвинулся за счет стандартного движения (разница между новыми и старыми кордами<2), и при этом он находится ниже цели по Y, но дальше по XZ, чем на 2.5 блока от нее (то есть ему есть куда стремиться до цели)...
-                                    if ((Math.abs(thisGiantMobLivingEntity.getLocation().getX() - oldX) < 1) && (Math.abs(thisGiantMobLivingEntity.getLocation().getZ() - oldZ) < 1) && ((thisGiantMobLocY < targetY) || (thisGiantMobLocXZ.distance(targetLocXZ) > 2.5))) {
-                                        thisGiantMob.timesThisGiantMobIsOnOnePlace++;
-                                        if (thisGiantMob.timesThisGiantMobIsOnOnePlace > 2) {
-                                            if (timesThisGiantMobIsOnOnePlace == 3) {
-                                                thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().multiply(1).setY(4));
-                                            } else if (timesThisGiantMobIsOnOnePlace == 6) {
-                                                thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(0.9).multiply(2).setY(5));
-                                            } else if (timesThisGiantMobIsOnOnePlace == 9) {
-                                                thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(-0.9).multiply(2).setY(5));
-                                            } else if (timesThisGiantMobIsOnOnePlace == 10) {
-                                                thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(-0.9).multiply(2).setY(5));
-                                            } else if (timesThisGiantMobIsOnOnePlace == 13) {
-                                                thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(0.9).multiply(2).setY(5));
-                                                thisGiantMob.timesThisGiantMobIsOnOnePlace = 0;
-                                            }
+                                    //Если моб не сдвинулся за счет стандартного движения (разница между новыми и старыми кордами<2),
+                                    // и при этом он находится ниже цели по Y, но дальше по XZ, чем на 2.5 блока от нее (то есть ему есть
+                                    // куда стремиться до цели)...
+                                    if ((Math.abs(thisGiantMobLivingEntity.getLocation().getX() - oldX) < 1)
+                                            && (Math.abs(thisGiantMobLivingEntity.getLocation().getZ() - oldZ) < 1)
+                                            && ((thisGiantMobLocY < targetY) || (thisGiantMobLocXZ.distance(targetLocXZ) > 2.5))) {
 
-                                        } else {
-                                            //обычный прыжок
+                                        thisGiantMob.timesThisGiantMobIsOnOnePlace++; //+1 к счетчику итераций, в течение которых моб остается на одном и том же месте
+                                        //Если моб находится на одном и том же месте больше, заставляем его подпрыгивать...
+                                        //Если он на одном и том же месте 2 или менее итераций подряд, то сначала пробуем невысокий прыжок...
+                                        if (thisGiantMob.timesThisGiantMobIsOnOnePlace <= 2) {
                                             thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().multiply(1).setY(1));
-                                            // sendSysMsgToPlayer(Bukkit.getPlayer("Evropejets"), "HIGH");
+                                            //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ОБЫЧНЫЙ ПРЫЖОК");
+                                        //Если моб остается на одном и том же месте 3 и более итераций подряд, начинаем высокие прыжки, в том числе и в разные стороны
+                                        } else if (timesThisGiantMobIsOnOnePlace == 3) {
+                                            thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().multiply(1).setY(4));
+                                            //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ВЫСОКИЙ ПРЫЖОК");
+                                        } else if (timesThisGiantMobIsOnOnePlace == 6) {
+                                            thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(0.9).multiply(2).setY(5));
+                                            //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ВЫСОКИЙ ПРЫЖОК ВПРАВО");
+                                        } else if (timesThisGiantMobIsOnOnePlace == 9) {
+                                            thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(-0.9).multiply(2).setY(5));
+                                            //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ВЫСОКИЙ ПРЫЖОК ВЛЕВО");
+                                        } else if (timesThisGiantMobIsOnOnePlace == 10) {
+                                            thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(-0.9).multiply(2).setY(5));
+                                            //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ВЫСОКИЙ ПРЫЖОК ВЛЕВО");
+                                        } else if (timesThisGiantMobIsOnOnePlace == 13) {
+                                            thisGiantMobLivingEntity.setVelocity(thisGiantMobLoc.getDirection().clone().normalize().rotateAroundY(0.9).multiply(2).setY(5));
+                                            //sendSysMsgToPlayer(getPlayerExact("Evropejets"), "ВЫСОКИЙ ПРЫЖОК ВПРАВО");
+                                            thisGiantMob.timesThisGiantMobIsOnOnePlace = 0;
                                         }
 
                                     } else {
@@ -444,7 +447,7 @@ public class GiantMobManager {
                     }
 
                     //Запускаем снежки в количестве howManySnowballsMobLaunches
-                    for (int i = 0; i <= howManySnowballsMobLaunches; i++) {
+                    for (int i = 0; i <= NUMBER_OF_SNOWBALLS_AT_ONE_LAUNCH; i++) {
                         final int finali = i;
                         final LivingEntity finalTarget = target;
                         new BukkitRunnable() {
@@ -480,11 +483,11 @@ public class GiantMobManager {
                                                 snowball.setVelocity(genVec(snowball.getLocation(), finalTarget.getEyeLocation()));
                                             }
                                         }
-                                    }.runTaskTimer(DonationExecutor.getInstance(), finali * ticksBetweenSnowballsShots, 1);
+                                    }.runTaskTimer(DonationExecutor.getInstance(), finali * TICKS_BETWEEN_SNOWBALLS_SHOTS, 1);
                                 }
 
                             }
-                        }.runTaskLater(DonationExecutor.getInstance(), i * ticksBetweenSnowballsShots);
+                        }.runTaskLater(DonationExecutor.getInstance(), i * TICKS_BETWEEN_SNOWBALLS_SHOTS);
                     }
 
 

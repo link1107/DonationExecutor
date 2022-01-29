@@ -1,42 +1,35 @@
 package igorlink.donationexecutor;
 import igorlink.command.DonationExecutorCommand;
-import igorlink.donationalerts.DonationAlerts;
 import igorlink.donationexecutor.executionsstaff.GiantMobManager;
-import igorlink.donationexecutor.executionsstaff.ListOfStreamerPlayers;
+import igorlink.donationexecutor.executionsstaff.StreamerPlayersManager;
 import igorlink.service.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.net.URISyntaxException;
+
 import static igorlink.service.Utils.*;
 
 
 public final class DonationExecutor extends JavaPlugin {
-
-    public static final String DASERVER = "https://socket.donationalerts.ru:443";
     private static DonationExecutor instance;
-    public static igorlink.donationalerts.DonationAlerts da;
     public static GiantMobManager giantMobManager;
     private static Boolean isRunningStatus = true;
-    public ListOfStreamerPlayers listOfStreamerPlayers;
+    public StreamerPlayersManager streamerPlayersManager;
 
 
     @Override
     public void onEnable() {
         instance = this;
-        listOfStreamerPlayers = new ListOfStreamerPlayers();
-        MainConfig.loadMainConfig();
-        giantMobManager = new GiantMobManager(this);
-
-        if (CheckNameAndToken()) {
-            try {
-                da = new DonationAlerts(DASERVER);
-                da.connect(MainConfig.token);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            new DonationExecutorCommand();
+        try {
+            MainConfig.loadMainConfig();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
+        if (CheckNameAndToken()) {
+            streamerPlayersManager = new StreamerPlayersManager();
+            giantMobManager = new GiantMobManager(this);
+            new DonationExecutorCommand();
+        }
 
         Bukkit.getPluginManager().registerEvents(new EventListener(),this);
 
@@ -46,10 +39,8 @@ public final class DonationExecutor extends JavaPlugin {
     public void onDisable() {
         try {
             isRunningStatus = false;
-            da.disconnect();
-            Thread.sleep(1000);
-            da = null;
-        } catch (Exception e) {
+            streamerPlayersManager.stop();
+        } catch (InterruptedException e) {
             logToConsole("Какая-то ебаная ошибка, похуй на нее вообще");
         }
     }
