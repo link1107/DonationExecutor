@@ -31,7 +31,6 @@ public class EventListener implements Listener {
         }
     }
 
-
     //Отмена дропа у НКВДшников
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e){
