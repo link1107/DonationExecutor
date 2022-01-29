@@ -26,7 +26,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/4923efe27212858f64c3ba65ff4bd35a42dadfb0.zip", Utils.decodeUsingBigInteger("4923efe27212858f64c3ba65ff4bd35a42dadfb0"));
-        if (!isPluginActive) {
+        if (!isPluginActive()) {
             sendSysMsgToPlayer(e.getPlayer(), " плагин не активен. Укажите токен и свой никнейм в файле конфигурации плагина и перезапустите сервер.");
         }
     }

@@ -1,48 +1,51 @@
 package igorlink.donationalerts;
+
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.executionsstaff.Donation;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-import io.socket.emitter.Emitter.Listener;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import static igorlink.service.Utils.logToConsole;
 
-
-public class DonationAlerts {
-    private Listener connectListener;
-    private Listener disconectListener;
-    private Listener donationListener;
-    private Listener errorListener;
-
+public class DonationAlertsConnection {
+    private Emitter.Listener connectListener;
+    private Emitter.Listener disconectListener;
+    private Emitter.Listener donationListener;
+    private Emitter.Listener errorListener;
+    private static final String DASERVER = "https://socket.donationalerts.ru:443";
     private URI url;
     private Socket socket;
+    private DonationAlertsToken donationAlertsToken;
 
 
-    public DonationAlerts(String server) throws URISyntaxException {
-
-        url = new URI(server);
+    public DonationAlertsConnection(DonationAlertsToken donationAlertsToken) throws URISyntaxException {
+        this.donationAlertsToken = donationAlertsToken;
+        url = new URI(DASERVER);
         socket = IO.socket(url);
 
-        connectListener = new Listener() {
+        connectListener = new Emitter.Listener() {
             @Override
             public void call(Object... arg0) {
-                logToConsole("Произведено успешное подключение!");
-          }
-        };
-
-        disconectListener = new Listener() {
-            @Override
-            public void call(Object... arg0) {
-                logToConsole("Соединение разорвано!");
+                logToConsole("Произведено успешное подключение для токена §b" + donationAlertsToken.getToken());
             }
         };
 
-        donationListener = new Listener() {
+        disconectListener = new Emitter.Listener() {
+            @Override
+            public void call(Object... arg0) {
+                logToConsole("Произведено отключение для токена §b" + donationAlertsToken.getToken());
+            }
+        };
+
+        donationListener = new Emitter.Listener() {
             @Override
             public void call(Object... arg0) {
 
@@ -59,19 +62,18 @@ public class DonationAlerts {
                             return;
                         }
 
-                        DonationExecutor.getInstance().listOfStreamerPlayers
-                                .addToDonationsQueue(new Donation(Bukkit.getConsoleSender(),
+                        DonationAlertsConnection.this.donationAlertsToken.addToDonationsQueue(new Donation(Bukkit.getConsoleSender(),
                                         json.getString("username"),
                                         json.getString("amount_formatted"),
                                         json.getString("message")));
 
                     }
-                }.runTask(Bukkit.getPluginManager().getPlugin("DonationExecutor"));
+                }.runTask(DonationExecutor.getInstance());
 
             }
         };
 
-        errorListener = new Listener() {
+        errorListener = new Emitter.Listener() {
             @Override
             public void call(Object... arg0) {
                 logToConsole("Произошла ошибка подключения к Donation Alerts!");
@@ -84,10 +86,11 @@ public class DonationAlerts {
                 .on("donation", donationListener);
     }
 
-    public void connect(String token) throws JSONException {
+
+    public void connect() throws JSONException {
         socket.connect();
         socket.emit("add-user", new JSONObject()
-                .put("token", token)
+                .put("token", donationAlertsToken.getToken())
                 .put("type", "minor"));
     }
 
@@ -98,4 +101,6 @@ public class DonationAlerts {
     public boolean getConnected() {
         return socket.connected();
     }
+
+
 }

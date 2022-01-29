@@ -1,5 +1,5 @@
 package igorlink.donationexecutor.executionsstaff;
-
+import igorlink.donationalerts.DonationAlertsToken;
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.Executor;
 import igorlink.service.MainConfig;
@@ -20,10 +20,12 @@ public class StreamerPlayer {
     private List<Item> listOfDeathDropItems = new ArrayList<Item>();
     private Queue<Donation> listOfQueuedDonations = new LinkedList<Donation>();
     private HashMap<String, String> listOfAmounts = new HashMap<String, String>();
+    private DonationAlertsToken donationAlertsToken;
 
 
     //Инициализация нового объекта стримера-игрока
-    public StreamerPlayer(@NotNull String _streamerPlayerName) {
+    public StreamerPlayer(@NotNull String _streamerPlayerName, DonationAlertsToken donationAlertsToken) {
+        this.donationAlertsToken = donationAlertsToken;
         FileConfiguration config = MainConfig.getConfig();
         streamerPlayerName = _streamerPlayerName;
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(this), DonationExecutor.getInstance());
@@ -31,8 +33,8 @@ public class StreamerPlayer {
 
         //Заполняем список сумм для донатов
         String amount;
-        for (String execName : Executor.executionsList) {
-            amount = config.getString("DonationAmounts." + streamerPlayerName + "." + execName);
+        for (String execName : Executor.executionsNamesList) {
+            amount = config.getString("DonationAmounts." + donationAlertsToken.getToken() + "." + streamerPlayerName + "." + execName);
             if (!(amount==null)) {
                 listOfAmounts.put(amount, execName);
             } else {

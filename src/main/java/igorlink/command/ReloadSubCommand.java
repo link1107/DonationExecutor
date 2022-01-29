@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ReloadSubCommand {
-    public static void onReloadCommand(CommandSender sender){
+    public static void onReloadCommand(CommandSender sender) throws InterruptedException {
         MainConfig.loadMainConfig(true);
         Utils.logToConsole("Настройки успешно обновлены!");
         if (sender instanceof Player) {

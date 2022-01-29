@@ -38,6 +38,6 @@ public class DonateSubCommand {
         }
 
         //Отправляем донат на исполнение
-        DonationExecutor.getInstance().listOfStreamerPlayers.addToDonationsQueue(new Donation(sender, donationUsername, donationAmount+".00", donationMessage));
+        DonationExecutor.getInstance().streamerPlayersManager.addToDonationsQueue(new Donation(sender, donationUsername, donationAmount+".00", donationMessage));
     }
 }
