@@ -1,6 +1,6 @@
-package igorlink.donationexecutor.executionsstaff;
+package igorlink.donationexecutor.playersmanagement;
 
-import igorlink.donationalerts.DonationAlertsToken;
+import igorlink.donationexecutor.playersmanagement.donationalerts.DonationAlertsToken;
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;

@@ -1,7 +1,7 @@
 package igorlink.command;
 
 import igorlink.donationexecutor.DonationExecutor;
-import igorlink.donationexecutor.executionsstaff.Donation;
+import igorlink.donationexecutor.playersmanagement.Donation;
 import org.bukkit.command.CommandSender;
 
 public class DonateSubCommand {

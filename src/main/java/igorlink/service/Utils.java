@@ -1,7 +1,6 @@
 package igorlink.service;
 
 import com.destroystokyo.paper.Title;
-import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -39,7 +38,7 @@ public class Utils {
 
    public static Boolean CheckNameAndToken() {
         Set<String> tokensSet = MainConfig.getConfig().getConfigurationSection("DonationAmounts").getKeys(false);
-        if ((tokensSet.contains("xxxxxxxxxxxxxxxxxxxx")) && (tokensSet.size() == 1)) {
+        if ( ((tokensSet.contains("xxxxxxxxxxxxxxxxxxxx")) && (tokensSet.size() == 1)) || (tokensSet.isEmpty()) ) {
             logToConsole("Вы не указали свой токен DonationAlerts в файле конфигурации плагина, поэтому сейчас плагин не работает.");
             _isPluginActive = false;
         } else {

@@ -1,26 +1,15 @@
-package igorlink.donationalerts;
-import igorlink.donationexecutor.DonationExecutor;
+package igorlink.donationexecutor.playersmanagement.donationalerts;
+
 import igorlink.donationexecutor.Executor;
-import igorlink.donationexecutor.executionsstaff.Donation;
-import igorlink.donationexecutor.executionsstaff.StreamerPlayer;
+import igorlink.donationexecutor.playersmanagement.Donation;
+import igorlink.donationexecutor.playersmanagement.StreamerPlayer;
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-import io.socket.emitter.Emitter.Listener;
-import io.socket.client.IO;
-import io.socket.client.Socket;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import static igorlink.service.Utils.logToConsole;
-
 
 public class DonationAlertsToken {
     private static DonationAlertsConnection donationAlertsConnection;
@@ -47,8 +36,8 @@ public class DonationAlertsToken {
 
     public void executeDonationsInQueues() {
         for (StreamerPlayer sp : listOfStreamerPlayers) {
-            if ( !(Bukkit.getPlayer(sp.getName()) == null) ) {
-                if (!(Bukkit.getPlayer(sp.getName()).isDead())) {
+            if ( !(Bukkit.getPlayerExact(sp.getName()) == null) ) {
+                if (!(Bukkit.getPlayerExact(sp.getName()).isDead())) {
                     Donation donation = sp.takeDonationFromQueue();
                     if (donation==null) {
                         continue;

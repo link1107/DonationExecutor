@@ -8,12 +8,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
-
 import java.util.*;
-
 import static igorlink.service.Utils.*;
 import static java.lang.Math.*;
-import static org.bukkit.Bukkit.getPlayer;
+import static org.bukkit.Bukkit.getPlayerExact;
 
 public class Executor {
     public static String nameOfStreamerPlayer;
@@ -35,7 +33,7 @@ public class Executor {
 
         Boolean canContinue = true;
         //Определяем игрока (если он оффлайн - не выполняем донат и пишем об этом в консоль), а также определяем мир, местоположение и направление игрока
-        Player streamerPlayer = getPlayer(streamerName);
+        Player streamerPlayer = getPlayerExact(streamerName);
         if (streamerPlayer == null) {
             canContinue = false;
         } else if (streamerPlayer.isDead()) {

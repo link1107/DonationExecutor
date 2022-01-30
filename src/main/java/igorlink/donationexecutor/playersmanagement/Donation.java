@@ -1,4 +1,4 @@
-package igorlink.donationexecutor.executionsstaff;
+package igorlink.donationexecutor.playersmanagement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

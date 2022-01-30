@@ -1,7 +1,7 @@
-package igorlink.donationalerts;
+package igorlink.donationexecutor.playersmanagement.donationalerts;
 
 import igorlink.donationexecutor.DonationExecutor;
-import igorlink.donationexecutor.executionsstaff.Donation;
+import igorlink.donationexecutor.playersmanagement.Donation;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -9,10 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import static igorlink.service.Utils.logToConsole;
 
 public class DonationAlertsConnection {

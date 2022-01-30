@@ -1,13 +1,12 @@
 package igorlink.donationexecutor;
+
 import igorlink.command.DonationExecutorCommand;
-import igorlink.donationexecutor.executionsstaff.GiantMobManager;
-import igorlink.donationexecutor.executionsstaff.StreamerPlayersManager;
+import igorlink.donationexecutor.executionsstaff.giantmobs.GiantMobManager;
+import igorlink.donationexecutor.playersmanagement.StreamerPlayersManager;
 import igorlink.service.MainConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import static igorlink.service.Utils.*;
-
 
 public final class DonationExecutor extends JavaPlugin {
     private static DonationExecutor instance;
@@ -31,7 +30,7 @@ public final class DonationExecutor extends JavaPlugin {
             new DonationExecutorCommand();
         }
 
-        Bukkit.getPluginManager().registerEvents(new EventListener(),this);
+        Bukkit.getPluginManager().registerEvents(new GeneralEventListener(),this);
 
     }
 

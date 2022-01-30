@@ -3,7 +3,6 @@ package igorlink.command;
 import org.bukkit.command.CommandSender;
 import static igorlink.service.Utils.logToConsole;
 
-
 public class DonationExecutorCommand extends AbstractCommand {
 
     public DonationExecutorCommand() {

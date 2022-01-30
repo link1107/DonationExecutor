@@ -1,5 +1,6 @@
-package igorlink.donationexecutor.executionsstaff;
-import igorlink.donationalerts.DonationAlertsToken;
+package igorlink.donationexecutor.playersmanagement;
+
+import igorlink.donationexecutor.playersmanagement.donationalerts.DonationAlertsToken;
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.Executor;
 import igorlink.service.MainConfig;
@@ -12,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 
 public class StreamerPlayer {

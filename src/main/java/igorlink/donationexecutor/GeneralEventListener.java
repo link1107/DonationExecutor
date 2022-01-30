@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import static igorlink.service.Utils.*;
 
-public class EventListener implements Listener {
+public class GeneralEventListener implements Listener {
 
     private Map<Integer, BukkitTask> projectiles = new HashMap<Integer, BukkitTask>();
 
