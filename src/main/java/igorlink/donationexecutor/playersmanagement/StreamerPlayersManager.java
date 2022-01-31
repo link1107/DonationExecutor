@@ -32,7 +32,7 @@ public class StreamerPlayersManager {
     }
 
     private void getTokensFromConfig() {
-        Set<String> tokensStringList = MainConfig.getConfig().getConfigurationSection("DonationAmounts").getKeys(false);
+        Set<String> tokensStringList = MainConfig.getConfig().getConfigurationSection("donation-amounts").getKeys(false);
         for (String token : tokensStringList) {
             this.addTokenToList(token);
         }

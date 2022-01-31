@@ -17,6 +17,7 @@ public class MainConfig {
     public static List<String> listOfBlackListedSubstrings = new ArrayList<>();
     public static List<String> listOfWhiteListedSubstrings = new ArrayList<>();
     private static Boolean twitchFilter;
+    private static Boolean forceResourcePack;
 
     public MainConfig() {
 
@@ -58,7 +59,8 @@ public class MainConfig {
         listOfBlackListedSubstrings = config.getStringList("BlacklistedSubstrings");
         listOfWhiteListedSubstrings = config.getStringList("WhitelistedSubstrings");
 
-        twitchFilter = config.getBoolean("TwitchFilter");
+        twitchFilter = config.getBoolean("twitch-filter");
+        forceResourcePack = config.getBoolean("force-download-resourcepack");
 
     }
 
@@ -67,12 +69,12 @@ public class MainConfig {
         twitchFilter = true;
     }
 
-    public static void turnFilterOff() {
-        twitchFilter = false;
-    }
+    public static void turnFilterOff() { twitchFilter = false; }
 
-    public static Boolean getFilterStatus() {
-        return twitchFilter;
+    public static Boolean getFilterStatus() { return twitchFilter; }
+
+    public static Boolean isForceResourcePack() {
+        return forceResourcePack;
     }
 
     public static HashMap<String, String> getNameAndExecution (@NotNull String donationAmount) {

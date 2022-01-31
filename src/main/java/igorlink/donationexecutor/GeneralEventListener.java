@@ -1,5 +1,6 @@
 package igorlink.donationexecutor;
 
+import igorlink.service.MainConfig;
 import igorlink.service.Utils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +26,9 @@ public class GeneralEventListener implements Listener {
     //Закачка ресурспака и оповещение о том, что плагин не активен, если он не активен
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/4923efe27212858f64c3ba65ff4bd35a42dadfb0.zip", Utils.decodeUsingBigInteger("4923efe27212858f64c3ba65ff4bd35a42dadfb0"));
+        if (MainConfig.isForceResourcePack()) {
+            e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/4923efe27212858f64c3ba65ff4bd35a42dadfb0.zip", Utils.decodeUsingBigInteger("4923efe27212858f64c3ba65ff4bd35a42dadfb0"));
+        }
         if (!isPluginActive()) {
             sendSysMsgToPlayer(e.getPlayer(), " плагин не активен. Укажите токен и свой никнейм в файле конфигурации плагина и перезапустите сервер.");
         }

@@ -1,5 +1,5 @@
 name: DonationExecutor
-version: 0.2 Beta
+version: 0.3.1 Beta
 main: igorlink.donationexecutor.DonationExecutor
 api-version: 1.18
 authors: [Igor Link]
