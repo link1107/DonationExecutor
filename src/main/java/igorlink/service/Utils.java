@@ -37,7 +37,7 @@ public class Utils {
     }
 
    public static Boolean CheckNameAndToken() {
-        Set<String> tokensSet = MainConfig.getConfig().getConfigurationSection("DonationAmounts").getKeys(false);
+        Set<String> tokensSet = MainConfig.getConfig().getConfigurationSection("donation-amounts").getKeys(false);
         if ( ((tokensSet.contains("xxxxxxxxxxxxxxxxxxxx")) && (tokensSet.size() == 1)) || (tokensSet.isEmpty()) ) {
             logToConsole("Вы не указали свой токен DonationAlerts в файле конфигурации плагина, поэтому сейчас плагин не работает.");
             _isPluginActive = false;

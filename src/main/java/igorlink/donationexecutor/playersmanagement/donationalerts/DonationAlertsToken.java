@@ -25,7 +25,7 @@ public class DonationAlertsToken {
             e.printStackTrace();
         }
 
-        for (String spName : MainConfig.getConfig().getConfigurationSection("DonationAmounts." + token).getKeys(false)) {
+        for (String spName : MainConfig.getConfig().getConfigurationSection("donation-amounts." + token).getKeys(false)) {
             listOfStreamerPlayers.add(new StreamerPlayer(spName, this));
         }
     }

@@ -17,10 +17,8 @@ public class MainConfig {
     public static List<String> listOfBlackListedSubstrings = new ArrayList<>();
     public static List<String> listOfWhiteListedSubstrings = new ArrayList<>();
     private static Boolean twitchFilter;
-
-    public MainConfig() {
-
-    }
+    private static Boolean forceResourcePack;
+    private static Boolean optifineNotification;
 
     //Геттер конфига
     public static FileConfiguration getConfig(){
@@ -44,53 +42,35 @@ public class MainConfig {
         //Если это перезагрузка, обновляем данные, очищаем список игроков
         if (isReload) {
             DonationExecutor.getInstance().reloadConfig();
-            DonationExecutor.getInstance().streamerPlayersManager.reload();
         }
 
         config = DonationExecutor.getInstance().getConfig();
 
-        dirtAmount = Integer.valueOf(config.getString("DirtAmount"));
-        diamondsAmount = Integer.valueOf(config.getString("DiamondsAmount"));
-        breadAmount = Integer.valueOf(config.getString("BreadAmount"));
-        bigBoomRadius = Integer.valueOf(config.getString("BigBoomRadius"));
+        dirtAmount = config.getInt("DirtAmount");
+        diamondsAmount = config.getInt("DiamondsAmount");
+        breadAmount = config.getInt("BreadAmount");
+        bigBoomRadius = config.getInt("BigBoomRadius");
 
         token = config.getString("DonationAlertsToken");
         listOfBlackListedSubstrings = config.getStringList("BlacklistedSubstrings");
         listOfWhiteListedSubstrings = config.getStringList("WhitelistedSubstrings");
 
-        twitchFilter = config.getBoolean("TwitchFilter");
-
+        optifineNotification = config.getBoolean("notify-about-optifine");
+        twitchFilter = config.getBoolean("twitch-filter");
+        forceResourcePack = config.getBoolean("force-download-resourcepack");
     }
 
 
     public static void turnFilterOn() {
         twitchFilter = true;
     }
+    public static void turnFilterOff() { twitchFilter = false; }
 
-    public static void turnFilterOff() {
-        twitchFilter = false;
+    public static Boolean getFilterStatus() { return twitchFilter; }
+    public static Boolean isForceResourcePack() {
+        return forceResourcePack;
     }
-
-    public static Boolean getFilterStatus() {
-        return twitchFilter;
-    }
-
-    public static HashMap<String, String> getNameAndExecution (@NotNull String donationAmount) {
-        String thisDonateForStreamerName = null;
-        String nameOfExecution = null;
-        for (String p : donationAmountsHashMap.keySet()) {
-            if (donationAmountsHashMap.get(p).containsKey(donationAmount)) {
-                HashMap<String, String> temp = new HashMap<String, String>();
-                thisDonateForStreamerName = p;
-                nameOfExecution = donationAmountsHashMap.get(p).get(donationAmount);
-                temp.put("name", p);
-                temp.put("execution", nameOfExecution);
-                return temp;
-            }
-        }
-
-        return null;
-    }
+    public static Boolean isOptifineNotificationOn() { return optifineNotification; }
 
 
 }

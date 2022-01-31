@@ -10,11 +10,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
 
-public class GiantMobEventListener implements Listener {
+class GiantMobEventListener implements Listener {
 
     private GiantMobManager thisInstanceOfGiantMobManager;
 
-    public GiantMobEventListener(GiantMobManager _thisInstanceOfGiantMobManager) {
+    GiantMobEventListener(GiantMobManager _thisInstanceOfGiantMobManager) {
         thisInstanceOfGiantMobManager = _thisInstanceOfGiantMobManager;
     }
 
@@ -29,7 +29,7 @@ public class GiantMobEventListener implements Listener {
     //Удаляем моба из нашего списка, когда он исчезает с карты
     @EventHandler
     private void onGiantMobRemoveFromWorld(EntityRemoveFromWorldEvent e) {
-        if (thisInstanceOfGiantMobManager.contains((LivingEntity) e.getEntity())) {
+        if ( (e.getEntity() instanceof Giant) && (thisInstanceOfGiantMobManager.contains((LivingEntity) e.getEntity())) ) {
             thisInstanceOfGiantMobManager.removeMob((LivingEntity) e.getEntity());
         }
     }

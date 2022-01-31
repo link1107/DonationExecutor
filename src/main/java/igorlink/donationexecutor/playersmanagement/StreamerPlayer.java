@@ -34,7 +34,7 @@ public class StreamerPlayer {
         //Заполняем список сумм для донатов
         String amount;
         for (String execName : Executor.executionsNamesList) {
-            amount = config.getString("DonationAmounts." + donationAlertsToken.getToken() + "." + streamerPlayerName + "." + execName);
+            amount = config.getString("donation-amounts." + donationAlertsToken.getToken() + "." + streamerPlayerName + "." + execName);
             if (!(amount==null)) {
                 listOfAmounts.put(amount, execName);
             } else {

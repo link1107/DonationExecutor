@@ -19,7 +19,7 @@ import static java.lang.Math.sqrt;
 import static org.bukkit.Bukkit.getPlayerExact;
 
 //Класс гигантского моба
-public class GiantMob {
+class GiantMob {
     private int timesThisGiantMobIsOnOnePlace = 0;
     private String thisGiantMobPlayerCurrentTargetName = null;
     private int stepsAfterHiding = 0;
@@ -37,7 +37,7 @@ public class GiantMob {
     //Конструктор гигантского моба
 
     //Создаем моба, заспавнив его и указав Имя-тип
-    public GiantMob(@NotNull Location playerLocation, String mobName) {
+    GiantMob(@NotNull Location playerLocation, String mobName) {
 
         //Определяем направление игрока и спавним моба перед ним, повернутым к игроку лицом
         Vector playerDirection = playerLocation.getDirection();
@@ -56,7 +56,7 @@ public class GiantMob {
     }
 
     //Добавляем существующего
-    public GiantMob(@NotNull LivingEntity giantMobLivingEntity) {
+    GiantMob(@NotNull LivingEntity giantMobLivingEntity) {
         this.giantMobLivingEntity = giantMobLivingEntity;
 
         //Заставляем бегать и стрелять
