@@ -6,14 +6,14 @@
 
     <groupId>IgorLink</groupId>
     <artifactId>DonationExecutor</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.3.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>DonationExecutor</name>
 
     <description>Executes donations</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

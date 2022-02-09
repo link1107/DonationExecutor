@@ -1,4 +1,5 @@
 package igorlink.donationexecutor;
+import igorlink.donationexecutor.executionsstaff.executionsmanagement.executions.AbstractExecution;
 import igorlink.service.MainConfig;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -18,27 +19,32 @@ public class Executor {
     public static String nameOfSecondStreamerPlayer;
     public static List<String> executionsNamesList = new ArrayList<>(Arrays.asList("ShitToInventory", "Lesch", "DropActiveItem",
             "PowerKick", "ClearLastDeathDrop", "SpawnCreeper", "GiveDiamonds", "GiveStackOfDiamonds", "GiveBread",
-            "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom"));
+            "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom", "Nekoglai"));
+
 
 
     public static void DoExecute(CommandSender sender, String streamerName, String donationUsername, String fullDonationAmount, String donationMessage, String executionName) {
 
-        //Если имя донатера не указано - устанавливаем в качестве имени "Кто-то"
-        String _donationUsername;
-        if (donationUsername.equals("")) {
-            _donationUsername = "Кто-то";
-        } else {
-            _donationUsername = donationUsername;
-        }
-
+        Player streamerPlayer = getPlayerExact(streamerName);
         Boolean canContinue = true;
         //Определяем игрока (если он оффлайн - не выполняем донат и пишем об этом в консоль), а также определяем мир, местоположение и направление игрока
-        Player streamerPlayer = getPlayerExact(streamerName);
         if (streamerPlayer == null) {
             canContinue = false;
         } else if (streamerPlayer.isDead()) {
             canContinue = false;
         }
+
+        //Если имя донатера не указано - устанавливаем в качестве имени "Кто-то"
+        String validDonationUsername;
+        if (donationUsername.equals("")) {
+            validDonationUsername = "Донатер";
+        } else if (!isBlackListed(donationUsername)){
+            validDonationUsername = donationUsername;
+        } else {
+            validDonationUsername = "Донатер";
+            streamerPlayer.sendActionBar("НИКНЕЙМ ДОНАТЕРА БЫЛ СКРЫТ");
+        }
+
 
         if (!canContinue) {
             logToConsole("Донат от §b" + donationUsername + " §f в размере §b" + fullDonationAmount + "§f выполнен из-за того, что целевой стример был недоступен.");
@@ -49,53 +55,56 @@ public class Executor {
         World world = streamerPlayer.getWorld();
         Vector direction = streamerPlayerLocation.getDirection();
 
-        //streamerPlayer.sendActionBar(donationMessage);
+
 
         switch (executionName) {
             case "ShitToInventory":
-                shitToInventory(streamerPlayer, donationUsername);
+                shitToInventory(streamerPlayer, validDonationUsername);
                 break;
             case "Lesch":
-                lesch(streamerPlayer, donationUsername);
+                lesch(streamerPlayer, validDonationUsername);
                 break;
             case "DropActiveItem":
-                dropActiveItem(streamerPlayer, donationUsername);
+                dropActiveItem(streamerPlayer, validDonationUsername);
                 break;
             case "PowerKick":
-                powerKick(streamerPlayer, donationUsername);
+                powerKick(streamerPlayer, validDonationUsername);
                 break;
             case "ClearLastDeathDrop":
-                clearLastDeathDrop(streamerPlayer, donationUsername);
+                clearLastDeathDrop(streamerPlayer, validDonationUsername);
                 break;
             case "SpawnCreeper":
-                spawnCreeper(streamerPlayer, donationUsername);
+                spawnCreeper(streamerPlayer, validDonationUsername);
                 break;
             case "GiveDiamonds":
-                giveDiamonds(streamerPlayer, donationUsername);
+                giveDiamonds(streamerPlayer, validDonationUsername);
                 break;
             case "GiveStackOfDiamonds":
-                giveStackOfDiamonds(streamerPlayer, donationUsername);
+                giveStackOfDiamonds(streamerPlayer, validDonationUsername);
                 break;
             case "GiveBread":
-                giveBread(streamerPlayer, donationUsername);
+                giveBread(streamerPlayer, validDonationUsername);
                 break;
             case "CallNKVD":
-                callNKVD(streamerPlayer, donationUsername);
+                callNKVD(streamerPlayer, validDonationUsername);
                 break;
             case "CallStalin":
-                callStalin(streamerPlayer, donationUsername);
+                callStalin(streamerPlayer, validDonationUsername);
                 break;
             case "RandomChange":
-                randomChange(streamerPlayer, donationUsername);
+                randomChange(streamerPlayer, validDonationUsername);
                 break;
             case "TamedBecomesEnemies":
-                tamedBecomesEnemies(streamerPlayer, donationUsername);
+                tamedBecomesEnemies(streamerPlayer, validDonationUsername);
                 break;
             case "HalfHeart":
-                halfHeart(streamerPlayer, donationUsername);
+                halfHeart(streamerPlayer, validDonationUsername);
                 break;
             case "BigBoom":
-                bigBoom(streamerPlayer, donationUsername);
+                bigBoom(streamerPlayer, validDonationUsername);
+                break;
+            case "Nekoglai":
+                nekoglai(streamerPlayer, validDonationUsername);
                 break;
         }
 
@@ -123,7 +132,7 @@ public class Executor {
             announce(donationUsername, "безуспешно пытался выбить у тебя предмет из рук", "безуспешно пытался выбить предмет из рук", player, true);
         } else {
             announce(donationUsername, "выбил у тебя предмет из рук", "выбил предмет из рук", player, true);
-            ((HumanEntity) player).dropItem(true);
+            player.dropItem(true);
             player.updateInventory();
         }
     }
@@ -140,7 +149,22 @@ public class Executor {
         } else {
             player.setHealth(0);
         }
-        ((org.bukkit.entity.Player) player).playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
+    }
+
+    public static void nekoglai (Player player, String donationUsername) {
+        Vector direction = player.getLocation().getDirection();
+        LivingEntity sheep;
+        announce(donationUsername, "призвал НЕКОГЛАЯ!", "призвал Некоглая", player, true);
+        direction.setY(0);
+        direction.normalize();
+        Location newloc = player.getLocation().clone();
+        Vector newdir = direction.clone().multiply(1.5);
+        newloc.add(newdir);
+        newloc.setDirection(player.getLocation().getDirection().clone().multiply(-1));
+        sheep = (LivingEntity) player.getWorld().spawnEntity(newloc, EntityType.SHEEP);
+        sheep.setCustomName("N3koglai");
+        ((Sheep) sheep).setSheared(true);
     }
 
     public static void powerKick (Player player, String donationUsername) {
@@ -155,7 +179,7 @@ public class Executor {
         } else {
             player.setHealth(0);
         }
-        ((org.bukkit.entity.Player) player).playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
     }
 
     public static void clearLastDeathDrop (Player player, String donationUsername) {
@@ -197,7 +221,7 @@ public class Executor {
         meta.setDisplayName("§bАлмаз");
         meta.setLore(Arrays.asList("§7Эти алмазы подарил §f" + donationUsername));
         itemStack.setItemMeta(meta);
-        Item diamonds = player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+        player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
     }
 
     public static void giveBread (Player player, String donationUsername) {
@@ -217,7 +241,7 @@ public class Executor {
         announce(donationUsername, "хочет отправить тебя в ГУЛАГ!", "хочет отправить в ГУЛАГ", player, true);
         direction.setY(0);
         direction.normalize();
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 1; i++) {
             Location newloc = player.getLocation().clone();
             Vector newdir = direction.clone();
             newdir = newdir.rotateAroundY(1.5708 * i).multiply(2);

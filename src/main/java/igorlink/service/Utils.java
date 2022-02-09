@@ -162,6 +162,7 @@ public class Utils {
            validationText = validationText.replace(matcher.group(), "н");
         }
 
+        validationText = validationText.replace("_", "");
         validationText = validationText.replace(" ", "");
         validationText = validationText.replace(",", "");
         validationText = validationText.replace(".", "");
