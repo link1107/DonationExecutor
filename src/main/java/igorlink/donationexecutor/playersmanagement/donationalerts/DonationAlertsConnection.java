@@ -29,55 +29,38 @@ public class DonationAlertsConnection {
         url = new URI(DASERVER);
         socket = IO.socket(url);
 
-        connectListener = new Emitter.Listener() {
-            @Override
-            public void call(Object... arg0) {
-                logToConsole("Произведено успешное подключение для токена §b" + donationAlertsToken.getToken());
-            }
-        };
+        connectListener =
+                arg0 -> logToConsole("Произведено успешное подключение для токена §b" + donationAlertsToken.getToken());
 
-        disconectListener = new Emitter.Listener() {
-            @Override
-            public void call(Object... arg0) {
-                logToConsole("Произведено отключение для токена §b" + donationAlertsToken.getToken());
-            }
-        };
+        disconectListener =
+                arg0 -> logToConsole("Произведено отключение для токена §b" + donationAlertsToken.getToken());
 
-        donationListener = new Emitter.Listener() {
-            @Override
-            public void call(Object... arg0) {
+        donationListener = arg0 -> {
+            JSONObject json = new JSONObject((String) arg0[0]);
+            //logToConsole((String) arg0[0]);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
 
-                JSONObject json = new JSONObject((String) arg0[0]);
-                //logToConsole((String) arg0[0]);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-
-                        if ( (json.isNull("username")) || (json.isNull("amount_formatted"))) {
-                            return;
-                        }
-
-                        if ((json.getString("amount_formatted")).length() <= 1) {
-                            return;
-                        }
-
-                        DonationAlertsConnection.this.donationAlertsToken.addToDonationsQueue(new Donation(Bukkit.getConsoleSender(),
-                                        json.getString("username"),
-                                        json.getString("amount_formatted"),
-                                        json.getString("message")));
-
+                    if ( (json.isNull("username")) || (json.isNull("amount_formatted"))) {
+                        return;
                     }
-                }.runTask(DonationExecutor.getInstance());
 
-            }
+                    if ((json.getString("amount_formatted")).length() <= 1) {
+                        return;
+                    }
+
+                    DonationAlertsConnection.this.donationAlertsToken.addToDonationsQueue(new Donation(Bukkit.getConsoleSender(),
+                                    json.getString("username"),
+                                    json.getString("amount_formatted"),
+                                    json.getString("message")));
+
+                }
+            }.runTask(DonationExecutor.getInstance());
+
         };
 
-        errorListener = new Emitter.Listener() {
-            @Override
-            public void call(Object... arg0) {
-                logToConsole("Произошла ошибка подключения к Donation Alerts!");
-            }
-        };
+        errorListener = arg0 -> logToConsole("Произошла ошибка подключения к Donation Alerts!");
 
         socket.on(Socket.EVENT_CONNECT, connectListener)
                 .on(Socket.EVENT_DISCONNECT, disconectListener)
