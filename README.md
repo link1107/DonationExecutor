@@ -4,6 +4,9 @@
 
 Плагин, который, получая информацию о новых донатах с Donation Alerts, автоматически генерирует различные события на основании суммы доната.
 
+## Видео про этот плагин:
+[![Watch the video](https://img.youtube.com/vi/48jP4qCb0pM/maxresdefault.jpg)](https://youtu.be/48jP4qCb0pM)
+
 ## FAQ
 
 #### Как этим пользоваться?
