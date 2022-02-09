@@ -35,7 +35,7 @@ public class StreamerPlayer {
         String amount;
         for (String execName : Executor.executionsNamesList) {
             amount = config.getString("donation-amounts." + donationAlertsToken.getToken() + "." + streamerPlayerName + "." + execName);
-            if (!(amount==null)) {
+            if (amount != null) {
                 listOfAmounts.put(amount, execName);
             } else {
                 Utils.logToConsole("Сумма доната, необходимая для " + execName + " для стримера " + streamerPlayerName + " не найдена. Проверьте правильность заполнения файла конфигурации DonationExecutor.yml в папке с именем плагина.");
@@ -72,7 +72,7 @@ public class StreamerPlayer {
 
     //Удалить дроп игрока после смерти
     public Boolean removeDeathDrop() {
-        Boolean wasAnythingDeleted = false;
+        boolean wasAnythingDeleted = false;
         for (Item i : listOfDeathDropItems) {
             if (i.isDead()) {
                 continue;

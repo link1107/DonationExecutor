@@ -26,7 +26,7 @@ public class Executor {
     public static void DoExecute(CommandSender sender, String streamerName, String donationUsername, String fullDonationAmount, String donationMessage, String executionName) {
 
         Player streamerPlayer = getPlayerExact(streamerName);
-        Boolean canContinue = true;
+        boolean canContinue = true;
         //Определяем игрока (если он оффлайн - не выполняем донат и пишем об этом в консоль), а также определяем мир, местоположение и направление игрока
         if (streamerPlayer == null) {
             canContinue = false;
@@ -56,56 +56,23 @@ public class Executor {
         Vector direction = streamerPlayerLocation.getDirection();
 
 
-
         switch (executionName) {
-            case "ShitToInventory":
-                shitToInventory(streamerPlayer, validDonationUsername);
-                break;
-            case "Lesch":
-                lesch(streamerPlayer, validDonationUsername);
-                break;
-            case "DropActiveItem":
-                dropActiveItem(streamerPlayer, validDonationUsername);
-                break;
-            case "PowerKick":
-                powerKick(streamerPlayer, validDonationUsername);
-                break;
-            case "ClearLastDeathDrop":
-                clearLastDeathDrop(streamerPlayer, validDonationUsername);
-                break;
-            case "SpawnCreeper":
-                spawnCreeper(streamerPlayer, validDonationUsername);
-                break;
-            case "GiveDiamonds":
-                giveDiamonds(streamerPlayer, validDonationUsername);
-                break;
-            case "GiveStackOfDiamonds":
-                giveStackOfDiamonds(streamerPlayer, validDonationUsername);
-                break;
-            case "GiveBread":
-                giveBread(streamerPlayer, validDonationUsername);
-                break;
-            case "CallNKVD":
-                callNKVD(streamerPlayer, validDonationUsername);
-                break;
-            case "CallStalin":
-                callStalin(streamerPlayer, validDonationUsername);
-                break;
-            case "RandomChange":
-                randomChange(streamerPlayer, validDonationUsername);
-                break;
-            case "TamedBecomesEnemies":
-                tamedBecomesEnemies(streamerPlayer, validDonationUsername);
-                break;
-            case "HalfHeart":
-                halfHeart(streamerPlayer, validDonationUsername);
-                break;
-            case "BigBoom":
-                bigBoom(streamerPlayer, validDonationUsername);
-                break;
-            case "Nekoglai":
-                nekoglai(streamerPlayer, validDonationUsername);
-                break;
+            case "ShitToInventory" -> shitToInventory(streamerPlayer, validDonationUsername);
+            case "Lesch" -> lesch(streamerPlayer, validDonationUsername);
+            case "DropActiveItem" -> dropActiveItem(streamerPlayer, validDonationUsername);
+            case "PowerKick" -> powerKick(streamerPlayer, validDonationUsername);
+            case "ClearLastDeathDrop" -> clearLastDeathDrop(streamerPlayer, validDonationUsername);
+            case "SpawnCreeper" -> spawnCreeper(streamerPlayer, validDonationUsername);
+            case "GiveDiamonds" -> giveDiamonds(streamerPlayer, validDonationUsername);
+            case "GiveStackOfDiamonds" -> giveStackOfDiamonds(streamerPlayer, validDonationUsername);
+            case "GiveBread" -> giveBread(streamerPlayer, validDonationUsername);
+            case "CallNKVD" -> callNKVD(streamerPlayer, validDonationUsername);
+            case "CallStalin" -> callStalin(streamerPlayer, validDonationUsername);
+            case "RandomChange" -> randomChange(streamerPlayer, validDonationUsername);
+            case "TamedBecomesEnemies" -> tamedBecomesEnemies(streamerPlayer, validDonationUsername);
+            case "HalfHeart" -> halfHeart(streamerPlayer, validDonationUsername);
+            case "BigBoom" -> bigBoom(streamerPlayer, validDonationUsername);
+            case "Nekoglai" -> nekoglai(streamerPlayer, validDonationUsername);
         }
 
     }
@@ -265,7 +232,7 @@ public class Executor {
         for (int i = 0; i <= 4; i++) {
 
             int temp = 0;
-            Boolean isUnique = false;
+            boolean isUnique = false;
             while (!isUnique) {
                 temp = (int) (round(random() * 35));
                 isUnique = true;
@@ -281,15 +248,19 @@ public class Executor {
 
         }
 
-        String replacedItems = new String("");
+        StringBuilder replacedItemsBuilder = new StringBuilder();
         int replacedCounter = 0;
         for (int i = 0; i <= 4; i++) {
-            if (!(player.getInventory().getItem(randoms[i]) == null)) {
+            if (player.getInventory().getItem(randoms[i]) != null) {
                 replacedCounter++;
                 if (replacedCounter > 1) {
-                    replacedItems = replacedItems + "§f, ";
+                    replacedItemsBuilder.append("§f, ");
                 }
-                replacedItems = replacedItems + "§b" + player.getInventory().getItem(randoms[i]).getAmount() + " §f" + player.getInventory().getItem(randoms[i]).getI18NDisplayName().toString();
+                replacedItemsBuilder
+                        .append("§b")
+                        .append(player.getInventory().getItem(randoms[i]).getAmount())
+                        .append(" §f")
+                        .append(player.getInventory().getItem(randoms[i]).getI18NDisplayName());
             }
             player.getInventory().setItem(randoms[i], new ItemStack(Material.STONE, 1));
         }
@@ -297,7 +268,7 @@ public class Executor {
         if (replacedCounter == 0) {
             sendSysMsgToPlayer(player,"§cТебе повезло: все камни попали в пустые слоты!");
         } else {
-            sendSysMsgToPlayer(player,"§cБыли заменены следующие предметусы: §f" + replacedItems);
+            sendSysMsgToPlayer(player,"§cБыли заменены следующие предметусы: §f" + replacedItemsBuilder.toString());
         }
     }
 
@@ -310,10 +281,10 @@ public class Executor {
         announce(donationUsername, "настроил твоих питомцев против тебя!", "настроил прирученных питомцев против", player, true);
         for (Entity e : player.getWorld().getEntitiesByClasses(Wolf.class, Cat.class)) {
             if (((Tameable) e).isTamed() && ((Tameable) e).getOwner().getName().equals(player.getName())) {
-                if (e instanceof Cat) {
-                    ((Tameable) e).setOwner(null);
-                    ((Cat) e).setSitting(false);
-                    ((Cat) e).setTarget(player);
+                if (e instanceof Cat cat) {
+                    cat.setOwner(null);
+                    cat.setSitting(false);
+                    cat.setTarget(player);
                     player.sendMessage("+");
                 } else {
                     ((Wolf) e).setSitting(false);
