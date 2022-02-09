@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static igorlink.service.Utils.announce;
 
@@ -20,7 +21,7 @@ public class ShitToInventory extends AbstractExecution {
         ItemStack itemStack = new ItemStack(itemType, 64);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName("§cГОВНО ОТ §f" + donationUsername.toUpperCase());
-        meta.setLore(Arrays.asList("§7Это говно ужасно вонюче и занимает много места"));
+        meta.setLore(List.of("§7Это говно ужасно вонюче и занимает много места"));
         itemStack.setItemMeta(meta);
         for (int i = 0; i < MainConfig.dirtAmount; i++) {
             player.getInventory().addItem(itemStack);

@@ -26,11 +26,11 @@ class GiantMob {
     private LivingEntity giantMobLivingEntity = null;
     private UUID thisGiantMobUUID = null;
 
-    final private int NUMBER_OF_SNOWBALLS_AT_ONE_LAUNCH = 4;
-    final private Boolean SnowballsFollowingTarget = false;
-    final private int GIANT_MOBS_TRACKING_RANGE = 40;
-    final private static int TIME_BEFORE_THIS_GIANT_MOB_FORGET_HIS_TARGET = 4;
-    final private static int TICKS_BETWEEN_SNOWBALLS_SHOTS = 7;
+    private static final Boolean SnowballsFollowingTarget = false;
+    private static final int NUMBER_OF_SNOWBALLS_AT_ONE_LAUNCH = 4;
+    private static final int GIANT_MOBS_TRACKING_RANGE = 40;
+    private static final int TIME_BEFORE_THIS_GIANT_MOB_FORGET_HIS_TARGET = 4;
+    private static final int TICKS_BETWEEN_SNOWBALLS_SHOTS = 7;
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -44,7 +44,7 @@ class GiantMob {
         playerDirection.setY(0);
         playerDirection.normalize();
         this.giantMobLivingEntity = (LivingEntity) playerLocation.getWorld().spawnEntity(playerLocation.clone().add(playerDirection.clone().multiply(5)).setDirection(playerDirection.multiply(-1)), EntityType.GIANT);
-        if (!(mobName == null)) {
+        if (mobName != null) {
             this.giantMobLivingEntity.setCustomName(mobName);
         }
         this.giantMobLivingEntity.setRemoveWhenFarAway(false);
@@ -82,7 +82,7 @@ class GiantMob {
     //Поиск ближайшей цели ( приоритете - игроки)
     private LivingEntity findGiantMobTarget() {
         //получаем список ближайших врагов dв радиусе sralinShootingRadius
-        Double sralinShootingRadius = (double) GIANT_MOBS_TRACKING_RANGE;
+        double sralinShootingRadius = GIANT_MOBS_TRACKING_RANGE;
         List<Entity> listOfNearbyEntities = giantMobLivingEntity.getNearbyEntities(sralinShootingRadius, sralinShootingRadius, sralinShootingRadius);
         List<LivingEntity> listOfNearbyPlayers = new ArrayList<>();
         List<LivingEntity> listOfNearbyLivingEntities = new ArrayList<>();
@@ -98,7 +98,7 @@ class GiantMob {
             RayTraceResult rtRes7 = null;
             RayTraceResult rtRes8 = null;
 
-            if (e instanceof LivingEntity) {
+            if (e instanceof LivingEntity livingEntity) {
                 //Позиции псевдоглаз вокруг головы с каждой стороны
                 Location rtGiantMobPseudoEyesPos1 = giantMobLivingEntity.getLocation().clone().add(2, 11, 0);
                 Location rtGiantMobPseudoEyesPos2 = giantMobLivingEntity.getLocation().clone().add(-2, 11, 0);
@@ -106,21 +106,21 @@ class GiantMob {
                 Location rtGiantMobPseudoEyesPos4 = giantMobLivingEntity.getLocation().clone().add(0, 11, -2);
 
                 //Пускаем лучи из каждой точки псевдоглаз до верха и низа каждой сущности
-                rtRes1 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos1, genVec(rtGiantMobPseudoEyesPos1, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos1.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                rtRes2 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos2, genVec(rtGiantMobPseudoEyesPos2, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos2.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                rtRes3 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos3, genVec(rtGiantMobPseudoEyesPos3, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos3.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                rtRes4 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos4, genVec(rtGiantMobPseudoEyesPos4, ((LivingEntity) e).getEyeLocation()), rtGiantMobPseudoEyesPos4.distance(((LivingEntity) e).getEyeLocation()), FluidCollisionMode.NEVER, true);
-                rtRes5 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos1, genVec(rtGiantMobPseudoEyesPos1, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos1.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
-                rtRes6 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos2, genVec(rtGiantMobPseudoEyesPos2, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos2.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
-                rtRes7 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos3, genVec(rtGiantMobPseudoEyesPos3, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos3.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
-                rtRes8 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos4, genVec(rtGiantMobPseudoEyesPos4, ((LivingEntity) e).getLocation()), rtGiantMobPseudoEyesPos4.distance(((LivingEntity) e).getLocation()), FluidCollisionMode.NEVER, true);
+                rtRes1 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos1, genVec(rtGiantMobPseudoEyesPos1, (livingEntity).getEyeLocation()), rtGiantMobPseudoEyesPos1.distance((livingEntity).getEyeLocation()), FluidCollisionMode.NEVER, true);
+                rtRes2 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos2, genVec(rtGiantMobPseudoEyesPos2, (livingEntity).getEyeLocation()), rtGiantMobPseudoEyesPos2.distance((livingEntity).getEyeLocation()), FluidCollisionMode.NEVER, true);
+                rtRes3 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos3, genVec(rtGiantMobPseudoEyesPos3, (livingEntity).getEyeLocation()), rtGiantMobPseudoEyesPos3.distance((livingEntity).getEyeLocation()), FluidCollisionMode.NEVER, true);
+                rtRes4 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos4, genVec(rtGiantMobPseudoEyesPos4, (livingEntity).getEyeLocation()), rtGiantMobPseudoEyesPos4.distance((livingEntity).getEyeLocation()), FluidCollisionMode.NEVER, true);
+                rtRes5 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos1, genVec(rtGiantMobPseudoEyesPos1, (livingEntity).getLocation()), rtGiantMobPseudoEyesPos1.distance((livingEntity).getLocation()), FluidCollisionMode.NEVER, true);
+                rtRes6 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos2, genVec(rtGiantMobPseudoEyesPos2, (livingEntity).getLocation()), rtGiantMobPseudoEyesPos2.distance((livingEntity).getLocation()), FluidCollisionMode.NEVER, true);
+                rtRes7 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos3, genVec(rtGiantMobPseudoEyesPos3, (livingEntity).getLocation()), rtGiantMobPseudoEyesPos3.distance((livingEntity).getLocation()), FluidCollisionMode.NEVER, true);
+                rtRes8 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos4, genVec(rtGiantMobPseudoEyesPos4, (livingEntity).getLocation()), rtGiantMobPseudoEyesPos4.distance((livingEntity).getLocation()), FluidCollisionMode.NEVER, true);
 
                 //Если Сталин может из любой позиции поврота голвоы увидеть верх или низ цели, то эта цель вносится в список кандидатов
                 if ((rtRes1 == null) || (rtRes2 == null) || (rtRes3 == null) || (rtRes4 == null) || (rtRes5 == null) || (rtRes6 == null) || (rtRes7 == null) || (rtRes8 == null)) {
-                    if ((e instanceof Player) && (!(((Player) e).getGameMode() == GameMode.SPECTATOR)) ) {
-                        listOfNearbyPlayers.add((LivingEntity) e);
+                    if ((e instanceof Player player) && (player.getGameMode() != GameMode.SPECTATOR)) {
+                        listOfNearbyPlayers.add(livingEntity);
                     } else if (!(e instanceof Player)) {
-                        listOfNearbyLivingEntities.add((LivingEntity) e);
+                        listOfNearbyLivingEntities.add(livingEntity);
                     }
                 }
             }

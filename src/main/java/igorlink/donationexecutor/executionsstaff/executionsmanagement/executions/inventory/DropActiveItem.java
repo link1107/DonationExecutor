@@ -15,7 +15,7 @@ public class DropActiveItem extends AbstractExecution {
             announce(donationUsername, "безуспешно пытался выбить у тебя предмет из рук", "безуспешно пытался выбить предмет из рук", player, true);
         } else {
             announce(donationUsername, "выбил у тебя предмет из рук", "выбил предмет из рук", player, true);
-            ((HumanEntity) player).dropItem(true);
+            player.dropItem(true);
             player.updateInventory();
         }
         return true;
