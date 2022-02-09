@@ -48,6 +48,7 @@ public class DonationAlertsConnection {
             public void call(Object... arg0) {
 
                 JSONObject json = new JSONObject((String) arg0[0]);
+                //logToConsole((String) arg0[0]);
                 new BukkitRunnable() {
                     @Override
                     public void run() {

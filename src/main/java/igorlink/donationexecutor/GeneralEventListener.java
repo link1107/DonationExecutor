@@ -27,7 +27,7 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (MainConfig.isForceResourcePack()) {
-            e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/4923efe27212858f64c3ba65ff4bd35a42dadfb0.zip", Utils.decodeUsingBigInteger("4923efe27212858f64c3ba65ff4bd35a42dadfb0"));
+            e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/5cd9b26a954b46683eeea1b7df1cc0fbe136f79f.zip", Utils.decodeUsingBigInteger("5cd9b26a954b46683eeea1b7df1cc0fbe136f79f"));
         }
 
         if (MainConfig.isOptifineNotificationOn()) {
