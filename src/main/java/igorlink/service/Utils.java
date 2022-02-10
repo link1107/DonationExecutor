@@ -56,8 +56,7 @@ public class Utils {
             if (donaterName.equals("")) {
                 _donaterName = "Кто-то";
             }
-            Title title = new Title("§c" + _donaterName, "§f" + subText);
-            player.sendTitle(title);
+            player.sendTitle("§c" + _donaterName,"§f" + subText, 7, MainConfig.getTimeForAnnouncement()*20, 7);
             player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText);
         }
 
@@ -180,7 +179,7 @@ public class Utils {
         }
 
 
-        for (String ss : MainConfig.listOfBlackListedSubstrings) {
+        for (String ss : MainConfig.getListOfBlackListedSubstrings()) {
             for (int i = 0; i <= validationText.length() - ss.length(); i++) {
                 int tempi = i;
                 for (int j = 0; j <= ss.length(); j++) {

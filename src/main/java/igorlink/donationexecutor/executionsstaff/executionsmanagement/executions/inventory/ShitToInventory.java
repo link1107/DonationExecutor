@@ -22,7 +22,7 @@ public class ShitToInventory extends AbstractExecution {
         meta.setDisplayName("§cГОВНО ОТ §f" + donationUsername.toUpperCase());
         meta.setLore(Arrays.asList("§7Это говно ужасно вонюче и занимает много места"));
         itemStack.setItemMeta(meta);
-        for (int i = 0; i < MainConfig.dirtAmount; i++) {
+        for (int i = 0; i < MainConfig.getDirtAmount(); i++) {
             player.getInventory().addItem(itemStack);
         }
         return true;
