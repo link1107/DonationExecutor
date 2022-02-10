@@ -5,6 +5,7 @@ import igorlink.donationexecutor.executionsstaff.executionsmanagement.executions
 import igorlink.donationexecutor.executionsstaff.giantmobs.GiantMobManager;
 import igorlink.donationexecutor.playersmanagement.StreamerPlayersManager;
 import igorlink.service.MainConfig;
+import igorlink.service.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import static igorlink.service.Utils.*;
@@ -29,10 +30,10 @@ public final class DonationExecutor extends JavaPlugin {
             streamerPlayersManager = new StreamerPlayersManager();
             giantMobManager = new GiantMobManager(this);
             new DonationExecutorCommand();
+            Utils.fillTheSynonimousCharsHashMap();
         }
 
-        ShitToInventory shitCommand = new ShitToInventory();
-        logToConsole(shitCommand.getName());
+
         Bukkit.getPluginManager().registerEvents(new GeneralEventListener(),this);
 
     }

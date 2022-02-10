@@ -59,9 +59,14 @@ public class StreamerPlayersManager {
         for (DonationAlertsToken token : listOfDonationAlertsTokens) {
             token.disconnect();
         }
-        Thread.sleep(1000);
-        listOfDonationAlertsTokens.clear();
-        getTokensFromConfig();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                listOfDonationAlertsTokens.clear();
+                getTokensFromConfig();
+            }
+        }.runTaskLater(DonationExecutor.getInstance(), 20);
+
     }
 
     public void stop() throws InterruptedException {

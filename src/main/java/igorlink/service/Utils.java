@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 public class Utils {
     private static Boolean _isPluginActive = true;
+    protected static HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<>();
 
     //Вывод сообщения в консоль
     public static void logToConsole(String text){
@@ -103,9 +104,7 @@ public class Utils {
         return amountWithoutKopeykis.toString();
     }
 
-    public static Boolean isBlackListed(String text) {
-        HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<>();
-
+    public static void fillTheSynonimousCharsHashMap() {
         mapOfSynonimousChars.put('h', (Arrays.asList('x', 'х', 'н', 'n'))); //eng
         mapOfSynonimousChars.put('n', (Arrays.asList('н', 'й', 'и'))); //eng
         mapOfSynonimousChars.put('н', (Arrays.asList('h', 'n', 'й', 'и'))); //rus
@@ -144,7 +143,9 @@ public class Utils {
         mapOfSynonimousChars.put('4', (Arrays.asList('ч')));
         mapOfSynonimousChars.put('5', (Arrays.asList('с', 'c', 's')));
         mapOfSynonimousChars.put('9', (Arrays.asList('r', 'я')));
+    }
 
+    public static Boolean isBlackListed(String text) {
 
         String validationText = text.toLowerCase();
 
