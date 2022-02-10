@@ -121,14 +121,21 @@ donation-amounts:
             GiveStackOfDiamonds: 2012
     #Далее вы можете добавите другие токены и других игроков по образцу выше.
 
+# Показывать оповещение о донате в центре экрана: true - вкл, false - откл (но оповещение в чате приходит в любом случае)
+show-big-announcement: true
+# Сколько секунд будет висеть оповещение о донате
+announcement-duration-seconds: 3
+
 # Сколько блоков говна игроки будут получать в инвентарь от ShitToInventory
-DirtAmount: 10
+dirt-amount: 10
 # Сколько алмазов игроки будут получать в инвентарь от GiveDiamonds
-DiamondsAmount: 4
+diamonds-amount: 4
 # Сколько хлеба игроки будут получать в инвентарь от GiveBread
-BreadAmount: 4
+bread-amount: 4
 # Радиус взрыва от BigBoom
-BigBoomRadius: 20
+big-boom-radius: 20
+# Количество сотрудников НКВД при их вызове
+nkvd-officers-amount: 3
 
 # ДЛЯ КОРРЕКТНОГО ОТОБРАЖЕНИЯ КАСТОМНЫХ СКИНОВ ПЛАГИНА У ИГРОКОВ ДОЛЖЕН БЫТЬ УСТАНОВЛЕН МОД OPTIFINE - https://optifine.net/downloads
 # ЧТОБЫ ОТКЛЮЧИТЬ УВЕДОМЛЕНИЯ О НЕОБХОДИМОСТИ УСТАНОВИТЬ ОПТИФАЙН, ИЗМЕНИТЕ ЗНАЧЕНИЕ НИЖЕ С "true" НА "false"

@@ -20,7 +20,6 @@ import java.util.Objects;
 import static igorlink.service.Utils.*;
 import static java.lang.Math.random;
 import static java.lang.Math.round;
-import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getPlayerExact;
 
 public class Executor {
@@ -105,7 +104,7 @@ public class Executor {
         meta.setLore(List.of("§7Это говно ужасно вонюче и занимает много места"));
         itemStack.setItemMeta(meta);
 
-        for (int i = 0; i < MainConfig.dirtAmount; i++) {
+        for (int i = 0; i < MainConfig.getDirtAmount(); i++) {
             player.getInventory().addItem(itemStack);
         }
     }
@@ -187,7 +186,7 @@ public class Executor {
     public static void giveDiamonds (Player player, String donationUsername) {
         //Give some diamonds to the player
         announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
-        ExecUtils.giveToPlayer(player, Material.DIAMOND, 4, donationUsername);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND, MainConfig.getDiamondsAmount(), donationUsername);
     }
 
     public static void giveStackOfDiamonds (Player player, String donationUsername) {
@@ -197,7 +196,7 @@ public class Executor {
 
     public static void giveBread (Player player, String donationUsername) {
         announce(donationUsername, "дал тебе Советского Хлеба!", "дал Советского Хлеба", player, true);
-        ExecUtils.giveToPlayer(player, Material.BREAD, 4, donationUsername, "§6Советский Хлеб");
+        ExecUtils.giveToPlayer(player, Material.BREAD, MainConfig.getBreadAmount(), donationUsername, "§6Советский Хлеб");
     }
 
     public static void callNKVD (Player player, String donationUsername) {
@@ -206,16 +205,16 @@ public class Executor {
         announce(donationUsername, "хочет отправить тебя в ГУЛАГ!", "хочет отправить в ГУЛАГ", player, true);
         direction.setY(0);
         direction.normalize();
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= MainConfig.getAmountOfNKVD(); i++) {
             Location newloc = player.getLocation().clone();
             Vector newdir = direction.clone();
             newdir = newdir.rotateAroundY(1.5708 * i).multiply(2);
             newloc.add(newdir);
             nkvdMob = (LivingEntity) player.getWorld().spawnEntity(newloc, EntityType.ZOMBIE);
             nkvdMob.setCustomName("§cСотрудник НКВД");
-            nkvdMob.getEquipment().setItem(EquipmentSlot.HAND, new ItemStack(Material.WOODEN_SWORD));
+            Objects.requireNonNull(nkvdMob.getEquipment()).setItem(EquipmentSlot.HAND, new ItemStack(Material.WOODEN_SWORD));
             if (((Zombie) nkvdMob).isAdult()) {
-                nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.28);
+                Objects.requireNonNull(nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(0.28);
             }
         }
 
@@ -248,15 +247,15 @@ public class Executor {
 
         }
 
-        String replacedItems = new String("");
+        StringBuilder replacedItems = new StringBuilder();
         int replacedCounter = 0;
         for (int i = 0; i <= 4; i++) {
             if (!(player.getInventory().getItem(randoms[i]) == null)) {
                 replacedCounter++;
                 if (replacedCounter > 1) {
-                    replacedItems = replacedItems + "§f, ";
+                    replacedItems.append("§f, ");
                 }
-                replacedItems = replacedItems + "§b" + Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount() + " §f" + Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName();
+                replacedItems.append("§b").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount()).append(" §f").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName());
             }
             player.getInventory().setItem(randoms[i], new ItemStack(Material.STONE, 1));
         }
@@ -293,7 +292,7 @@ public class Executor {
 
     public static void bigBoom (Player player, String donationUsername) {
         announce(donationUsername, "сейчас тебя РАЗНЕСЕТ В КЛОЧЬЯ!!!", "сейчас РАЗНЕСЕТ В КЛОЧЬЯ", player, true);
-        player.getWorld().createExplosion(player.getLocation(), MainConfig.bigBoomRadius, true);
+        player.getWorld().createExplosion(player.getLocation(), MainConfig.getBigBoomRadius(), true);
 
     }
 
@@ -353,7 +352,7 @@ public class Executor {
 
     public static void healPlayer (Player player, String donationUsername) {
         announce(donationUsername, "подарил тебе котейку!", "подарил котейку", player, true);
-        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
     }
 
 }

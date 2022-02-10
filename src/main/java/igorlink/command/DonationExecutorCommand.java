@@ -1,6 +1,10 @@
 package igorlink.command;
 
+import igorlink.service.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import static igorlink.service.Utils.logToConsole;
 
 public class DonationExecutorCommand extends AbstractCommand {
@@ -21,15 +25,23 @@ public class DonationExecutorCommand extends AbstractCommand {
 
             //Если команда - это reload, где не должно быть доп аргументов, то вызываем функцию релоуда конфига
             switch (args[0]) {
-                case "reload":
+                case "reload" -> {
+                    if ((sender != Bukkit.getConsoleSender()) && (!sender.hasPermission("de.reload")) && (!sender.isOp())) {
+                        Utils.sendSysMsgToPlayer((Player) sender, "У вас недостаточно прав для выполнения данной\nкоманды!");
+                        return true;
+                    }
                     if (args.length == 1) {
                         ReloadSubCommand.onReloadCommand(sender);
                         return true;
                     }
-                    break;
-                case "donate":
+                }
+                case "donate" -> {
                     //Инициализируем список аргментов для новой сабфункции
                     //Если команда - donate, где нужен минимум 1 доп аргумент, создаем новый массив аргументов со смещением 1, и вызываем функцию обработки доната
+                    if ((sender != Bukkit.getConsoleSender()) && (!sender.hasPermission("de.donate")) && (!sender.isOp())) {
+                        Utils.sendSysMsgToPlayer((Player) sender, "У вас недостаточно прав для выполнения данной\nкоманды!");
+                        return true;
+                    }
                     if (args.length >= 2) {
                         //Инициализируем список новых аргументов для субкоманды
                         newArgs = new String[args.length - 1];
@@ -40,8 +52,12 @@ public class DonationExecutorCommand extends AbstractCommand {
                         //Возвращаем true, к все прошло успешно
                         return true;
                     }
-                    break;
-                case "filter":
+                }
+                case "filter" -> {
+                    if ((sender != Bukkit.getConsoleSender()) && (!sender.hasPermission("de.filter")) && (!sender.isOp())) {
+                        Utils.sendSysMsgToPlayer((Player) sender, "У вас недостаточно прав для выполнения данной\nкоманды!");
+                        return true;
+                    }
                     if ((args.length == 2) && (args[1].equals("on")) || (args[1].equals("off"))) {
                         //Инициализируем список новых аргументов для субкоманды
                         newArgs = new String[args.length - 1];
@@ -52,7 +68,7 @@ public class DonationExecutorCommand extends AbstractCommand {
                         //Возвращаем true, к все прошло успешно
                         return true;
                     }
-                    break;
+                }
             }
 
         } catch (Exception e) {
