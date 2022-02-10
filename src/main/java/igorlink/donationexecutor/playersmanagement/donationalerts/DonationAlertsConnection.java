@@ -2,6 +2,7 @@ package igorlink.donationexecutor.playersmanagement.donationalerts;
 
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.playersmanagement.Donation;
+import igorlink.service.Utils;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -24,7 +25,12 @@ public class DonationAlertsConnection {
         URI url = new URI(DASERVER);
         socket = IO.socket(url);
 
-        Emitter.Listener connectListener = (Object... arg0) -> logToConsole("Произведено успешное подключение для токена §b" + donationAlertsToken.getToken());
+        Emitter.Listener connectListener = (Object... arg0) -> {
+            socket.emit("add-user", new JSONObject()
+                    .put("token", donationAlertsToken.getToken())
+                    .put("type", "minor"));
+            logToConsole("Произведено успешное подключение для токена §b" + donationAlertsToken.getToken());
+        };
         Emitter.Listener disconectListener = (Object... arg0) -> logToConsole("Произведено отключение для токена §b" + donationAlertsToken.getToken());
         Emitter.Listener errorListener = (Object... arg0) -> logToConsole("Произошла ошибка подключения к Donation Alerts!");
 
@@ -39,7 +45,11 @@ public class DonationAlertsConnection {
                         return;
                     }
 
-                    if ((json.getString("amount_formatted")).length() <= 1) {
+                    try {
+                        if ( ((json.getString("amount_formatted")).length() == 0) || (Utils.cutOffKopeykis(json.getString("amount_formatted")).equals("0")) ) {
+                            return;
+                        }
+                    } catch (JSONException e) {
                         return;
                     }
 
@@ -63,9 +73,6 @@ public class DonationAlertsConnection {
 
     public void connect() throws JSONException {
         socket.connect();
-        socket.emit("add-user", new JSONObject()
-                .put("token", donationAlertsToken.getToken())
-                .put("type", "minor"));
     }
 
     public void disconnect() throws JSONException {

@@ -1,5 +1,6 @@
 package igorlink.donationexecutor;
 
+import igorlink.donationexecutor.executionsstaff.ExecUtils;
 import igorlink.service.MainConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import static igorlink.service.Utils.*;
 import static java.lang.Math.random;
 import static java.lang.Math.round;
+import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getPlayerExact;
 
 public class Executor {
@@ -26,7 +28,8 @@ public class Executor {
     public static String nameOfSecondStreamerPlayer;
     public static List<String> executionsNamesList = new ArrayList<>(Arrays.asList("ShitToInventory", "Lesch", "DropActiveItem",
             "PowerKick", "ClearLastDeathDrop", "SpawnCreeper", "GiveDiamonds", "GiveStackOfDiamonds", "GiveBread",
-            "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom", "Nekoglai"));
+            "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom", "Nekoglai", "SetNight", "SetDay", "GiveIronSet",
+            "GiveIronSword", "GiveDiamondSet", "GiveDiamondSword", "SpawnTamedDog", "SpawnTamedCat", "HealPlayer"));
 
 
 
@@ -77,6 +80,15 @@ public class Executor {
             case "HalfHeart" -> halfHeart(streamerPlayer, validDonationUsername);
             case "BigBoom" -> bigBoom(streamerPlayer, validDonationUsername);
             case "Nekoglai" -> nekoglai(streamerPlayer, validDonationUsername);
+            case "SetDay" -> setDay(streamerPlayer, validDonationUsername);
+            case "SetNight" -> setNight(streamerPlayer, validDonationUsername);
+            case "GiveIronSet" -> giveIronSet(streamerPlayer, validDonationUsername);
+            case "GiveIronSword" -> giveIronSword(streamerPlayer, validDonationUsername);
+            case "GiveDiamondSet" -> giveDiamondSet(streamerPlayer, validDonationUsername);
+            case "GiveDiamondSword" -> giveDiamondSword(streamerPlayer, validDonationUsername);
+            case "SpawnTamedDog" -> spawnTamedDog(streamerPlayer, donationUsername);
+            case "SpawnTamedCat" -> spawnTamedCat(streamerPlayer, donationUsername);
+            case "HealPlayer" -> healPlayer(streamerPlayer, donationUsername);
         }
 
     }
@@ -175,35 +187,17 @@ public class Executor {
     public static void giveDiamonds (Player player, String donationUsername) {
         //Give some diamonds to the player
         announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
-        Material itemType = Material.DIAMOND;
-        ItemStack itemStack = new ItemStack(itemType, MainConfig.diamondsAmount);
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName("§bАлмаз");
-        meta.setLore(List.of("§7Эти алмазы подарил §f" + donationUsername));
-        itemStack.setItemMeta(meta);
-        player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND, 4, donationUsername);
     }
 
     public static void giveStackOfDiamonds (Player player, String donationUsername) {
         announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
-        Material itemType = Material.DIAMOND;
-        ItemStack itemStack = new ItemStack(itemType, 64);
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName("§bАлмаз");
-        meta.setLore(Arrays.asList("§7Эти алмазы подарил §f" + donationUsername));
-        itemStack.setItemMeta(meta);
-        player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND, 64, donationUsername);
     }
 
     public static void giveBread (Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе хлеба!", "дал хлеба", player, true);
-        Material itemType = Material.BREAD;
-        ItemStack itemStack = new ItemStack(itemType, 4);
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName("§bХлеб");
-        meta.setLore(Arrays.asList("§7Этот хлеб подарил §f" + donationUsername));
-        itemStack.setItemMeta(meta);
-        Item bread = player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+        announce(donationUsername, "дал тебе Советского Хлеба!", "дал Советского Хлеба", player, true);
+        ExecUtils.giveToPlayer(player, Material.BREAD, 4, donationUsername, "§6Советский Хлеб");
     }
 
     public static void callNKVD (Player player, String donationUsername) {
@@ -219,8 +213,10 @@ public class Executor {
             newloc.add(newdir);
             nkvdMob = (LivingEntity) player.getWorld().spawnEntity(newloc, EntityType.ZOMBIE);
             nkvdMob.setCustomName("§cСотрудник НКВД");
-            nkvdMob.getEquipment().setItem(EquipmentSlot.HAND, new ItemStack(Material.IRON_SWORD));
-            nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3);
+            nkvdMob.getEquipment().setItem(EquipmentSlot.HAND, new ItemStack(Material.WOODEN_SWORD));
+            if (((Zombie) nkvdMob).isAdult()) {
+                nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.28);
+            }
         }
 
     }
@@ -301,5 +297,63 @@ public class Executor {
 
     }
 
+    public static void setNight (Player player, String donationUsername) {
+        announce(donationUsername, "включил на сервере ночь!", "включил ночь ради", player, true);
+        player.getWorld().setTime(18000);
+    }
+
+    public static void setDay (Player player, String donationUsername) {
+        announce(donationUsername, "включил на сервере день!", "включил день ради", player, true);
+        player.getWorld().setTime(6000);
+    }
+
+    public static void giveIronSet (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе железную броню!", "дал железную броню", player, true);
+        ExecUtils.giveToPlayer(player, Material.IRON_HELMET, 1, donationUsername);
+        ExecUtils.giveToPlayer(player, Material.IRON_BOOTS, 1, donationUsername);
+        ExecUtils.giveToPlayer(player, Material.IRON_CHESTPLATE, 1, donationUsername);
+        ExecUtils.giveToPlayer(player, Material.IRON_LEGGINGS, 1, donationUsername);
+    }
+
+    public static void giveIronSword (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе железный меч!", "дал железный меч", player, true);
+        ExecUtils.giveToPlayer(player, Material.IRON_SWORD, 1, donationUsername);
+    }
+
+    public static void giveDiamondSet (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе алмазную броню!", "дал алмазную броню", player, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND_HELMET, 1, donationUsername);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND_BOOTS, 1, donationUsername);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND_CHESTPLATE, 1, donationUsername);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND_LEGGINGS, 1, donationUsername);
+    }
+
+    public static void giveDiamondSword (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе алмазный меч!", "дал алмазный меч", player, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND_SWORD, 1, donationUsername);
+    }
+
+    public static void spawnTamedDog (Player player, String donationUsername) {
+        announce(donationUsername, "подарил тебе дружка!", "подарил щенка", player, true);
+        Entity wolf = player.getWorld().spawnEntity(player.getLocation(), EntityType.WOLF);
+        ((Wolf) wolf).setTamed(true);
+        ((Wolf) wolf).setOwner(player);
+        ((Wolf) wolf).setRemoveWhenFarAway(false);
+        wolf.setCustomName(donationUsername);
+    }
+
+    public static void spawnTamedCat (Player player, String donationUsername) {
+        announce(donationUsername, "подарил тебе котейку!", "подарил котейку", player, true);
+        Entity cat = player.getWorld().spawnEntity(player.getLocation(), EntityType.CAT);
+        ((Cat) cat).setTamed(true);
+        ((Cat) cat).setOwner(player);
+        ((Cat) cat).setRemoveWhenFarAway(false);
+        cat.setCustomName(donationUsername);
+    }
+
+    public static void healPlayer (Player player, String donationUsername) {
+        announce(donationUsername, "подарил тебе котейку!", "подарил котейку", player, true);
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+    }
 
 }
