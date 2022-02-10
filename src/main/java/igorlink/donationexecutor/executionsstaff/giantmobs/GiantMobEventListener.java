@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 
 class GiantMobEventListener implements Listener {
 
-    private GiantMobManager thisInstanceOfGiantMobManager;
+    private final GiantMobManager thisInstanceOfGiantMobManager;
 
     GiantMobEventListener(GiantMobManager _thisInstanceOfGiantMobManager) {
         thisInstanceOfGiantMobManager = _thisInstanceOfGiantMobManager;
@@ -39,9 +39,6 @@ class GiantMobEventListener implements Listener {
         //Нашему мобу отменяем дамаг от падения
         if ( (e.getEntity() instanceof Giant) && ((e.getCause() == EntityDamageEvent.DamageCause.FALL) || (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE) ||  (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK))) {
             e.setCancelled(true);
-            // sendSysMsgToPlayer(getPlayerExact(Executor.nameOfStreamerPlayer), "Cancelled DMG from: " + e.getCause().toString());
-        } else if (e.getEntity() instanceof Giant) {
-            // sendSysMsgToPlayer(getPlayerExact(Executor.nameOfStreamerPlayer), "Passed DMG from: " + e.getCause().toString());
         }
     }
 

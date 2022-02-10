@@ -16,16 +16,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class StreamerPlayer {
-    private String streamerPlayerName;
-    private List<Item> listOfDeathDropItems = new ArrayList<Item>();
-    private Queue<Donation> listOfQueuedDonations = new LinkedList<Donation>();
-    private HashMap<String, String> listOfAmounts = new HashMap<String, String>();
-    private DonationAlertsToken donationAlertsToken;
+    private final String streamerPlayerName;
+    private final List<Item> listOfDeathDropItems = new ArrayList<>();
+    private final Queue<Donation> listOfQueuedDonations = new LinkedList<>();
+    private final HashMap<String, String> listOfAmounts = new HashMap<>();
 
 
     //Инициализация нового объекта стримера-игрока
     public StreamerPlayer(@NotNull String _streamerPlayerName, DonationAlertsToken donationAlertsToken) {
-        this.donationAlertsToken = donationAlertsToken;
         FileConfiguration config = MainConfig.getConfig();
         streamerPlayerName = _streamerPlayerName;
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(this), DonationExecutor.getInstance());
@@ -71,8 +69,8 @@ public class StreamerPlayer {
 
 
     //Удалить дроп игрока после смерти
-    public Boolean removeDeathDrop() {
-        Boolean wasAnythingDeleted = false;
+    public boolean removeDeathDrop() {
+        boolean wasAnythingDeleted = false;
         for (Item i : listOfDeathDropItems) {
             if (i.isDead()) {
                 continue;
@@ -84,7 +82,7 @@ public class StreamerPlayer {
     }
 
     //Замена дездропа при смерти игрока (через Listener)
-    private class PlayerDeathListener implements Listener{
+    private static class PlayerDeathListener implements Listener{
         StreamerPlayer thisStreamerPlayer;
 
         //Передача родительского объекта в слушателя

@@ -6,10 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +34,7 @@ public class Utils {
     }
 
    public static Boolean CheckNameAndToken() {
-        Set<String> tokensSet = MainConfig.getConfig().getConfigurationSection("donation-amounts").getKeys(false);
+        Set<String> tokensSet = Objects.requireNonNull(MainConfig.getConfig().getConfigurationSection("donation-amounts")).getKeys(false);
         if ( ((tokensSet.contains("xxxxxxxxxxxxxxxxxxxx")) && (tokensSet.size() == 1)) || (tokensSet.isEmpty()) ) {
             logToConsole("Вы не указали свой токен DonationAlerts в файле конфигурации плагина, поэтому сейчас плагин не работает.");
             _isPluginActive = false;
@@ -63,11 +60,11 @@ public class Utils {
             player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText);
         }
 
-        if (_donaterName == "") {
+        if (_donaterName.equals("")) {
             _donaterName = "Кто-то";
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!(p.getName() == player.getName())) {
+            if ( !(p.getName().equals(player.getName())) ) {
                 p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName());
             }
         }
@@ -90,27 +87,24 @@ public class Utils {
     }
 
     public static Vector locToVec(Location loc) {
-        Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
-        return vec;
+        return new Vector(loc.getX(), loc.getY(), loc.getZ());
     }
 
     public static String cutOffKopeykis(String donationAmountWithKopeykis) {
-        String amountWithoutKopeykis = "";
+        StringBuilder amountWithoutKopeykis = new StringBuilder();
         for (int i = 0; i <= donationAmountWithKopeykis.length() - 1; i++) {
             if (donationAmountWithKopeykis.charAt(i) == '.') {
                 break;
-            } else if (donationAmountWithKopeykis.charAt(i) == ' ') {
-                continue;
-            } else {
-                amountWithoutKopeykis = amountWithoutKopeykis + donationAmountWithKopeykis.charAt(i);
+            } else if (donationAmountWithKopeykis.charAt(i) != ' ') {
+                amountWithoutKopeykis.append(donationAmountWithKopeykis.charAt(i));
             }
         }
 
-        return amountWithoutKopeykis;
+        return amountWithoutKopeykis.toString();
     }
 
     public static Boolean isBlackListed(String text) {
-        HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<Character, List<Character>>();
+        HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<>();
 
         mapOfSynonimousChars.put('h', (Arrays.asList('x', 'х', 'н', 'n'))); //eng
         mapOfSynonimousChars.put('n', (Arrays.asList('н', 'й', 'и'))); //eng
@@ -142,12 +136,10 @@ public class Utils {
         mapOfSynonimousChars.put('x', (Arrays.asList('х', 'h'))); //eng
         mapOfSynonimousChars.put('х', (Arrays.asList('x', 'h'))); //rus
         mapOfSynonimousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
-        mapOfSynonimousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
         mapOfSynonimousChars.put('ч', (Arrays.asList('4')));//rus
         mapOfSynonimousChars.put('k', (Arrays.asList('к')));//eng
         mapOfSynonimousChars.put('к', (Arrays.asList('k')));//rus
         mapOfSynonimousChars.put('0', (Arrays.asList('o', 'о'))); //num
-        mapOfSynonimousChars.put('1', (Arrays.asList('i', 'l'))); //num
         mapOfSynonimousChars.put('3', (Arrays.asList('e', 'е','з')));
         mapOfSynonimousChars.put('4', (Arrays.asList('ч')));
         mapOfSynonimousChars.put('5', (Arrays.asList('с', 'c', 's')));
@@ -204,30 +196,21 @@ public class Utils {
                         }
                     }
 
-                    Boolean repeated = true;
-                    Boolean finishCycle = false;
-                    while ((repeated) && (!finishCycle)) {
+                    while (true) {
                         if (j==0) {
                             break;
                         }
                         if (!(validationText.charAt(tempi + j) == validationText.charAt(tempi + j - 1))) {
                             if (!(mapOfSynonimousChars.containsKey(validationText.charAt(tempi + j)))) {
-                                repeated = false;
                                 break;
                             } else if (!(mapOfSynonimousChars.get(validationText.charAt(tempi + j)).contains(validationText.charAt(tempi + j - 1)))) {
-                                repeated = false;
                                 break;
                             }
                         }
                         tempi++;
                         if ((validationText.length()-tempi-j) < (ss.length()-j)) {
-                            finishCycle=true;
                             break;
                         }
-                    }
-
-                    if (finishCycle) {
-                        break;
                     }
 
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {

@@ -6,14 +6,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitTask;
-import java.util.HashMap;
-import java.util.Map;
 import static igorlink.service.Utils.*;
 
 public class GeneralEventListener implements Listener {
-
-    private Map<Integer, BukkitTask> projectiles = new HashMap<Integer, BukkitTask>();
 
     //Отмена горения НКВДшников
     @EventHandler

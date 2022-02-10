@@ -4,7 +4,7 @@ import igorlink.donationexecutor.executionsstaff.executionsmanagement.Executor;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractExecution {
-    private String execName;
+    private final String execName;
 
     public AbstractExecution() {
         String className = this.getClass().getName();

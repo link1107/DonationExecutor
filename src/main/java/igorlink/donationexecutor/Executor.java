@@ -1,17 +1,24 @@
 package igorlink.donationexecutor;
-import igorlink.donationexecutor.executionsstaff.executionsmanagement.executions.AbstractExecution;
+
 import igorlink.service.MainConfig;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 import static igorlink.service.Utils.*;
-import static java.lang.Math.*;
+import static java.lang.Math.random;
+import static java.lang.Math.round;
 import static org.bukkit.Bukkit.getPlayerExact;
 
 public class Executor {
@@ -23,10 +30,10 @@ public class Executor {
 
 
 
-    public static void DoExecute(CommandSender sender, String streamerName, String donationUsername, String fullDonationAmount, String donationMessage, String executionName) {
+    public static void DoExecute(String streamerName, String donationUsername, String fullDonationAmount, String executionName) {
 
         Player streamerPlayer = getPlayerExact(streamerName);
-        Boolean canContinue = true;
+        boolean canContinue = true;
         //Определяем игрока (если он оффлайн - не выполняем донат и пишем об этом в консоль), а также определяем мир, местоположение и направление игрока
         if (streamerPlayer == null) {
             canContinue = false;
@@ -42,6 +49,7 @@ public class Executor {
             validDonationUsername = donationUsername;
         } else {
             validDonationUsername = "Донатер";
+            assert streamerPlayer != null;
             streamerPlayer.sendActionBar("НИКНЕЙМ ДОНАТЕРА БЫЛ СКРЫТ");
         }
 
@@ -51,61 +59,24 @@ public class Executor {
             return;
         }
 
-        Location streamerPlayerLocation = streamerPlayer.getLocation();
-        World world = streamerPlayer.getWorld();
-        Vector direction = streamerPlayerLocation.getDirection();
-
-
 
         switch (executionName) {
-            case "ShitToInventory":
-                shitToInventory(streamerPlayer, validDonationUsername);
-                break;
-            case "Lesch":
-                lesch(streamerPlayer, validDonationUsername);
-                break;
-            case "DropActiveItem":
-                dropActiveItem(streamerPlayer, validDonationUsername);
-                break;
-            case "PowerKick":
-                powerKick(streamerPlayer, validDonationUsername);
-                break;
-            case "ClearLastDeathDrop":
-                clearLastDeathDrop(streamerPlayer, validDonationUsername);
-                break;
-            case "SpawnCreeper":
-                spawnCreeper(streamerPlayer, validDonationUsername);
-                break;
-            case "GiveDiamonds":
-                giveDiamonds(streamerPlayer, validDonationUsername);
-                break;
-            case "GiveStackOfDiamonds":
-                giveStackOfDiamonds(streamerPlayer, validDonationUsername);
-                break;
-            case "GiveBread":
-                giveBread(streamerPlayer, validDonationUsername);
-                break;
-            case "CallNKVD":
-                callNKVD(streamerPlayer, validDonationUsername);
-                break;
-            case "CallStalin":
-                callStalin(streamerPlayer, validDonationUsername);
-                break;
-            case "RandomChange":
-                randomChange(streamerPlayer, validDonationUsername);
-                break;
-            case "TamedBecomesEnemies":
-                tamedBecomesEnemies(streamerPlayer, validDonationUsername);
-                break;
-            case "HalfHeart":
-                halfHeart(streamerPlayer, validDonationUsername);
-                break;
-            case "BigBoom":
-                bigBoom(streamerPlayer, validDonationUsername);
-                break;
-            case "Nekoglai":
-                nekoglai(streamerPlayer, validDonationUsername);
-                break;
+            case "ShitToInventory" -> shitToInventory(streamerPlayer, validDonationUsername);
+            case "Lesch" -> lesch(streamerPlayer, validDonationUsername);
+            case "DropActiveItem" -> dropActiveItem(streamerPlayer, validDonationUsername);
+            case "PowerKick" -> powerKick(streamerPlayer, validDonationUsername);
+            case "ClearLastDeathDrop" -> clearLastDeathDrop(streamerPlayer, validDonationUsername);
+            case "SpawnCreeper" -> spawnCreeper(streamerPlayer, validDonationUsername);
+            case "GiveDiamonds" -> giveDiamonds(streamerPlayer, validDonationUsername);
+            case "GiveStackOfDiamonds" -> giveStackOfDiamonds(streamerPlayer, validDonationUsername);
+            case "GiveBread" -> giveBread(streamerPlayer, validDonationUsername);
+            case "CallNKVD" -> callNKVD(streamerPlayer, validDonationUsername);
+            case "CallStalin" -> callStalin(streamerPlayer, validDonationUsername);
+            case "RandomChange" -> randomChange(streamerPlayer, validDonationUsername);
+            case "TamedBecomesEnemies" -> tamedBecomesEnemies(streamerPlayer, validDonationUsername);
+            case "HalfHeart" -> halfHeart(streamerPlayer, validDonationUsername);
+            case "BigBoom" -> bigBoom(streamerPlayer, validDonationUsername);
+            case "Nekoglai" -> nekoglai(streamerPlayer, validDonationUsername);
         }
 
     }
@@ -119,7 +90,7 @@ public class Executor {
         ItemStack itemStack = new ItemStack(itemType, 64);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName("§cГОВНО ОТ §f" + donationUsername.toUpperCase());
-        meta.setLore(Arrays.asList("§7Это говно ужасно вонюче и занимает много места"));
+        meta.setLore(List.of("§7Это говно ужасно вонюче и занимает много места"));
         itemStack.setItemMeta(meta);
 
         for (int i = 0; i < MainConfig.dirtAmount; i++) {
@@ -208,9 +179,9 @@ public class Executor {
         ItemStack itemStack = new ItemStack(itemType, MainConfig.diamondsAmount);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName("§bАлмаз");
-        meta.setLore(Arrays.asList("§7Эти алмазы подарил §f" + donationUsername));
+        meta.setLore(List.of("§7Эти алмазы подарил §f" + donationUsername));
         itemStack.setItemMeta(meta);
-        Item diamonds = player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
+        player.getWorld().dropItemNaturally(player.getLocation(), itemStack);
     }
 
     public static void giveStackOfDiamonds (Player player, String donationUsername) {
@@ -265,7 +236,7 @@ public class Executor {
         for (int i = 0; i <= 4; i++) {
 
             int temp = 0;
-            Boolean isUnique = false;
+            boolean isUnique = false;
             while (!isUnique) {
                 temp = (int) (round(random() * 35));
                 isUnique = true;
@@ -289,7 +260,7 @@ public class Executor {
                 if (replacedCounter > 1) {
                     replacedItems = replacedItems + "§f, ";
                 }
-                replacedItems = replacedItems + "§b" + player.getInventory().getItem(randoms[i]).getAmount() + " §f" + player.getInventory().getItem(randoms[i]).getI18NDisplayName().toString();
+                replacedItems = replacedItems + "§b" + Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount() + " §f" + Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName();
             }
             player.getInventory().setItem(randoms[i], new ItemStack(Material.STONE, 1));
         }
@@ -309,7 +280,7 @@ public class Executor {
     public static void tamedBecomesEnemies (Player player, String donationUsername) {
         announce(donationUsername, "настроил твоих питомцев против тебя!", "настроил прирученных питомцев против", player, true);
         for (Entity e : player.getWorld().getEntitiesByClasses(Wolf.class, Cat.class)) {
-            if (((Tameable) e).isTamed() && ((Tameable) e).getOwner().getName().equals(player.getName())) {
+            if (((Tameable) e).isTamed() && Objects.equals(Objects.requireNonNull(((Tameable) e).getOwner()).getName(), player.getName())) {
                 if (e instanceof Cat) {
                     ((Tameable) e).setOwner(null);
                     ((Cat) e).setSitting(false);

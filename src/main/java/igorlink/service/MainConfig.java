@@ -2,12 +2,11 @@ package igorlink.service;
 
 import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainConfig {
-    private static HashMap<String, HashMap<String, String>> donationAmountsHashMap = new HashMap<String, HashMap<String, String>>();
     private static FileConfiguration config = DonationExecutor.getInstance().getConfig();
     public static int dirtAmount = 0;
     public static int diamondsAmount = 0;
