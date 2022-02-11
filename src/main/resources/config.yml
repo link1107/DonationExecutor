@@ -156,8 +156,11 @@ twitch-filter: true
 BlacklistedSubstrings:
     - негр
     - пидо
+    - пидр
+    - пиде
     - пида
     - niga
+    - nigg
     - нигр
     - ниге
     - додик
@@ -172,6 +175,7 @@ BlacklistedSubstrings:
     - хуе
     - хуй
     - даун
+    - давн
     - кады
     - кадь
     - kadb
@@ -186,6 +190,7 @@ BlacklistedSubstrings:
 # Вайтлист субстрок для фильтра
 WhitelistedSubstrings:
     - книг
+    - книга
     - нигерия
 
 
