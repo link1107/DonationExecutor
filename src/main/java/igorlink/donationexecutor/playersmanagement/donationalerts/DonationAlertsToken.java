@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DonationAlertsToken {
-    private static DonationAlertsConnection donationAlertsConnection;
+    private DonationAlertsConnection donationAlertsConnection;
     private final List<StreamerPlayer> listOfStreamerPlayers = new ArrayList<>();
     private final String token;
 

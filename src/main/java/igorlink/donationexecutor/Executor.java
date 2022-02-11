@@ -2,6 +2,7 @@ package igorlink.donationexecutor;
 
 import igorlink.donationexecutor.executionsstaff.ExecUtils;
 import igorlink.service.MainConfig;
+import igorlink.service.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,7 +21,6 @@ import java.util.Objects;
 import static igorlink.service.Utils.*;
 import static java.lang.Math.random;
 import static java.lang.Math.round;
-import static org.bukkit.Bukkit.getPlayer;
 import static org.bukkit.Bukkit.getPlayerExact;
 
 public class Executor {
@@ -29,7 +29,8 @@ public class Executor {
     public static List<String> executionsNamesList = new ArrayList<>(Arrays.asList("ShitToInventory", "Lesch", "DropActiveItem",
             "PowerKick", "ClearLastDeathDrop", "SpawnCreeper", "GiveDiamonds", "GiveStackOfDiamonds", "GiveBread",
             "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom", "Nekoglai", "SetNight", "SetDay", "GiveIronSet",
-            "GiveIronSword", "GiveDiamondSet", "GiveDiamondSword", "SpawnTamedDog", "SpawnTamedCat", "HealPlayer"));
+            "GiveIronSword", "GiveDiamondSet", "GiveDiamondSword", "SpawnTamedDog", "SpawnTamedCat", "HealPlayer", "GiveIronKirka", "GiveDiamondKirka",
+            "KillStalins"));
 
 
 
@@ -47,12 +48,13 @@ public class Executor {
         //Если имя донатера не указано - устанавливаем в качестве имени "Кто-то"
         String validDonationUsername;
         if (donationUsername.equals("")) {
-            validDonationUsername = "Донатер";
+            validDonationUsername = "Аноним";
         } else if (!isBlackListed(donationUsername)){
             validDonationUsername = donationUsername;
         } else {
             validDonationUsername = "Донатер";
             assert streamerPlayer != null;
+            Utils.logToConsole("§eникнейм донатера §f" + donationUsername + "§e был скрыт, как подозрительный");
             streamerPlayer.sendActionBar("НИКНЕЙМ ДОНАТЕРА БЫЛ СКРЫТ");
         }
 
@@ -86,9 +88,12 @@ public class Executor {
             case "GiveIronSword" -> giveIronSword(streamerPlayer, validDonationUsername);
             case "GiveDiamondSet" -> giveDiamondSet(streamerPlayer, validDonationUsername);
             case "GiveDiamondSword" -> giveDiamondSword(streamerPlayer, validDonationUsername);
-            case "SpawnTamedDog" -> spawnTamedDog(streamerPlayer, donationUsername);
-            case "SpawnTamedCat" -> spawnTamedCat(streamerPlayer, donationUsername);
-            case "HealPlayer" -> healPlayer(streamerPlayer, donationUsername);
+            case "SpawnTamedDog" -> spawnTamedDog(streamerPlayer, validDonationUsername);
+            case "SpawnTamedCat" -> spawnTamedCat(streamerPlayer, validDonationUsername);
+            case "HealPlayer" -> healPlayer(streamerPlayer, validDonationUsername);
+            case "GiveIronKirka" -> giveIronKirka(streamerPlayer, validDonationUsername);
+            case "GiveDiamondKirka" -> giveDiamondKirka(streamerPlayer, validDonationUsername);
+            case "KillStalins" -> killStalins(streamerPlayer, validDonationUsername);
         }
 
     }
@@ -105,7 +110,7 @@ public class Executor {
         meta.setLore(List.of("§7Это говно ужасно вонюче и занимает много места"));
         itemStack.setItemMeta(meta);
 
-        for (int i = 0; i < MainConfig.dirtAmount; i++) {
+        for (int i = 0; i < MainConfig.getDirtAmount(); i++) {
             player.getInventory().addItem(itemStack);
         }
     }
@@ -150,6 +155,16 @@ public class Executor {
         ((Sheep) sheep).setSheared(true);
     }
 
+    public static void killStalins (Player player, String donationUsername) {
+        //Remove Last Death Dropped Items
+        List<Entity> stalins = player.getNearbyEntities(200, 200, 200);
+        for (Entity e: stalins) {
+            if (e instanceof Giant) {
+                ((LivingEntity) e).damage(1000, player);
+            }
+        }
+    }
+
     public static void powerKick (Player player, String donationUsername) {
         announce(donationUsername, "дал тебе смачного пинка под зад", "дал смачного пинка под зад", player, true);
         Vector direction = player.getLocation().getDirection();
@@ -186,18 +201,18 @@ public class Executor {
 
     public static void giveDiamonds (Player player, String donationUsername) {
         //Give some diamonds to the player
-        announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
-        ExecUtils.giveToPlayer(player, Material.DIAMOND, 4, donationUsername);
+        announce(donationUsername, "насыпал тебе §bАЛМАЗОВ!", "насыпал §bАлмазов§f", player, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND, MainConfig.getDiamondsAmount(), donationUsername, "§bАлмазы");
     }
 
     public static void giveStackOfDiamonds (Player player, String donationUsername) {
-        announce(donationUsername, "насыпал тебе алмазов!", "насыпал алмазов", player, true);
-        ExecUtils.giveToPlayer(player, Material.DIAMOND, 64, donationUsername);
+        announce(donationUsername, "насыпал тебе КУЧУ §bАЛМАЗОВ!", "насыпал §bАлмазов§f", player, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND, 64, donationUsername, "§bАлмазы");
     }
 
     public static void giveBread (Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе Советского Хлеба!", "дал Советского Хлеба", player, true);
-        ExecUtils.giveToPlayer(player, Material.BREAD, 4, donationUsername, "§6Советский Хлеб");
+        announce(donationUsername, "дал тебе §6Советского Хлеба!", "дал §6Советского §6Хлеба§f", player, true);
+        ExecUtils.giveToPlayer(player, Material.BREAD, MainConfig.getBreadAmount(), donationUsername, "§6Советский Хлеб");
     }
 
     public static void callNKVD (Player player, String donationUsername) {
@@ -206,16 +221,16 @@ public class Executor {
         announce(donationUsername, "хочет отправить тебя в ГУЛАГ!", "хочет отправить в ГУЛАГ", player, true);
         direction.setY(0);
         direction.normalize();
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= MainConfig.getAmountOfNKVD(); i++) {
             Location newloc = player.getLocation().clone();
             Vector newdir = direction.clone();
             newdir = newdir.rotateAroundY(1.5708 * i).multiply(2);
             newloc.add(newdir);
             nkvdMob = (LivingEntity) player.getWorld().spawnEntity(newloc, EntityType.ZOMBIE);
             nkvdMob.setCustomName("§cСотрудник НКВД");
-            nkvdMob.getEquipment().setItem(EquipmentSlot.HAND, new ItemStack(Material.WOODEN_SWORD));
+            Objects.requireNonNull(nkvdMob.getEquipment()).setItem(EquipmentSlot.HAND, new ItemStack(Material.WOODEN_SWORD));
             if (((Zombie) nkvdMob).isAdult()) {
-                nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.28);
+                Objects.requireNonNull(nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(0.28);
             }
         }
 
@@ -248,15 +263,15 @@ public class Executor {
 
         }
 
-        String replacedItems = new String("");
+        StringBuilder replacedItems = new StringBuilder();
         int replacedCounter = 0;
         for (int i = 0; i <= 4; i++) {
             if (!(player.getInventory().getItem(randoms[i]) == null)) {
                 replacedCounter++;
                 if (replacedCounter > 1) {
-                    replacedItems = replacedItems + "§f, ";
+                    replacedItems.append("§f, ");
                 }
-                replacedItems = replacedItems + "§b" + Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount() + " §f" + Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName();
+                replacedItems.append("§b").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount()).append(" §f").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName());
             }
             player.getInventory().setItem(randoms[i], new ItemStack(Material.STONE, 1));
         }
@@ -293,7 +308,7 @@ public class Executor {
 
     public static void bigBoom (Player player, String donationUsername) {
         announce(donationUsername, "сейчас тебя РАЗНЕСЕТ В КЛОЧЬЯ!!!", "сейчас РАЗНЕСЕТ В КЛОЧЬЯ", player, true);
-        player.getWorld().createExplosion(player.getLocation(), MainConfig.bigBoomRadius, true);
+        player.getWorld().createExplosion(player.getLocation(), MainConfig.getBigBoomRadius(), true);
 
     }
 
@@ -318,6 +333,16 @@ public class Executor {
     public static void giveIronSword (Player player, String donationUsername) {
         announce(donationUsername, "дал тебе железный меч!", "дал железный меч", player, true);
         ExecUtils.giveToPlayer(player, Material.IRON_SWORD, 1, donationUsername);
+    }
+
+    public static void giveIronKirka (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе железный меч!", "дал железный меч", player, true);
+        ExecUtils.giveToPlayer(player, Material.IRON_AXE, 1, donationUsername);
+    }
+
+    public static void giveDiamondKirka (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе железный меч!", "дал железный меч", player, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND_AXE, 1, donationUsername);
     }
 
     public static void giveDiamondSet (Player player, String donationUsername) {
@@ -353,7 +378,7 @@ public class Executor {
 
     public static void healPlayer (Player player, String donationUsername) {
         announce(donationUsername, "подарил тебе котейку!", "подарил котейку", player, true);
-        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
     }
 
 }

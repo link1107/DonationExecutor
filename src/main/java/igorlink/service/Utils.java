@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 public class Utils {
     private static Boolean _isPluginActive = true;
     protected static HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<>();
+    public static int donationSummary = 0;
 
     //Вывод сообщения в консоль
     public static void logToConsole(String text){
@@ -56,8 +57,9 @@ public class Utils {
             if (donaterName.equals("")) {
                 _donaterName = "Кто-то";
             }
-            Title title = new Title("§c" + _donaterName, "§f" + subText);
-            player.sendTitle(title);
+            if (MainConfig.getshowBigAnnouncement()) {
+                player.sendTitle("§c" + _donaterName, "§f" + subText, 7, MainConfig.getTimeForAnnouncement() * 20, 7);
+            }
             player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText);
         }
 
@@ -110,9 +112,9 @@ public class Utils {
         mapOfSynonimousChars.put('н', (Arrays.asList('h', 'n', 'й', 'и'))); //rus
         mapOfSynonimousChars.put('e', (Arrays.asList('е', '3', 'з'))); //eng
         mapOfSynonimousChars.put('е', (Arrays.asList('e', '3', 'з'))); //rus
-        mapOfSynonimousChars.put('г', (Arrays.asList('r', 'я', 'g', '7'))); //rus
-        mapOfSynonimousChars.put('r', (Arrays.asList('г', 'я', 'g', '7'))); //eng
-        mapOfSynonimousChars.put('g', (Arrays.asList('г', 'r', '7'))); //eng
+        mapOfSynonimousChars.put('г', (Arrays.asList('r', 'я', 'g', '7', '6'))); //rus
+        mapOfSynonimousChars.put('r', (Arrays.asList('г', 'я', 'g', '7', '6'))); //eng
+        mapOfSynonimousChars.put('g', (Arrays.asList('г', 'r', '7', '6'))); //eng
         mapOfSynonimousChars.put('p', (Arrays.asList('п', 'р', 'n', 'я', 'r'))); //eng
         mapOfSynonimousChars.put('р', (Arrays.asList('p', 'r', 'я'))); //rus
         mapOfSynonimousChars.put('п', (Arrays.asList('p', 'n', 'и', 'р'))); //rus
@@ -138,7 +140,7 @@ public class Utils {
         mapOfSynonimousChars.put('ч', (Arrays.asList('4')));//rus
         mapOfSynonimousChars.put('k', (Arrays.asList('к')));//eng
         mapOfSynonimousChars.put('к', (Arrays.asList('k')));//rus
-        mapOfSynonimousChars.put('0', (Arrays.asList('o', 'о'))); //num
+        mapOfSynonimousChars.put('0', (Arrays.asList('о', 'o'))); //num
         mapOfSynonimousChars.put('3', (Arrays.asList('e', 'е','з')));
         mapOfSynonimousChars.put('4', (Arrays.asList('ч')));
         mapOfSynonimousChars.put('5', (Arrays.asList('с', 'c', 's')));
@@ -180,7 +182,7 @@ public class Utils {
         }
 
 
-        for (String ss : MainConfig.listOfBlackListedSubstrings) {
+        for (String ss : MainConfig.getListOfBlackListedSubstrings()) {
             for (int i = 0; i <= validationText.length() - ss.length(); i++) {
                 int tempi = i;
                 for (int j = 0; j <= ss.length(); j++) {
@@ -231,6 +233,13 @@ public class Utils {
         return false;
     }
 
+    public static int getSum() {
+        return donationSummary;
+    }
+
+    public static void addSum(int sum) {
+        donationSummary = donationSummary + sum;
+    }
 
 }
 
