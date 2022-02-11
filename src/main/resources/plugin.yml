@@ -1,15 +1,27 @@
 name: DonationExecutor
-version: 0.3.3
+version: 0.3.5
+website: "https://github.com/link1107/DonationExecutor"
 main: igorlink.donationexecutor.DonationExecutor
 api-version: 1.18
 authors: [Igor Link]
 description: Executes donations
+permissions:
+  de.donate:
+    description: "Позволяет симулировать получение доната"
+    default: false
+  de.reload:
+    description: "Позволяет перезагружать плагин"
+    default: false
+  de.filter:
+    description: "Позволяет включать и выключать фильтр никнеймов донатеров"
+    default: false
 commands:
-  donationexecutor: {
-    aliases: [d],
-    description: "Позволяет имитировать донаты для тестов или для воспроизведения события вручную",
+  donationexecutor:
+    aliases: [de]
+    description: "Позволяет имитировать донаты для тестов или для воспроизведения события вручную"
     usage: "§c[DonationExecutor] §fДоступные команды: \n
-    §c/d §7donate §b<СУММА> <ИМЯ> §7## §b<СООБЩЕНИЕ>§f - сымитировать донат\n
+    §c/d §7donate §b<СУММА> <ИМЯ>§f - сымитировать донат\n
     §c/d §7reload§f - перезагрузить настройки из конфига
-    "
-  }
+    §c/d §7filter §bON|OFF§f - включить/выключить фильтр никнеймов"
+
+

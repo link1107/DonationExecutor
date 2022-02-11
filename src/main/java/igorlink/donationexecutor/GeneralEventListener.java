@@ -2,10 +2,22 @@ package igorlink.donationexecutor;
 
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+
+
 import static igorlink.service.Utils.*;
 
 public class GeneralEventListener implements Listener {
@@ -22,7 +34,7 @@ public class GeneralEventListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         if (MainConfig.isForceResourcePack()) {
-            e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/5cd9b26a954b46683eeea1b7df1cc0fbe136f79f.zip", Utils.decodeUsingBigInteger("5cd9b26a954b46683eeea1b7df1cc0fbe136f79f"));
+            e.getPlayer().setResourcePack("https://download.mc-packs.net/pack/65429ea1f5aae3b47e879834a1c538fa390f4b9b.zip", Utils.decodeUsingBigInteger("65429ea1f5aae3b47e879834a1c538fa390f4b9b"));
         }
 
         if (MainConfig.isOptifineNotificationOn()) {
@@ -40,6 +52,32 @@ public class GeneralEventListener implements Listener {
     public void onEntityDeath(EntityDeathEvent e){
         if (e.getEntity().getName().equals("§cСотрудник НКВД")) {
             e.getDrops().clear();
+        }
+        if (e.getEntity().getName().equals("N3koglai")) {
+            Location loc = e.getEntity().getLocation().clone();
+            for (int i = 1; i <= Math.round(Math.random()*7); i++) {
+                LivingEntity dwarf = (LivingEntity) e.getEntity().getWorld().spawnEntity(loc.clone().setDirection(new Vector((Math.random() - Math.random()), Math.random(), (Math.random() - Math.random()))), EntityType.ZOMBIE);
+                dwarf.setCustomName("Гном");
+                ((Zombie) dwarf).setBaby();
+                Vector direction = dwarf.getLocation().getDirection().clone();
+                direction.setY(0);
+                direction.normalize();
+                direction.setY(0.3);
+                dwarf.setVelocity(direction.multiply(1));
+            }
+            e.getDrops().clear();
+        }
+        if (e.getEntity().getName().equals("Гном")) {
+            e.getDrops().clear();
+            e.getDrops().add(new ItemStack(Material.GOLD_NUGGET, 1));
+        }
+    }
+
+    @EventHandler
+    public void onEatingBread(PlayerItemConsumeEvent e) {
+        if ( (e.getItem().getItemMeta().getDisplayName().equals("§6Советский Хлеб")) && (Math.round(Math.random()*8) == 3) ) {
+            e.getPlayer().sendActionBar("ЭТОТ ХЛЕБ ОКАЗАЛСЯ ПРОСРОЧКОЙ!");
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
         }
     }
 

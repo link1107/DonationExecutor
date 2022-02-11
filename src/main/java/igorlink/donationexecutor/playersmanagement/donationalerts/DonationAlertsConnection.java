@@ -35,28 +35,36 @@ public class DonationAlertsConnection {
         Emitter.Listener errorListener = (Object... arg0) -> logToConsole("Произошла ошибка подключения к Donation Alerts!");
 
         Emitter.Listener donationListener = (Object... arg0) -> {
+
             JSONObject json = new JSONObject((String) arg0[0]);
-            //logToConsole((String) arg0[0]);
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    String donationAmount;
+                    String donationUsername;
 
-                    if ((json.isNull("username")) || (json.isNull("amount_formatted"))) {
+                    logToConsole(json.toString());
+                    if (json.getInt("alert_type") != 1) {
+                        logToConsole("Стороннее оповещение");
                         return;
                     }
 
-                    try {
-                        if ( ((json.getString("amount_formatted")).length() == 0) || (Utils.cutOffKopeykis(json.getString("amount_formatted")).equals("0")) ) {
-                            return;
-                        }
-                    } catch (JSONException e) {
-                        return;
+                    if (json.isNull("username")) {
+                        donationUsername = "";
+                    } else {
+                        donationUsername = json.getString("username");
                     }
 
-                    DonationAlertsConnection.this.donationAlertsToken.addToDonationsQueue(new Donation(Bukkit.getConsoleSender(),
-                            json.getString("username"),
-                            json.getString("amount_formatted"),
-                            json.getString("message")));
+                    donationAmount = json.getString("amount_formatted");
+
+                    DonationAlertsConnection.this.donationAlertsToken.
+                            addToDonationsQueue(new Donation(
+                            Bukkit.getConsoleSender(),
+                            donationUsername,
+                            donationAmount)
+                            );
+
+                    Utils.addSum(json.getInt("amount_main"));
 
                 }
             }.runTask(DonationExecutor.getInstance());
