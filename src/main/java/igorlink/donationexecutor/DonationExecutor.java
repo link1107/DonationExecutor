@@ -42,7 +42,9 @@ public final class DonationExecutor extends JavaPlugin {
     public void onDisable() {
         try {
             isRunningStatus = false;
-            streamerPlayersManager.stop();
+            if (CheckNameAndToken()) {
+                streamerPlayersManager.stop();
+            }
         } catch (InterruptedException e) {
             logToConsole("Какая-то ебаная ошибка, похуй на нее вообще");
         }

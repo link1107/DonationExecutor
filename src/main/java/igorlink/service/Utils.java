@@ -170,12 +170,6 @@ public class Utils {
             return false;
         }
 
-//        for (String ss : MainConfig.listOfWhiteListedSubstrings) {
-//            if (validationText.contains(ss)) {
-//                validationText = validationText.replace(ss, "");
-//            }
-//        }
-
 
         if (!(validationText.matches("[a-zа-я0-9$!ё]*"))) {
             return true;
@@ -188,22 +182,22 @@ public class Utils {
                 for (int j = 0; j <= ss.length(); j++) {
 
                     if (j == ss.length()) {
+                        //если мы прошли всю субстроку до конца - значит слово содержит субстроку из блеклиста
                         return true;
                     }
 
+                    //Если текущая буква субстроки равна или синонимична текущей букве в слове, значит идем дальше смотреть следующий символ
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {
                         continue;
-                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j)))) {
-                        if ((mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
-                            continue;
-                        }
+                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j))) && (mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
+                        continue;
                     }
 
                     while (true) {
                         if (j==0) {
                             break;
                         }
-                        if (!(validationText.charAt(tempi + j) == validationText.charAt(tempi + j - 1))) {
+                        if (validationText.charAt(tempi + j) != validationText.charAt(tempi + j - 1)) {
                             if (!(mapOfSynonimousChars.containsKey(validationText.charAt(tempi + j)))) {
                                 break;
                             } else if (!(mapOfSynonimousChars.get(validationText.charAt(tempi + j)).contains(validationText.charAt(tempi + j - 1)))) {
@@ -214,6 +208,10 @@ public class Utils {
                         if ((validationText.length()-tempi-j) < (ss.length()-j)) {
                             break;
                         }
+                    }
+
+                    if ((validationText.length()-tempi-j) < (ss.length()-j)) {
+                        break;
                     }
 
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {
