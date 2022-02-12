@@ -14,8 +14,8 @@ import static igorlink.service.Utils.announce;
 public class ShitToInventory extends AbstractExecution {
 
     @Override
-    public Boolean execute(String donationUsername, Player player) {
-        announce(donationUsername, "насрал тебе в инвентарь", "насрал в инвентарь", player, true);
+    public Boolean execute(String donationUsername, Player player, String donationAmount) {
+        announce(donationUsername, "насрал тебе в инвентарь", "насрал в инвентарь", player, donationAmount, true);
         Material itemType = Material.DIRT;
         ItemStack itemStack = new ItemStack(itemType, 64);
         ItemMeta meta = itemStack.getItemMeta();
