@@ -1,5 +1,5 @@
 name: DonationExecutor
-version: 0.3.4
+version: 0.3.5
 website: "https://github.com/link1107/DonationExecutor"
 main: igorlink.donationexecutor.DonationExecutor
 api-version: 1.18

@@ -45,12 +45,12 @@ class GiantMobEventListener implements Listener {
     //Обрабатываем попадание снежка и файербола
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent e) {
-        if (e.getEntity() instanceof Snowball) {
+        if ( (e.getEntity() instanceof Snowball) && (((Snowball) e.getEntity()).getItem().getLore().contains("Stalinball")) ) {
             //Урон от снежка
             if ((e.getHitEntity()) instanceof LivingEntity) {
                 ((LivingEntity) e.getHitEntity()).damage(1.0D);
             }
-        } else if (e.getEntity() instanceof Fireball) {
+        } else if ( (e.getEntity() instanceof Fireball) && (e.getEntity().hasMetadata("type")) ) {
             //Взрыв от файербола
             if (!(e.getHitEntity() instanceof Giant)) {
                 e.getEntity().getWorld().createExplosion(e.getEntity().getLocation(), 2.0F, true);

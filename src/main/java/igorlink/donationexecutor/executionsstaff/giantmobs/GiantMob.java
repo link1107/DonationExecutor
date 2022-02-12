@@ -6,6 +6,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -349,7 +350,7 @@ class GiantMob {
                                 .add(0, -2, 0),
                         EntityType.FIREBALL);
                 stalinBall.setDirection(genVec(stalinBall.getLocation(), target.getLocation()).clone().multiply(2));
-
+                stalinBall.setMetadata("type", new FixedMetadataValue(DonationExecutor.getInstance(), "giantball"));
             }
 
         }.runTaskTimer(DonationExecutor.getInstance(), 0, 45);

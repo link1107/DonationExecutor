@@ -157,6 +157,7 @@ public class Executor {
 
     public static void killStalins (Player player, String donationUsername) {
         //Remove Last Death Dropped Items
+        announce(donationUsername, "убил Сталиных вокруг тебя!", "убил Сталиных вокруг", player, true);
         List<Entity> stalins = player.getNearbyEntities(200, 200, 200);
         for (Entity e: stalins) {
             if (e instanceof Giant) {
@@ -336,12 +337,12 @@ public class Executor {
     }
 
     public static void giveIronKirka (Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе железный меч!", "дал железный меч", player, true);
+        announce(donationUsername, "дал тебе железную кирку!", "дал железную кирку", player, true);
         ExecUtils.giveToPlayer(player, Material.IRON_AXE, 1, donationUsername);
     }
 
     public static void giveDiamondKirka (Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе железный меч!", "дал железный меч", player, true);
+        announce(donationUsername, "дал тебе алмазную кирку!", "дал алмазную кирку", player, true);
         ExecUtils.giveToPlayer(player, Material.DIAMOND_AXE, 1, donationUsername);
     }
 
