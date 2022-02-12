@@ -1,7 +1,6 @@
 package igorlink.donationexecutor;
 
 import igorlink.command.DonationExecutorCommand;
-import igorlink.donationexecutor.executionsstaff.executionsmanagement.executions.inventory.ShitToInventory;
 import igorlink.donationexecutor.executionsstaff.giantmobs.GiantMobManager;
 import igorlink.donationexecutor.playersmanagement.StreamerPlayersManager;
 import igorlink.service.MainConfig;

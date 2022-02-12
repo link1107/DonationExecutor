@@ -4,6 +4,7 @@ import igorlink.donationexecutor.playersmanagement.donationalerts.DonationAlerts
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class StreamerPlayersManager {
             numOfStreamerPlayers += token.getNumberOfStreamerPlayers();
         }
 
-        Utils.logToConsole("Было добавлено §b" + listOfDonationAlertsTokens.size() + " §fтокенов, с которыми связано §b" + numOfStreamerPlayers + " §fигроков.");
+        Utils.logToConsole("Было добавлено " + ChatColor.AQUA + listOfDonationAlertsTokens.size() + ChatColor.WHITE + " токенов, с которыми связано " + ChatColor.AQUA + numOfStreamerPlayers + ChatColor.WHITE + " игроков.");
     }
 
     public StreamerPlayer getStreamerPlayer(@NotNull String name) {
@@ -55,7 +56,7 @@ public class StreamerPlayersManager {
         return null;
     }
 
-    public void reload() throws InterruptedException {
+    public void reload() {
         for (DonationAlertsToken token : listOfDonationAlertsTokens) {
             token.disconnect();
         }

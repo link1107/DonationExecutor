@@ -18,7 +18,6 @@ public abstract class AbstractCommand implements CommandExecutor {
 
     public abstract Boolean execute(CommandSender sender, String label, String[] args);
 
-
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         return execute(sender, label, args);

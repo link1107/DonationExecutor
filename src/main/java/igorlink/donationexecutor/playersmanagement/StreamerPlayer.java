@@ -1,6 +1,5 @@
 package igorlink.donationexecutor.playersmanagement;
 
-import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import igorlink.donationexecutor.playersmanagement.donationalerts.DonationAlertsToken;
 import igorlink.donationexecutor.DonationExecutor;
 import igorlink.donationexecutor.Executor;
@@ -105,7 +104,4 @@ public class StreamerPlayer {
         }
 
     }
-
-
-
 }

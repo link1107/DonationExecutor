@@ -4,7 +4,6 @@ import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainConfig {
@@ -39,7 +38,7 @@ public class MainConfig {
     }
 
     //Загрузка данных из конфигфайла с указанным параметром перезагрузки
-    public static void loadMainConfig(Boolean isReload) throws InterruptedException {
+    public static void loadMainConfig(Boolean isReload) {
         DonationExecutor.getInstance().saveDefaultConfig();
 
         //Если это перезагрузка, обновляем данные, очищаем список игроков

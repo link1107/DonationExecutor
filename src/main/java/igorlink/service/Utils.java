@@ -1,7 +1,7 @@
 package igorlink.service;
 
-import com.destroystokyo.paper.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -11,18 +11,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+    private static final String prefixShort = ChatColor.RED + "[DE] " + ChatColor.WHITE;
     private static Boolean _isPluginActive = true;
-    protected static HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<>();
+    protected static HashMap<Character, List<Character>> mapOfSynonymousChars = new HashMap<>();
     public static int donationSummary = 0;
 
     //Вывод сообщения в консоль
     public static void logToConsole(String text){
-        Bukkit.getConsoleSender().sendMessage("§c[DonationExecutor] §f" + text);
+        Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[DonationExecutor] " + ChatColor.WHITE + text);
     }
 
     //Отправка сообщения игроку со стороны плагина
     public static void sendSysMsgToPlayer(Player player, String text){
-        player.sendMessage("§c[DE] §f" + text);
+        player.sendMessage(prefixShort + text);
     }
 
     public static byte[] decodeUsingBigInteger(String hexString) {
@@ -58,9 +59,9 @@ public class Utils {
                 _donaterName = "Кто-то";
             }
             if (MainConfig.getshowBigAnnouncement()) {
-                player.sendTitle("§c" + _donaterName, "§f" + subText + " за §b" + donationAmount + "§f руб.", 7, MainConfig.getTimeForAnnouncement() * 20, 7);
+                player.sendTitle(ChatColor.RED + _donaterName, ChatColor.WHITE + subText + " за " + ChatColor.AQUA + donationAmount + ChatColor.WHITE + " руб.", 7, MainConfig.getTimeForAnnouncement() * 20, 7);
             }
-            player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText + " за §b" + donationAmount + "§f руб.");
+            player.sendMessage(prefixShort + "Донатер " + ChatColor.RED + _donaterName, ChatColor.WHITE + subText + " за " + ChatColor.AQUA + donationAmount + ChatColor.WHITE + " руб.");
         }
 
         if (_donaterName.equals("")) {
@@ -68,7 +69,7 @@ public class Utils {
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
             if ( !(p.getName().equals(player.getName())) ) {
-                p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName() + " за §b" + donationAmount + "§f руб.");
+                p.sendMessage(prefixShort + "Донатер " + ChatColor.RED + _donaterName + " " + ChatColor.WHITE + alterSubtext + " " + ChatColor.AQUA + player.getName() + ChatColor.WHITE + " за " + ChatColor.AQUA + donationAmount + ChatColor.WHITE + " руб.");
             }
         }
 
@@ -107,44 +108,44 @@ public class Utils {
     }
 
     public static void fillTheSynonimousCharsHashMap() {
-        mapOfSynonimousChars.put('h', (Arrays.asList('x', 'х', 'н', 'n'))); //eng
-        mapOfSynonimousChars.put('n', (Arrays.asList('н', 'й', 'и'))); //eng
-        mapOfSynonimousChars.put('н', (Arrays.asList('h', 'n', 'й', 'и'))); //rus
-        mapOfSynonimousChars.put('e', (Arrays.asList('е', '3', 'з'))); //eng
-        mapOfSynonimousChars.put('е', (Arrays.asList('e', '3', 'з'))); //rus
-        mapOfSynonimousChars.put('г', (Arrays.asList('r', 'я', 'g', '7', '6'))); //rus
-        mapOfSynonimousChars.put('r', (Arrays.asList('г', 'я', 'g', '7', '6'))); //eng
-        mapOfSynonimousChars.put('g', (Arrays.asList('г', 'r', '7', '6'))); //eng
-        mapOfSynonimousChars.put('p', (Arrays.asList('п', 'р', 'n', 'я', 'r'))); //eng
-        mapOfSynonimousChars.put('р', (Arrays.asList('p', 'r', 'я'))); //rus
-        mapOfSynonimousChars.put('п', (Arrays.asList('p', 'n', 'и', 'р'))); //rus
-        mapOfSynonimousChars.put('o', (Arrays.asList('о', '0'))); //eng
-        mapOfSynonimousChars.put('о', (Arrays.asList('o', '0'))); //rus
-        mapOfSynonimousChars.put('a', (Arrays.asList('а'))); //eng
-        mapOfSynonimousChars.put('а', (Arrays.asList('a'))); //rus
-        mapOfSynonimousChars.put('и', (Arrays.asList('i', 'n', 'e', 'е', '|', 'l', '!', '1', '3', 'й'))); //rus
-        mapOfSynonimousChars.put('i', (Arrays.asList('1', 'и', 'e', 'е', '|', 'l', '!', 'й'))); //eng
-        mapOfSynonimousChars.put('с', (Arrays.asList('c', 's', '$', '5'))); //rus
-        mapOfSynonimousChars.put('s', (Arrays.asList('c', 'с', '$', '5'))); //eng
-        mapOfSynonimousChars.put('c', (Arrays.asList('s', 'с', '$', '5'))); //eng
-        mapOfSynonimousChars.put('л', (Arrays.asList('l', '1', '|'))); //rus
-        mapOfSynonimousChars.put('l', (Arrays.asList('л', '1', '|', '!'))); //eng
-        mapOfSynonimousChars.put('1', (Arrays.asList('л', 'i', 'l', '|'))); //eng
-        mapOfSynonimousChars.put('d', (Arrays.asList('д', 'л'))); //eng
-        mapOfSynonimousChars.put('д', (Arrays.asList('d', 'л', '9'))); //rus
-        mapOfSynonimousChars.put('y', (Arrays.asList('у', 'u', 'ы'))); //eng
-        mapOfSynonimousChars.put('у', (Arrays.asList('y', 'u', 'ы'))); //rus
-        mapOfSynonimousChars.put('x', (Arrays.asList('х', 'h'))); //eng
-        mapOfSynonimousChars.put('х', (Arrays.asList('x', 'h'))); //rus
-        mapOfSynonimousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
-        mapOfSynonimousChars.put('ч', (Arrays.asList('4')));//rus
-        mapOfSynonimousChars.put('k', (Arrays.asList('к')));//eng
-        mapOfSynonimousChars.put('к', (Arrays.asList('k')));//rus
-        mapOfSynonimousChars.put('0', (Arrays.asList('о', 'o'))); //num
-        mapOfSynonimousChars.put('3', (Arrays.asList('e', 'е','з')));
-        mapOfSynonimousChars.put('4', (Arrays.asList('ч')));
-        mapOfSynonimousChars.put('5', (Arrays.asList('с', 'c', 's')));
-        mapOfSynonimousChars.put('9', (Arrays.asList('r', 'я')));
+        mapOfSynonymousChars.put('h', (Arrays.asList('x', 'х', 'н', 'n'))); //eng
+        mapOfSynonymousChars.put('n', (Arrays.asList('н', 'й', 'и'))); //eng
+        mapOfSynonymousChars.put('н', (Arrays.asList('h', 'n', 'й', 'и'))); //rus
+        mapOfSynonymousChars.put('e', (Arrays.asList('е', '3', 'з'))); //eng
+        mapOfSynonymousChars.put('е', (Arrays.asList('e', '3', 'з'))); //rus
+        mapOfSynonymousChars.put('г', (Arrays.asList('r', 'я', 'g', '7', '6'))); //rus
+        mapOfSynonymousChars.put('r', (Arrays.asList('г', 'я', 'g', '7', '6'))); //eng
+        mapOfSynonymousChars.put('g', (Arrays.asList('г', 'r', '7', '6'))); //eng
+        mapOfSynonymousChars.put('p', (Arrays.asList('п', 'р', 'n', 'я', 'r'))); //eng
+        mapOfSynonymousChars.put('р', (Arrays.asList('p', 'r', 'я'))); //rus
+        mapOfSynonymousChars.put('п', (Arrays.asList('p', 'n', 'и', 'р'))); //rus
+        mapOfSynonymousChars.put('o', (Arrays.asList('о', '0'))); //eng
+        mapOfSynonymousChars.put('о', (Arrays.asList('o', '0'))); //rus
+        mapOfSynonymousChars.put('a', (List.of('а'))); //eng
+        mapOfSynonymousChars.put('а', (List.of('a'))); //rus
+        mapOfSynonymousChars.put('и', (Arrays.asList('i', 'n', 'e', 'е', '|', 'l', '!', '1', '3', 'й'))); //rus
+        mapOfSynonymousChars.put('i', (Arrays.asList('1', 'и', 'e', 'е', '|', 'l', '!', 'й'))); //eng
+        mapOfSynonymousChars.put('с', (Arrays.asList('c', 's', '$', '5'))); //rus
+        mapOfSynonymousChars.put('s', (Arrays.asList('c', 'с', '$', '5'))); //eng
+        mapOfSynonymousChars.put('c', (Arrays.asList('s', 'с', '$', '5'))); //eng
+        mapOfSynonymousChars.put('л', (Arrays.asList('l', '1', '|'))); //rus
+        mapOfSynonymousChars.put('l', (Arrays.asList('л', '1', '|', '!'))); //eng
+        mapOfSynonymousChars.put('1', (Arrays.asList('л', 'i', 'l', '|'))); //eng
+        mapOfSynonymousChars.put('d', (Arrays.asList('д', 'л'))); //eng
+        mapOfSynonymousChars.put('д', (Arrays.asList('d', 'л', '9'))); //rus
+        mapOfSynonymousChars.put('y', (Arrays.asList('у', 'u', 'ы'))); //eng
+        mapOfSynonymousChars.put('у', (Arrays.asList('y', 'u', 'ы'))); //rus
+        mapOfSynonymousChars.put('x', (Arrays.asList('х', 'h'))); //eng
+        mapOfSynonymousChars.put('х', (Arrays.asList('x', 'h'))); //rus
+        mapOfSynonymousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
+        mapOfSynonymousChars.put('ч', (List.of('4')));//rus
+        mapOfSynonymousChars.put('k', (List.of('к')));//eng
+        mapOfSynonymousChars.put('к', (List.of('k')));//rus
+        mapOfSynonymousChars.put('0', (Arrays.asList('о', 'o'))); //num
+        mapOfSynonymousChars.put('3', (Arrays.asList('e', 'е','з')));
+        mapOfSynonymousChars.put('4', (List.of('ч')));
+        mapOfSynonymousChars.put('5', (Arrays.asList('с', 'c', 's')));
+        mapOfSynonymousChars.put('9', (Arrays.asList('r', 'я')));
     }
 
     public static Boolean isBlackListed(String text) {
@@ -189,7 +190,7 @@ public class Utils {
                     //Если текущая буква субстроки равна или синонимична текущей букве в слове, значит идем дальше смотреть следующий символ
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {
                         continue;
-                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j))) && (mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
+                    } else if ((mapOfSynonymousChars.containsKey(ss.charAt(j))) && (mapOfSynonymousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
                         continue;
                     }
 
@@ -198,9 +199,9 @@ public class Utils {
                             break;
                         }
                         if (validationText.charAt(tempi + j) != validationText.charAt(tempi + j - 1)) {
-                            if (!(mapOfSynonimousChars.containsKey(validationText.charAt(tempi + j)))) {
+                            if (!(mapOfSynonymousChars.containsKey(validationText.charAt(tempi + j)))) {
                                 break;
-                            } else if (!(mapOfSynonimousChars.get(validationText.charAt(tempi + j)).contains(validationText.charAt(tempi + j - 1)))) {
+                            } else if (!(mapOfSynonymousChars.get(validationText.charAt(tempi + j)).contains(validationText.charAt(tempi + j - 1)))) {
                                 break;
                             }
                         }
@@ -216,8 +217,8 @@ public class Utils {
 
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {
                         continue;
-                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j)))) {
-                        if ((mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
+                    } else if ((mapOfSynonymousChars.containsKey(ss.charAt(j)))) {
+                        if ((mapOfSynonymousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
                             continue;
                         }
                     }

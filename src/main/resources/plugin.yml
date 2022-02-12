@@ -1,9 +1,9 @@
 name: DonationExecutor
-version: 0.3.6
+version: 0.3.7
 website: "https://github.com/link1107/DonationExecutor"
 main: igorlink.donationexecutor.DonationExecutor
 api-version: 1.18
-authors: [Igor Link]
+author: "Igor Link"
 description: Executes donations
 permissions:
   de.donate:

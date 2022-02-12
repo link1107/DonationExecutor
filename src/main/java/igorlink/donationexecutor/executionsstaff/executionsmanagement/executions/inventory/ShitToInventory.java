@@ -2,12 +2,13 @@ package igorlink.donationexecutor.executionsstaff.executionsmanagement.execution
 
 import igorlink.donationexecutor.executionsstaff.executionsmanagement.executions.AbstractExecution;
 import igorlink.service.MainConfig;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static igorlink.service.Utils.announce;
 
@@ -19,8 +20,8 @@ public class ShitToInventory extends AbstractExecution {
         Material itemType = Material.DIRT;
         ItemStack itemStack = new ItemStack(itemType, 64);
         ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName("§cГОВНО ОТ §f" + donationUsername.toUpperCase());
-        meta.setLore(Arrays.asList("§7Это говно ужасно вонюче и занимает много места"));
+        meta.setDisplayName(ChatColor.RED + "ГОВНО ОТ " + ChatColor.WHITE + donationUsername.toUpperCase());
+        meta.setLore(List.of(ChatColor.GRAY + "Это говно ужасно вонюче и занимает много места"));
         itemStack.setItemMeta(meta);
         for (int i = 0; i < MainConfig.getDirtAmount(); i++) {
             player.getInventory().addItem(itemStack);

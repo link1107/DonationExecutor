@@ -7,6 +7,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +20,6 @@ public class DonationAlertsConnection {
     private final Socket socket;
     private final DonationAlertsToken donationAlertsToken;
 
-
     public DonationAlertsConnection(DonationAlertsToken donationAlertsToken) throws URISyntaxException {
         this.donationAlertsToken = donationAlertsToken;
         URI url = new URI(DASERVER);
@@ -29,9 +29,9 @@ public class DonationAlertsConnection {
             socket.emit("add-user", new JSONObject()
                     .put("token", donationAlertsToken.getToken())
                     .put("type", "minor"));
-            logToConsole("Произведено успешное подключение для токена §b" + donationAlertsToken.getToken());
+            logToConsole("Произведено успешное подключение для токена " + ChatColor.AQUA + donationAlertsToken.getToken());
         };
-        Emitter.Listener disconectListener = (Object... arg0) -> logToConsole("Произведено отключение для токена §b" + donationAlertsToken.getToken());
+        Emitter.Listener disconnectListener = (Object... arg0) -> logToConsole("Произведено отключение для токена " + ChatColor.AQUA + donationAlertsToken.getToken());
         Emitter.Listener errorListener = (Object... arg0) -> logToConsole("Произошла ошибка подключения к Donation Alerts!");
 
         Emitter.Listener donationListener = (Object... arg0) -> {
@@ -69,14 +69,12 @@ public class DonationAlertsConnection {
             }.runTask(DonationExecutor.getInstance());
         };
 
-
         socket.on(Socket.EVENT_CONNECT, connectListener)
-                .on(Socket.EVENT_DISCONNECT, disconectListener)
+                .on(Socket.EVENT_DISCONNECT, disconnectListener)
                 .on(Socket.EVENT_ERROR, errorListener)
                 .on("donation", donationListener);
 
     }
-
 
     public void connect() throws JSONException {
         socket.connect();
@@ -89,6 +87,4 @@ public class DonationAlertsConnection {
     public boolean getConnected() {
         return socket.connected();
     }
-
-
 }

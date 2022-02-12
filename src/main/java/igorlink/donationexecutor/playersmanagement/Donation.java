@@ -36,11 +36,11 @@ public class Donation {
         return amount;
     }
 
-    public String getexecutionName() {
+    public String getExecutionName() {
         return executionName;
     }
 
-    public void setexecutionName(String _executionName) {
+    public void setExecutionName(String _executionName) {
         executionName = _executionName;
     }
 
