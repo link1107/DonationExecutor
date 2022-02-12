@@ -50,7 +50,7 @@ public class Utils {
         return _isPluginActive;
     }
 
-    public static void announce(String donaterName, String subText, String alterSubtext, Player player, Boolean bigAnnounce) {
+    public static void announce(String donaterName, String subText, String alterSubtext, Player player, String donationAmount, Boolean bigAnnounce) {
         String _donaterName = donaterName;
 
         if  (bigAnnounce) {
@@ -58,9 +58,9 @@ public class Utils {
                 _donaterName = "Кто-то";
             }
             if (MainConfig.getshowBigAnnouncement()) {
-                player.sendTitle("§c" + _donaterName, "§f" + subText, 7, MainConfig.getTimeForAnnouncement() * 20, 7);
+                player.sendTitle("§c" + _donaterName, "§f" + subText + " за §b" + donationAmount + "§f руб.", 7, MainConfig.getTimeForAnnouncement() * 20, 7);
             }
-            player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText);
+            player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText + " за §b" + donationAmount + "§f руб.");
         }
 
         if (_donaterName.equals("")) {
@@ -68,7 +68,7 @@ public class Utils {
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
             if ( !(p.getName().equals(player.getName())) ) {
-                p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName());
+                p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName() + " за §b" + donationAmount + "§f руб.");
             }
         }
 

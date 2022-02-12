@@ -10,11 +10,11 @@ import static igorlink.service.Utils.announce;
 public class DropActiveItem extends AbstractExecution {
 
     @Override
-    public Boolean execute(String donationUsername, Player player) {
+    public Boolean execute(String donationUsername, Player player, String donationAmount) {
         if (player.getEquipment().getItemInMainHand().getType() == Material.AIR) {
-            announce(donationUsername, "безуспешно пытался выбить у тебя предмет из рук", "безуспешно пытался выбить предмет из рук", player, true);
+            announce(donationUsername, "безуспешно пытался выбить у тебя предмет из рук", "безуспешно пытался выбить предмет из рук", player, donationAmount,true);
         } else {
-            announce(donationUsername, "выбил у тебя предмет из рук", "выбил предмет из рук", player, true);
+            announce(donationUsername, "выбил у тебя предмет из рук", "выбил предмет из рук", player, donationAmount,true);
             ((HumanEntity) player).dropItem(true);
             player.updateInventory();
         }

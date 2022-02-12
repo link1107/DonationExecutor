@@ -14,7 +14,7 @@ public abstract class AbstractExecution {
         Executor.AddToList(this);
     }
 
-    public abstract Boolean execute(String donationUsername, Player player);
+    public abstract Boolean execute(String donationUsername, Player player, String donationAmount);
 
     public String getName() {
         return execName;
