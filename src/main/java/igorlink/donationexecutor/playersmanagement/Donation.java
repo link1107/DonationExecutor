@@ -2,21 +2,24 @@ package igorlink.donationexecutor.playersmanagement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Donation {
-    private CommandSender sender;
-    private String username;
-    private String amount;
+    private final CommandSender sender;
+    private final String username;
+    private final String amount;
 
-    private String executionName = null;
+    @Nullable
+    private ExecutionType executionType = null;
 
-    public Donation(String _username, String _amount) {
-        new Donation(Bukkit.getConsoleSender(), _username, _amount);
+    public Donation(@NotNull String _username, @NotNull String _amount) {
+        this(Bukkit.getConsoleSender(), _username, _amount);
     }
 
-    public Donation(CommandSender _sender, String _username, String _amount) {
+    public Donation(@NotNull CommandSender _sender, @NotNull String _username, @NotNull String _amount) {
         sender = _sender;
-        if (_username.equals("")) {
+        if (_username.length() == 0) {
             username = "Аноним";
         } else {
             username = _username;
@@ -24,25 +27,27 @@ public class Donation {
         amount = _amount;
     }
 
+    @NotNull
     public CommandSender getSender() {
         return sender;
     }
 
+    @NotNull
     public String getName() {
         return username;
     }
 
+    @NotNull
     public String getAmount() {
         return amount;
     }
 
-    public String getexecutionName() {
-        return executionName;
+    @Nullable
+    public ExecutionType getExecutionType() {
+        return executionType;
     }
 
-    public void setexecutionName(String _executionName) {
-        executionName = _executionName;
+    public void setExecutionType(@Nullable ExecutionType type) {
+        executionType = type;
     }
-
-
 }

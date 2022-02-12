@@ -6,6 +6,8 @@ import igorlink.service.MainConfig;
 import igorlink.service.Utils;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +48,7 @@ public class StreamerPlayersManager {
         Utils.logToConsole("Было добавлено §b" + listOfDonationAlertsTokens.size() + " §fтокенов, с которыми связано §b" + numOfStreamerPlayers + " §fигроков.");
     }
 
+    @Nullable
     public StreamerPlayer getStreamerPlayer(@NotNull String name) {
         for (DonationAlertsToken token : listOfDonationAlertsTokens) {
             if (token.getStreamerPlayer(name) != null) {
@@ -55,7 +58,7 @@ public class StreamerPlayersManager {
         return null;
     }
 
-    public void reload() throws InterruptedException {
+    public void reload() {
         for (DonationAlertsToken token : listOfDonationAlertsTokens) {
             token.disconnect();
         }

@@ -2,6 +2,7 @@ package igorlink.service;
 
 import igorlink.donationexecutor.DonationExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class MainConfig {
     public static boolean showBigAnnouncement;
 
     //Геттер конфига
+    @NotNull
     public static FileConfiguration getConfig(){
         return config;
     }
@@ -39,15 +41,17 @@ public class MainConfig {
     }
 
     //Загрузка данных из конфигфайла с указанным параметром перезагрузки
-    public static void loadMainConfig(Boolean isReload) throws InterruptedException {
-        DonationExecutor.getInstance().saveDefaultConfig();
+    public static void loadMainConfig(boolean isReload) {
+        DonationExecutor executor = DonationExecutor.getInstance();
+
+        executor.saveDefaultConfig();
 
         //Если это перезагрузка, обновляем данные, очищаем список игроков
         if (isReload) {
-            DonationExecutor.getInstance().reloadConfig();
+            executor.reloadConfig();
         }
 
-        config = DonationExecutor.getInstance().getConfig();
+        config = executor.getConfig();
 
         dirtAmount = config.getInt("dirt-amount");
         diamondsAmount = config.getInt("diamonds-amount");
@@ -65,9 +69,7 @@ public class MainConfig {
         optifineNotification = config.getBoolean("notify-about-optifine");
         twitchFilter = config.getBoolean("twitch-filter");
         forceResourcePack = config.getBoolean("force-download-resourcepack");
-
     }
-
 
     public static void turnFilterOn() {
         twitchFilter = true;
@@ -84,6 +86,8 @@ public class MainConfig {
     public static int getBreadAmount() { return breadAmount; }
     public static int getTimeForAnnouncement() { return timeForAnnouncement; }
     public static int getAmountOfNKVD() { return amountOfNKVD; }
+
+    @NotNull
     public static List<String> getListOfBlackListedSubstrings() { return listOfBlackListedSubstrings; }
 
 

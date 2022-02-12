@@ -2,11 +2,15 @@ package igorlink.donationexecutor.playersmanagement.donationalerts;
 
 import igorlink.donationexecutor.Executor;
 import igorlink.donationexecutor.playersmanagement.Donation;
+import igorlink.donationexecutor.playersmanagement.ExecutionType;
 import igorlink.donationexecutor.playersmanagement.StreamerPlayer;
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +21,9 @@ public class DonationAlertsToken {
     private final List<StreamerPlayer> listOfStreamerPlayers = new ArrayList<>();
     private final String token;
 
-    public DonationAlertsToken(String token) {
+    public DonationAlertsToken(@NotNull String token) {
         this.token = token;
+
         try {
             donationAlertsConnection = new DonationAlertsConnection(this);
             donationAlertsConnection.connect();
@@ -31,21 +36,28 @@ public class DonationAlertsToken {
         }
     }
 
+    @NotNull
     public String getToken() {
         return token;
     }
 
     public void executeDonationsInQueues() {
         for (StreamerPlayer sp : listOfStreamerPlayers) {
-            if ( (Bukkit.getPlayerExact(sp.getName()) != null) && (!(Objects.requireNonNull(Bukkit.getPlayerExact(sp.getName())).isDead())) ) {
-                    Donation donation = sp.takeDonationFromQueue();
-                    if (donation==null) {
-                        continue;
-                    }
-                    Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getexecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
-                    Executor.DoExecute(sp.getName(), donation.getName(), donation.getAmount(), donation.getexecutionName());
-            }
+            Player player = Bukkit.getPlayerExact(sp.getName());
 
+            if (player != null && !player.isDead()) {
+                Donation donation = sp.takeDonationFromQueue();
+                if (donation == null) {
+                    continue;
+                }
+
+                Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getExecutionType() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
+
+                ExecutionType execType = donation.getExecutionType();
+                if (execType != null) {
+                    Executor.doExecute(sp.getName(), donation.getName(), donation.getAmount(), execType);
+                }
+            }
         }
     }
 
@@ -53,22 +65,24 @@ public class DonationAlertsToken {
         listOfStreamerPlayers.add(new StreamerPlayer(streamerPlayerName, this));
     }
 
+    @Nullable
     public StreamerPlayer getStreamerPlayer(@NotNull String name) {
         for (StreamerPlayer p : listOfStreamerPlayers) {
             if (p.getName().equals(name)) {
                 return p;
             }
         }
+
         return null;
     }
 
     //Добавление доната в очередь
-    public void addToDonationsQueue(Donation donation) {
-        String execution;
+    public void addToDonationsQueue(@NotNull Donation donation) {
         for (StreamerPlayer sp : listOfStreamerPlayers) {
-            execution = sp.checkExecution(Utils.cutOffKopeykis(donation.getAmount()));
-            if (!(execution == null)) {
-                donation.setexecutionName(execution);
+            ExecutionType execution = sp.getExecutionTypeForAmount(Utils.cutOffKopeykis(donation.getAmount()));
+
+            if (execution != null) {
+                donation.setExecutionType(execution);
                 sp.putDonationToQueue(donation);
                 Utils.logToConsole("Донат от §b" + donation.getName() + "§f в размере §b" + donation.getAmount() + " руб.§f был обработан и отправлен в очередь на выполнение.");
                 return;

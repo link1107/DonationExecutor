@@ -4,10 +4,10 @@ import igorlink.service.MainConfig;
 import igorlink.service.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
+import org.jetbrains.annotations.NotNull;
 
 public class FilterSubCommand {
-    public static void onFilterCommand(CommandSender sender, String[] args) {
+    public static void onFilterCommand(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         if (args[0].equalsIgnoreCase("on")) {
             MainConfig.turnFilterOn();
             Utils.logToConsole("Фильтр никнеймов донатеров §bВКЛЮЧЕН");
@@ -21,6 +21,5 @@ public class FilterSubCommand {
                 Utils.sendSysMsgToPlayer((Player) sender,"Фильтр никнеймов донатеров §bВЫКЛЮЧЕН");
             }
         }
-
     }
 }

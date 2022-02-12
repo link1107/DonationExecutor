@@ -9,52 +9,61 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 class GiantMobEventListener implements Listener {
-
     private final GiantMobManager thisInstanceOfGiantMobManager;
 
-    GiantMobEventListener(GiantMobManager _thisInstanceOfGiantMobManager) {
+    GiantMobEventListener(@NotNull GiantMobManager _thisInstanceOfGiantMobManager) {
         thisInstanceOfGiantMobManager = _thisInstanceOfGiantMobManager;
     }
 
     //Добавляем моба в наш список, если это гигант с кастомным именем
     @EventHandler
-    private void onGiantMobAddTOWorld(EntityAddToWorldEvent e) {
-        if ((e.getEntity() instanceof Giant) && (e.getEntity().getCustomName() != null)) {
-            thisInstanceOfGiantMobManager.addMob((LivingEntity) e.getEntity());
+    private void onGiantMobAddToWorld(@NotNull EntityAddToWorldEvent e) {
+        Entity entity = e.getEntity();
+
+        if ((entity instanceof Giant) && entity.getCustomName() != null) {
+            thisInstanceOfGiantMobManager.addMob((LivingEntity) entity);
         }
     }
 
     //Удаляем моба из нашего списка, когда он исчезает с карты
     @EventHandler
-    private void onGiantMobRemoveFromWorld(EntityRemoveFromWorldEvent e) {
-        if ( (e.getEntity() instanceof Giant) && (thisInstanceOfGiantMobManager.contains((LivingEntity) e.getEntity())) ) {
-            thisInstanceOfGiantMobManager.removeMob((LivingEntity) e.getEntity());
+    private void onGiantMobRemoveFromWorld(@NotNull EntityRemoveFromWorldEvent e) {
+        Entity entity = e.getEntity();
+
+        if (entity instanceof Giant) {
+            thisInstanceOfGiantMobManager.removeMob((LivingEntity) entity);
         }
     }
 
     @EventHandler
-    public void onGiantMobDamage(EntityDamageEvent e){
+    public void onGiantMobDamage(@NotNull EntityDamageEvent e){
         //Нашему мобу отменяем дамаг от падения
-        if ( (e.getEntity() instanceof Giant) && ((e.getCause() == EntityDamageEvent.DamageCause.FALL) || (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE) ||  (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK))) {
-            e.setCancelled(true);
+        if(e.getEntity() instanceof Giant) {
+            switch (e.getCause()) {
+                case FALL, BLOCK_EXPLOSION, FIRE, FIRE_TICK -> e.setCancelled(true);
+            }
         }
     }
 
     //Обрабатываем попадание снежка и файербола
     @EventHandler
-    public void onProjectileHit(ProjectileHitEvent e) {
-        if ( (e.getEntity() instanceof Snowball) && (((Snowball) e.getEntity()).getItem().getLore().contains("Stalinball")) ) {
+    public void onProjectileHit(@NotNull ProjectileHitEvent e) {
+        Entity entity = e.getEntity();
+        Entity hitEntity = e.getHitEntity();
+
+        if (entity instanceof Snowball && (((Snowball) entity).getItem().getLore().contains("Stalinball")) ) {
             //Урон от снежка
-            if ((e.getHitEntity()) instanceof LivingEntity) {
-                ((LivingEntity) e.getHitEntity()).damage(1.0D);
+            if (hitEntity instanceof LivingEntity) {
+                ((LivingEntity) hitEntity).damage(1.0D);
             }
-        } else if ( (e.getEntity() instanceof Fireball) && (e.getEntity().hasMetadata("type")) ) {
+        } else if (entity instanceof Fireball && entity.hasMetadata("type")) {
             //Взрыв от файербола
-            if (!(e.getHitEntity() instanceof Giant)) {
-                e.getEntity().getWorld().createExplosion(e.getEntity().getLocation(), 2.0F, true);
-                e.getEntity().remove();
+            if (!(hitEntity instanceof Giant)) {
+                entity.getWorld().createExplosion(entity.getLocation(), 2.0F, true);
+                entity.remove();
                 e.setCancelled(true);
             }
         }
@@ -62,13 +71,17 @@ class GiantMobEventListener implements Listener {
 
 
     @EventHandler
-    public void onComeTooClose(EntityMoveEvent e){
+    public void onComeTooClose(@NotNull EntityMoveEvent e){
         //дать пинка, если слишком близок к гигантскому мобу
         if (e.getEntity() instanceof Giant) {
             for (Entity ent : e.getEntity().getNearbyEntities(1.9, 4, 1.9)) {
                 if (ent instanceof LivingEntity) {
-                    Vector launchDirection = e.getEntity().getLocation().getDirection().clone().setY(0).normalize().multiply(0.8);
-                    launchDirection.setY(0.4);
+                    Vector launchDirection = e.getEntity().getLocation().getDirection()
+                            .setY(0)
+                            .normalize()
+                            .multiply(0.8)
+                            .setY(0.4);
+
                     ent.setVelocity(launchDirection);
                 }
             }

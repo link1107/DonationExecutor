@@ -4,17 +4,17 @@ import igorlink.service.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import static igorlink.service.Utils.logToConsole;
 
 public class DonationExecutorCommand extends AbstractCommand {
-
     public DonationExecutorCommand() {
         super("donationexecutor");
     }
 
     @Override
-    public Boolean execute(CommandSender sender, String label, String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String @NotNull [] args) {
         String[] newArgs;
 
         if (args.length == 0) {

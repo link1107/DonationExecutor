@@ -34,7 +34,7 @@ public class GiantMobManager {
     }
 
     //ПРоверяем, есть ли у нас список с этим типом мобов
-    public Boolean contains(@NotNull LivingEntity livingEntity) {
+    public boolean contains(@NotNull LivingEntity livingEntity) {
         return listOfMobLists.containsKey(livingEntity.getCustomName());
     }
 
@@ -49,18 +49,23 @@ public class GiantMobManager {
 
     //Добавляем моба в оответствующий его типу список
     private void addMobToList(@NotNull GiantMob newGiantMob) {
-        if (listOfMobLists.containsKey(newGiantMob.getName())) {
-            listOfMobLists.get(newGiantMob.getName()).put(newGiantMob.getUUID(), newGiantMob);
-        } else {
-            listOfMobLists.put(newGiantMob.getName(), new HashMap<>());
-            listOfMobLists.get(newGiantMob.getName()).put(newGiantMob.getUUID(), newGiantMob);
-        }
+        String giantName = newGiantMob.getName();
+        UUID id = newGiantMob.getUUID();
 
+        HashMap<UUID, GiantMob> hashMap = listOfMobLists.get(giantName);
+
+        if(hashMap != null) {
+            hashMap.put(id, newGiantMob);
+        } else {
+            hashMap = new HashMap<>();
+            hashMap.put(id, newGiantMob);
+
+            listOfMobLists.put(giantName, hashMap);
+        }
     }
 
     //Удаляем моба из соответствующего ему списка
     private void removeMobFromList(@NotNull LivingEntity giantMob) {
         listOfMobLists.get(giantMob.getName()).remove(giantMob.getUniqueId());
     }
-
 }
