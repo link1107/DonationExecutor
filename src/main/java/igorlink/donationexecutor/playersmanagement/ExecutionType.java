@@ -29,5 +29,6 @@ public enum ExecutionType {
     HealPlayer,
     GiveIronKirka,
     GiveDiamondKirka,
-    KillStalins
+    KillStalins,
+    TakeOffBlock
 }

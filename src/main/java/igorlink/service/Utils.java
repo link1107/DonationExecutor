@@ -8,6 +8,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;
+
 
 import java.math.BigInteger;
 import java.util.*;
@@ -240,24 +242,25 @@ public class Utils {
             @NotNull String subText,
             @NotNull String alterSubtext,
             @NotNull Player player,
+            @NotNull String donationAmount,
             boolean bigAnnounce
     ) {
+        String _donaterName = donaterName;
+
         if (donaterName.length() == 0) {
-            donaterName = "Кто-то";
+            _donaterName = "Кто-то";
         }
 
-        if (bigAnnounce) {
+        if  (bigAnnounce) {
             if (MainConfig.getshowBigAnnouncement()) {
-                player.sendTitle("§c" + donaterName, "§f" + subText, 7, MainConfig.getTimeForAnnouncement() * 20, 7);
+                player.sendTitle("§c" + _donaterName, "§f" + subText, 7, MainConfig.getTimeForAnnouncement() * 20, 7);
             }
-
-            player.sendMessage("§c[DE] §fДонатер §c" + donaterName, "§f" + subText);
+            player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText + " за §b" + donationAmount + "§f руб.");
         }
 
-        String message = "§c[DE] §fДонатер §c" + donaterName + " §f" + alterSubtext + " §b" + player.getName();
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!(p.getName().equals(player.getName()))) {
-                p.sendMessage(message);
+            if ( !(p.getName().equals(player.getName())) ) {
+                p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName() + " за §b" + donationAmount + "§f руб.");
             }
         }
     }
