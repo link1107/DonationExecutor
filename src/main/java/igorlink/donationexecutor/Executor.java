@@ -29,7 +29,8 @@ public class Executor {
     public static List<String> executionsNamesList = new ArrayList<>(Arrays.asList("ShitToInventory", "Lesch", "DropActiveItem",
             "PowerKick", "ClearLastDeathDrop", "SpawnCreeper", "GiveDiamonds", "GiveStackOfDiamonds", "GiveBread",
             "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom", "Nekoglai", "SetNight", "SetDay", "GiveIronSet",
-            "GiveIronSword", "GiveDiamondSet", "GiveDiamondSword", "SpawnTamedDog", "SpawnTamedCat", "HealPlayer"));
+            "GiveIronSword", "GiveDiamondSet", "GiveDiamondSword", "SpawnTamedDog", "SpawnTamedCat", "HealPlayer", "GiveIronKirka", "GiveDiamondKirka",
+            "KillStalins"));
 
 
 
@@ -87,9 +88,12 @@ public class Executor {
             case "GiveIronSword" -> giveIronSword(streamerPlayer, validDonationUsername);
             case "GiveDiamondSet" -> giveDiamondSet(streamerPlayer, validDonationUsername);
             case "GiveDiamondSword" -> giveDiamondSword(streamerPlayer, validDonationUsername);
-            case "SpawnTamedDog" -> spawnTamedDog(streamerPlayer, donationUsername);
-            case "SpawnTamedCat" -> spawnTamedCat(streamerPlayer, donationUsername);
-            case "HealPlayer" -> healPlayer(streamerPlayer, donationUsername);
+            case "SpawnTamedDog" -> spawnTamedDog(streamerPlayer, validDonationUsername);
+            case "SpawnTamedCat" -> spawnTamedCat(streamerPlayer, validDonationUsername);
+            case "HealPlayer" -> healPlayer(streamerPlayer, validDonationUsername);
+            case "GiveIronKirka" -> giveIronKirka(streamerPlayer, validDonationUsername);
+            case "GiveDiamondKirka" -> giveDiamondKirka(streamerPlayer, validDonationUsername);
+            case "KillStalins" -> killStalins(streamerPlayer, validDonationUsername);
         }
 
     }
@@ -151,6 +155,17 @@ public class Executor {
         ((Sheep) sheep).setSheared(true);
     }
 
+    public static void killStalins (Player player, String donationUsername) {
+        //Remove Last Death Dropped Items
+        announce(donationUsername, "убил Сталиных вокруг тебя!", "убил Сталиных вокруг", player, true);
+        List<Entity> stalins = player.getNearbyEntities(200, 200, 200);
+        for (Entity e: stalins) {
+            if (e instanceof Giant) {
+                ((LivingEntity) e).damage(1000, player);
+            }
+        }
+    }
+
     public static void powerKick (Player player, String donationUsername) {
         announce(donationUsername, "дал тебе смачного пинка под зад", "дал смачного пинка под зад", player, true);
         Vector direction = player.getLocation().getDirection();
@@ -197,7 +212,7 @@ public class Executor {
     }
 
     public static void giveBread (Player player, String donationUsername) {
-        announce(donationUsername, "дал тебе §6Советского Хлеба!", "дал Советского §6Хлеба§f", player, true);
+        announce(donationUsername, "дал тебе §6Советского Хлеба!", "дал §6Советского §6Хлеба§f", player, true);
         ExecUtils.giveToPlayer(player, Material.BREAD, MainConfig.getBreadAmount(), donationUsername, "§6Советский Хлеб");
     }
 
@@ -321,6 +336,16 @@ public class Executor {
         ExecUtils.giveToPlayer(player, Material.IRON_SWORD, 1, donationUsername);
     }
 
+    public static void giveIronKirka (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе железную кирку!", "дал железную кирку", player, true);
+        ExecUtils.giveToPlayer(player, Material.IRON_AXE, 1, donationUsername);
+    }
+
+    public static void giveDiamondKirka (Player player, String donationUsername) {
+        announce(donationUsername, "дал тебе алмазную кирку!", "дал алмазную кирку", player, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND_AXE, 1, donationUsername);
+    }
+
     public static void giveDiamondSet (Player player, String donationUsername) {
         announce(donationUsername, "дал тебе алмазную броню!", "дал алмазную броню", player, true);
         ExecUtils.giveToPlayer(player, Material.DIAMOND_HELMET, 1, donationUsername);
@@ -353,7 +378,7 @@ public class Executor {
     }
 
     public static void healPlayer (Player player, String donationUsername) {
-        announce(donationUsername, "подарил тебе котейку!", "подарил котейку", player, true);
+        announce(donationUsername, "полностью вас вылечил!", "полностью вылечил", player, true);
         player.setHealth(Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).getValue());
     }
 

@@ -112,9 +112,9 @@ public class Utils {
         mapOfSynonimousChars.put('н', (Arrays.asList('h', 'n', 'й', 'и'))); //rus
         mapOfSynonimousChars.put('e', (Arrays.asList('е', '3', 'з'))); //eng
         mapOfSynonimousChars.put('е', (Arrays.asList('e', '3', 'з'))); //rus
-        mapOfSynonimousChars.put('г', (Arrays.asList('r', 'я', 'g', '7'))); //rus
-        mapOfSynonimousChars.put('r', (Arrays.asList('г', 'я', 'g', '7'))); //eng
-        mapOfSynonimousChars.put('g', (Arrays.asList('г', 'r', '7'))); //eng
+        mapOfSynonimousChars.put('г', (Arrays.asList('r', 'я', 'g', '7', '6'))); //rus
+        mapOfSynonimousChars.put('r', (Arrays.asList('г', 'я', 'g', '7', '6'))); //eng
+        mapOfSynonimousChars.put('g', (Arrays.asList('г', 'r', '7', '6'))); //eng
         mapOfSynonimousChars.put('p', (Arrays.asList('п', 'р', 'n', 'я', 'r'))); //eng
         mapOfSynonimousChars.put('р', (Arrays.asList('p', 'r', 'я'))); //rus
         mapOfSynonimousChars.put('п', (Arrays.asList('p', 'n', 'и', 'р'))); //rus
@@ -140,7 +140,7 @@ public class Utils {
         mapOfSynonimousChars.put('ч', (Arrays.asList('4')));//rus
         mapOfSynonimousChars.put('k', (Arrays.asList('к')));//eng
         mapOfSynonimousChars.put('к', (Arrays.asList('k')));//rus
-        mapOfSynonimousChars.put('0', (Arrays.asList('o', 'о'))); //num
+        mapOfSynonimousChars.put('0', (Arrays.asList('о', 'o'))); //num
         mapOfSynonimousChars.put('3', (Arrays.asList('e', 'е','з')));
         mapOfSynonimousChars.put('4', (Arrays.asList('ч')));
         mapOfSynonimousChars.put('5', (Arrays.asList('с', 'c', 's')));
@@ -170,12 +170,6 @@ public class Utils {
             return false;
         }
 
-//        for (String ss : MainConfig.listOfWhiteListedSubstrings) {
-//            if (validationText.contains(ss)) {
-//                validationText = validationText.replace(ss, "");
-//            }
-//        }
-
 
         if (!(validationText.matches("[a-zа-я0-9$!ё]*"))) {
             return true;
@@ -188,22 +182,22 @@ public class Utils {
                 for (int j = 0; j <= ss.length(); j++) {
 
                     if (j == ss.length()) {
+                        //если мы прошли всю субстроку до конца - значит слово содержит субстроку из блеклиста
                         return true;
                     }
 
+                    //Если текущая буква субстроки равна или синонимична текущей букве в слове, значит идем дальше смотреть следующий символ
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {
                         continue;
-                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j)))) {
-                        if ((mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
-                            continue;
-                        }
+                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j))) && (mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
+                        continue;
                     }
 
                     while (true) {
                         if (j==0) {
                             break;
                         }
-                        if (!(validationText.charAt(tempi + j) == validationText.charAt(tempi + j - 1))) {
+                        if (validationText.charAt(tempi + j) != validationText.charAt(tempi + j - 1)) {
                             if (!(mapOfSynonimousChars.containsKey(validationText.charAt(tempi + j)))) {
                                 break;
                             } else if (!(mapOfSynonimousChars.get(validationText.charAt(tempi + j)).contains(validationText.charAt(tempi + j - 1)))) {
@@ -214,6 +208,10 @@ public class Utils {
                         if ((validationText.length()-tempi-j) < (ss.length()-j)) {
                             break;
                         }
+                    }
+
+                    if ((validationText.length()-tempi-j) < (ss.length()-j)) {
+                        break;
                     }
 
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {

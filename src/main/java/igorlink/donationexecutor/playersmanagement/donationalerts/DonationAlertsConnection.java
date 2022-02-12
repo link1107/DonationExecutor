@@ -43,9 +43,8 @@ public class DonationAlertsConnection {
                     String donationAmount;
                     String donationUsername;
 
-                    logToConsole(json.toString());
+
                     if (json.getInt("alert_type") != 1) {
-                        logToConsole("Стороннее оповещение");
                         return;
                     }
 
