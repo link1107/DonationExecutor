@@ -18,12 +18,10 @@ public class DonateSubCommand {
 
         //Получаем имя донатера
         for (i = 1; i <= args.length - 1; i++) {
-            if (i == 1) {
-                donationUsername.append(args[i]);
-            } else {
+            if (i != 1) {
                 donationUsername.append(' ');
-                donationUsername.append(args[i]);
             }
+            donationUsername.append(args[i]);
         }
 
 

@@ -2,6 +2,7 @@ package igorlink.donationexecutor;
 
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -25,7 +26,7 @@ public class GeneralEventListener implements Listener {
     //Отмена горения НКВДшников
     @EventHandler
     public void onComburst(EntityCombustEvent e){
-        if ((e.getEntity().getName().equals("§cСотрудник НКВД")) || (e.getEntity().getName().equals("§cИосиф Сталин"))) {
+        if ((e.getEntity().getName().equals(ChatColor.RED + "Сотрудник НКВД")) || (e.getEntity().getName().equals(ChatColor.RED + "Иосиф Сталин"))) {
             e.setCancelled(true);
         }
     }
@@ -38,7 +39,7 @@ public class GeneralEventListener implements Listener {
         }
 
         if (MainConfig.isOptifineNotificationOn()) {
-            sendSysMsgToPlayer(e.getPlayer(), "для отображения кастомных скинов плагина на вашем\nклиенте игры должен быть установлен мод §bOptiFine.\n \n§fЕсли у вас не установлен данный мод, скачать его вы\nможете по ссылке: §b§nhttps://optifine.net/downloads\n\n§7§oДанное оповещение можно отключить в файле настроек\nплагина в папке сервера /plugins/DonationExecutor/\n \n");
+            sendSysMsgToPlayer(e.getPlayer(), "для отображения кастомных скинов плагина на вашем\nклиенте игры должен быть установлен мод " + ChatColor.AQUA + "OptiFine" + ChatColor.WHITE + ".\n \nЕсли у вас не установлен данный мод, скачать его вы\nможете по ссылке: " + ChatColor.AQUA + ChatColor.UNDERLINE + "https://optifine.net/downloads" + ChatColor.GRAY + ChatColor.ITALIC + "\n\nДанное оповещение можно отключить в файле настроек\nплагина в папке сервера /plugins/DonationExecutor/\n \n");
         }
 
         if (!isPluginActive()) {
@@ -50,7 +51,7 @@ public class GeneralEventListener implements Listener {
     //Отмена дропа у НКВДшников
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e){
-        if (e.getEntity().getName().equals("§cСотрудник НКВД")) {
+        if (e.getEntity().getName().equals(ChatColor.RED + "Сотрудник НКВД")) {
             e.getDrops().clear();
         }
         if (e.getEntity().getName().equals("N3koglai")) {
@@ -75,7 +76,7 @@ public class GeneralEventListener implements Listener {
 
     @EventHandler
     public void onEatingBread(PlayerItemConsumeEvent e) {
-        if ( (e.getItem().getItemMeta().getDisplayName().equals("§6Советский Хлеб")) && (Math.round(Math.random()*8) == 3) ) {
+        if ( (e.getItem().getItemMeta().getDisplayName().equals(ChatColor.GOLD + "Советский Хлеб")) && (Math.round(Math.random()*8) == 3) ) {
             e.getPlayer().sendActionBar("ЭТОТ ХЛЕБ ОКАЗАЛСЯ ПРОСРОЧКОЙ!");
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 100, 1));
         }

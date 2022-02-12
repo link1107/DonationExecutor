@@ -3,6 +3,7 @@ package igorlink.donationexecutor;
 import igorlink.donationexecutor.executionsstaff.ExecUtils;
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,8 +25,6 @@ import static java.lang.Math.round;
 import static org.bukkit.Bukkit.getPlayerExact;
 
 public class Executor {
-    public static String nameOfStreamerPlayer;
-    public static String nameOfSecondStreamerPlayer;
     public static List<String> executionsNamesList = new ArrayList<>(Arrays.asList("ShitToInventory", "Lesch", "DropActiveItem",
             "PowerKick", "ClearLastDeathDrop", "SpawnCreeper", "GiveDiamonds", "GiveStackOfDiamonds", "GiveBread",
             "CallNKVD", "CallStalin", "RandomChange", "TamedBecomesEnemies", "HalfHeart", "BigBoom", "Nekoglai", "SetNight", "SetDay", "GiveIronSet",
@@ -54,13 +53,13 @@ public class Executor {
         } else {
             validDonationUsername = "Донатер";
             assert streamerPlayer != null;
-            Utils.logToConsole("§eникнейм донатера §f" + donationUsername + "§e был скрыт, как подозрительный");
+            Utils.logToConsole(ChatColor.YELLOW + "никнейм донатера " + ChatColor.WHITE + donationUsername + ChatColor.YELLOW + " был скрыт, как подозрительный");
             streamerPlayer.sendActionBar("НИКНЕЙМ ДОНАТЕРА БЫЛ СКРЫТ");
         }
 
 
         if (!canContinue) {
-            logToConsole("Донат от §b" + donationUsername + " §f в размере §b" + fullDonationAmount + "§f выполнен из-за того, что целевой стример был недоступен.");
+            logToConsole("Донат от " + ChatColor.AQUA + donationUsername + ChatColor.WHITE + " в размере " + ChatColor.AQUA + fullDonationAmount + ChatColor.WHITE + " выполнен из-за того, что целевой стример был недоступен.");
             return;
         }
 
@@ -107,8 +106,8 @@ public class Executor {
         Material itemType = Material.DIRT;
         ItemStack itemStack = new ItemStack(itemType, 64);
         ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName("§cГОВНО ОТ §f" + donationUsername.toUpperCase());
-        meta.setLore(List.of("§7Это говно ужасно вонюче и занимает много места"));
+        meta.setDisplayName(ChatColor.RED + "ГОВНО ОТ " + ChatColor.WHITE + donationUsername.toUpperCase());
+        meta.setLore(List.of(ChatColor.GRAY + "Это говно ужасно вонюче и занимает много места"));
         itemStack.setItemMeta(meta);
 
         for (int i = 0; i < MainConfig.getDirtAmount(); i++) {
@@ -147,11 +146,11 @@ public class Executor {
         announce(donationUsername, "призвал НЕКОГЛАЯ", "призвал Некоглая", player, donationAmount, true);
         direction.setY(0);
         direction.normalize();
-        Location newloc = player.getLocation().clone();
-        Vector newdir = direction.clone().multiply(1.5);
-        newloc.add(newdir);
-        newloc.setDirection(player.getLocation().getDirection().clone().multiply(-1));
-        sheep = (LivingEntity) player.getWorld().spawnEntity(newloc, EntityType.SHEEP);
+        Location newLoc = player.getLocation().clone();
+        Vector newDir = direction.clone().multiply(1.5);
+        newLoc.add(newDir);
+        newLoc.setDirection(player.getLocation().getDirection().clone().multiply(-1));
+        sheep = (LivingEntity) player.getWorld().spawnEntity(newLoc, EntityType.SHEEP);
         sheep.setCustomName("N3koglai");
         ((Sheep) sheep).setSheared(true);
     }
@@ -203,18 +202,18 @@ public class Executor {
 
     public static void giveDiamonds (Player player, String donationUsername, String donationAmount) {
         //Give some diamonds to the player
-        announce(donationUsername, "насыпал тебе §bАЛМАЗОВ", "насыпал §bАлмазов§f", player, donationAmount, true);
-        ExecUtils.giveToPlayer(player, Material.DIAMOND, MainConfig.getDiamondsAmount(), donationUsername, "§bАлмазы");
+        announce(donationUsername, "насыпал тебе " + ChatColor.AQUA + "АЛМАЗОВ", "насыпал " + ChatColor.AQUA + "Алмазов" + ChatColor.WHITE, player, donationAmount, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND, MainConfig.getDiamondsAmount(), donationUsername, ChatColor.AQUA + "Алмазы");
     }
 
     public static void giveStackOfDiamonds (Player player, String donationUsername, String donationAmount) {
-        announce(donationUsername, "насыпал тебе КУЧУ §bАЛМАЗОВ!", "насыпал §bАлмазов§f", player, donationAmount, true);
-        ExecUtils.giveToPlayer(player, Material.DIAMOND, 64, donationUsername, "§bАлмазы");
+        announce(donationUsername, "насыпал тебе КУЧУ " + ChatColor.AQUA + "АЛМАЗОВ!", "насыпал " + ChatColor.AQUA + "Алмазов" + ChatColor.WHITE, player, donationAmount, true);
+        ExecUtils.giveToPlayer(player, Material.DIAMOND, 64, donationUsername, ChatColor.AQUA + "Алмазы");
     }
 
     public static void giveBread (Player player, String donationUsername, String donationAmount) {
-        announce(donationUsername, "дал тебе §6Советского Хлеба", "дал §6Советского §6Хлеба§f", player, donationAmount, true);
-        ExecUtils.giveToPlayer(player, Material.BREAD, MainConfig.getBreadAmount(), donationUsername, "§6Советский Хлеб");
+        announce(donationUsername, "дал тебе " + ChatColor.GOLD + "Советского Хлеба", "дал " + ChatColor.GOLD + "Советского Хлеба" + ChatColor.WHITE, player, donationAmount, true);
+        ExecUtils.giveToPlayer(player, Material.BREAD, MainConfig.getBreadAmount(), donationUsername, ChatColor.GOLD + "Советский Хлеб");
     }
 
     public static void callNKVD (Player player, String donationUsername, String donationAmount) {
@@ -224,12 +223,12 @@ public class Executor {
         direction.setY(0);
         direction.normalize();
         for (int i = 1; i <= MainConfig.getAmountOfNKVD(); i++) {
-            Location newloc = player.getLocation().clone();
-            Vector newdir = direction.clone();
-            newdir = newdir.rotateAroundY(1.5708 * i).multiply(2);
-            newloc.add(newdir);
-            nkvdMob = (LivingEntity) player.getWorld().spawnEntity(newloc, EntityType.ZOMBIE);
-            nkvdMob.setCustomName("§cСотрудник НКВД");
+            Location newLoc = player.getLocation().clone();
+            Vector newDir = direction.clone();
+            newDir = newDir.rotateAroundY(1.5708 * i).multiply(2);
+            newLoc.add(newDir);
+            nkvdMob = (LivingEntity) player.getWorld().spawnEntity(newLoc, EntityType.ZOMBIE);
+            nkvdMob.setCustomName(ChatColor.RED + "Сотрудник НКВД");
             Objects.requireNonNull(nkvdMob.getEquipment()).setItem(EquipmentSlot.HAND, new ItemStack(Material.WOODEN_SWORD));
             if (((Zombie) nkvdMob).isAdult()) {
                 Objects.requireNonNull(nkvdMob.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(0.28);
@@ -240,7 +239,7 @@ public class Executor {
 
     public static void callStalin (Player player, String donationUsername, String donationAmount) {
         announce(donationUsername, "призвал Сталина разобраться с тобой", "призвал Сталина разобраться с", player, donationAmount, true);
-        DonationExecutor.giantMobManager.addMob(player.getLocation(), "§cИосиф Сталин");
+        DonationExecutor.giantMobManager.addMob(player.getLocation(), ChatColor.RED + "Иосиф Сталин");
     }
 
     public static void randomChange (Player player, String donationUsername, String donationAmount) {
@@ -271,17 +270,17 @@ public class Executor {
             if (!(player.getInventory().getItem(randoms[i]) == null)) {
                 replacedCounter++;
                 if (replacedCounter > 1) {
-                    replacedItems.append("§f, ");
+                    replacedItems.append(ChatColor.WHITE).append(", ");
                 }
-                replacedItems.append("§b").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount()).append(" §f").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName());
+                replacedItems.append(ChatColor.AQUA).append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount()).append(' ').append(ChatColor.WHITE).append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName());
             }
             player.getInventory().setItem(randoms[i], new ItemStack(Material.STONE, 1));
         }
 
         if (replacedCounter == 0) {
-            sendSysMsgToPlayer(player,"§cТебе повезло: все камни попали в пустые слоты!");
+            sendSysMsgToPlayer(player,ChatColor.RED + "Тебе повезло: все камни попали в пустые слоты!");
         } else {
-            sendSysMsgToPlayer(player,"§cБыли заменены следующие предметусы: §f" + replacedItems);
+            sendSysMsgToPlayer(player,ChatColor.RED + "Были заменены следующие предметусы: " + ChatColor.WHITE + replacedItems);
         }
     }
 

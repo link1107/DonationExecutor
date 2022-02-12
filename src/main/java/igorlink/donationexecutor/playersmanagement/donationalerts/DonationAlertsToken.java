@@ -6,6 +6,7 @@ import igorlink.donationexecutor.playersmanagement.StreamerPlayer;
 import igorlink.service.MainConfig;
 import igorlink.service.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -42,8 +43,8 @@ public class DonationAlertsToken {
                     if (donation==null) {
                         continue;
                     }
-                    Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getexecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
-                    Executor.DoExecute(sp.getName(), donation.getName(), donation.getAmount(), donation.getexecutionName());
+                    Utils.logToConsole("Отправлен на выполнение донат " + ChatColor.AQUA + donation.getExecutionName() + ChatColor.WHITE + " для стримера " + ChatColor.AQUA + sp.getName() + ChatColor.WHITE + " от донатера " + ChatColor.AQUA + donation.getName());
+                    Executor.DoExecute(sp.getName(), donation.getName(), donation.getAmount(), donation.getExecutionName());
             }
 
         }
@@ -68,9 +69,9 @@ public class DonationAlertsToken {
         for (StreamerPlayer sp : listOfStreamerPlayers) {
             execution = sp.checkExecution(Utils.cutOffKopeykis(donation.getAmount()));
             if (!(execution == null)) {
-                donation.setexecutionName(execution);
+                donation.setExecutionName(execution);
                 sp.putDonationToQueue(donation);
-                Utils.logToConsole("Донат от §b" + donation.getName() + "§f в размере §b" + donation.getAmount() + " руб.§f был обработан и отправлен в очередь на выполнение.");
+                Utils.logToConsole("Донат от " + ChatColor.AQUA + donation.getName() + ChatColor.WHITE + " в размере " + ChatColor.AQUA + donation.getAmount() + " руб." + ChatColor.WHITE + " был обработан и отправлен в очередь на выполнение.");
                 return;
             }
         }

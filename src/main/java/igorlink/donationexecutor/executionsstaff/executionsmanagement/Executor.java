@@ -16,8 +16,4 @@ public class Executor {
     public static void AddToList(AbstractExecution execution) {
         listOfExecutions.add(execution);
     }
-
-
-
-
 }

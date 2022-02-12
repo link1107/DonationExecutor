@@ -2,7 +2,6 @@ package igorlink.donationexecutor.executionsstaff.executionsmanagement.execution
 
 import igorlink.donationexecutor.executionsstaff.executionsmanagement.executions.AbstractExecution;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import static igorlink.service.Utils.announce;
@@ -15,7 +14,7 @@ public class DropActiveItem extends AbstractExecution {
             announce(donationUsername, "безуспешно пытался выбить у тебя предмет из рук", "безуспешно пытался выбить предмет из рук", player, donationAmount,true);
         } else {
             announce(donationUsername, "выбил у тебя предмет из рук", "выбил предмет из рук", player, donationAmount,true);
-            ((HumanEntity) player).dropItem(true);
+            player.dropItem(true);
             player.updateInventory();
         }
         return true;
