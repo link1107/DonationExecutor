@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Executor {
-    private static List<AbstractExecution> listOfExecutions = new ArrayList<AbstractExecution>();
+    private static final List<AbstractExecution> listOfExecutions = new ArrayList<>();
 
     public Executor() {
         new ShitToInventory();

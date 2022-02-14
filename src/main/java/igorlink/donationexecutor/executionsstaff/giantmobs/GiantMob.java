@@ -6,14 +6,14 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
+
 import static igorlink.service.Utils.genVec;
 import static java.lang.Math.sqrt;
 import static org.bukkit.Bukkit.getPlayerExact;
@@ -23,7 +23,7 @@ class GiantMob {
     private int timesThisGiantMobIsOnOnePlace = 0;
     private String thisGiantMobPlayerCurrentTargetName = null;
     private int stepsAfterHiding = 0;
-    private LivingEntity giantMobLivingEntity = null;
+    private final LivingEntity giantMobLivingEntity;
     private UUID thisGiantMobUUID = null;
 
     private static final Boolean SnowballsFollowingTarget = false;
@@ -49,7 +49,7 @@ class GiantMob {
         }
         this.giantMobLivingEntity.setRemoveWhenFarAway(false);
         this.thisGiantMobUUID = giantMobLivingEntity.getUniqueId();
-        this.giantMobLivingEntity.getEquipment().setItem(EquipmentSlot.HAND, new ItemStack(Material.IRON_SWORD));
+        Objects.requireNonNull(this.giantMobLivingEntity.getEquipment()).setItem(EquipmentSlot.HAND, new ItemStack(Material.IRON_SWORD));
 
         //Заставляем бегать и стрелять
         this.turnOnGiantMobAi();
@@ -89,14 +89,14 @@ class GiantMob {
 
         //Пробегаемся и ищем игроков
         for (Entity e : listOfNearbyEntities) {
-            RayTraceResult rtRes1 = null;
-            RayTraceResult rtRes2 = null;
-            RayTraceResult rtRes3 = null;
-            RayTraceResult rtRes4 = null;
-            RayTraceResult rtRes5 = null;
-            RayTraceResult rtRes6 = null;
-            RayTraceResult rtRes7 = null;
-            RayTraceResult rtRes8 = null;
+            RayTraceResult rtRes1;
+            RayTraceResult rtRes2;
+            RayTraceResult rtRes3;
+            RayTraceResult rtRes4;
+            RayTraceResult rtRes5;
+            RayTraceResult rtRes6;
+            RayTraceResult rtRes7;
+            RayTraceResult rtRes8;
 
             if (e instanceof LivingEntity livingEntity) {
                 //Позиции псевдоглаз вокруг головы с каждой стороны
@@ -114,6 +114,7 @@ class GiantMob {
                 rtRes6 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos2, genVec(rtGiantMobPseudoEyesPos2, (livingEntity).getLocation()), rtGiantMobPseudoEyesPos2.distance((livingEntity).getLocation()), FluidCollisionMode.NEVER, true);
                 rtRes7 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos3, genVec(rtGiantMobPseudoEyesPos3, (livingEntity).getLocation()), rtGiantMobPseudoEyesPos3.distance((livingEntity).getLocation()), FluidCollisionMode.NEVER, true);
                 rtRes8 = giantMobLivingEntity.getWorld().rayTraceBlocks(rtGiantMobPseudoEyesPos4, genVec(rtGiantMobPseudoEyesPos4, (livingEntity).getLocation()), rtGiantMobPseudoEyesPos4.distance((livingEntity).getLocation()), FluidCollisionMode.NEVER, true);
+
 
                 //Если Сталин может из любой позиции поврота голвоы увидеть верх или низ цели, то эта цель вносится в список кандидатов
                 if ((rtRes1 == null) || (rtRes2 == null) || (rtRes3 == null) || (rtRes4 == null) || (rtRes5 == null) || (rtRes6 == null) || (rtRes7 == null) || (rtRes8 == null)) {
@@ -166,10 +167,10 @@ class GiantMob {
 
         if ( (!(target instanceof Player)) && (!(thisGiantMobPlayerCurrentTargetName == null)) ) {
             //Если прошлая цель-игрок существует, и он не мертв и находится в том же мире, что и наш моб
-            if ((getPlayerExact(thisGiantMobPlayerCurrentTargetName) != null) && (!(getPlayerExact(thisGiantMobPlayerCurrentTargetName).isDead()))&& (getPlayerExact(thisGiantMobPlayerCurrentTargetName).getWorld() == giantMobLivingEntity.getWorld()) ) {
+            if ((getPlayerExact(thisGiantMobPlayerCurrentTargetName) != null) && (!(Objects.requireNonNull(getPlayerExact(thisGiantMobPlayerCurrentTargetName)).isDead()))&& (Objects.requireNonNull(getPlayerExact(thisGiantMobPlayerCurrentTargetName)).getWorld() == giantMobLivingEntity.getWorld()) ) {
 
                 //Если не подошло время забыть о нем и он не стал спектэйтором, фокусим моба на него
-                if ((stepsAfterHiding <= TIME_BEFORE_THIS_GIANT_MOB_FORGET_HIS_TARGET * 2) && (!(getPlayerExact(thisGiantMobPlayerCurrentTargetName).getGameMode()==GameMode.SPECTATOR)) ){
+                if ((stepsAfterHiding <= TIME_BEFORE_THIS_GIANT_MOB_FORGET_HIS_TARGET * 2) && (!(Objects.requireNonNull(getPlayerExact(thisGiantMobPlayerCurrentTargetName)).getGameMode()==GameMode.SPECTATOR)) ){
                     target = getPlayerExact(thisGiantMobPlayerCurrentTargetName);
                     stepsAfterHiding++;
                 } else {
@@ -204,7 +205,6 @@ class GiantMob {
                 if ( (thisGiantMobLivingEntity.isDead()) || (!(DonationExecutor.isRunning())) ) {
                     //Если Сталин уже помер, отрубаем задание
                     this.cancel();
-                    return;
                 } else {
                     //Если не помер, находим ближайшую цель (игроки в приоритете)
                     LivingEntity target;
@@ -351,7 +351,7 @@ class GiantMob {
                                 .add(0, -2, 0),
                         EntityType.FIREBALL);
                 stalinBall.setDirection(genVec(stalinBall.getLocation(), target.getLocation()).clone().multiply(2));
-
+                stalinBall.setMetadata("type", new FixedMetadataValue(DonationExecutor.getInstance(), "giantball"));
             }
 
         }.runTaskTimer(DonationExecutor.getInstance(), 0, 45);
@@ -396,7 +396,7 @@ class GiantMob {
                                     EntityType.SNOWBALL);
                             ItemStack itemStack = new ItemStack(Material.SNOWBALL, 1);
                             ItemMeta meta = snowball.getItem().getItemMeta();
-                            meta.setLore(Arrays.asList("Stalinball"));
+                            meta.setLore(List.of("Stalinball"));
                             itemStack.setItemMeta(meta);
                             snowball.setItem(itemStack);
                             snowball.setVelocity(genVec(snowball.getLocation(), finalTarget.getEyeLocation()).multiply(2.2));
@@ -409,7 +409,6 @@ class GiantMob {
                                     public void run() {
                                         if ( (snowball.isDead()) || finalTarget.isDead() || (!(finalTarget.getWorld() == snowball.getWorld())) || (!(DonationExecutor.isRunning())) ) {
                                             this.cancel();
-                                            return;
                                         } else {
                                             snowball.setVelocity(genVec(snowball.getLocation(), finalTarget.getEyeLocation()));
                                         }

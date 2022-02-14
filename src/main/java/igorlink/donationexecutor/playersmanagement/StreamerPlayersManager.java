@@ -8,10 +8,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class StreamerPlayersManager {
-    private List<DonationAlertsToken> listOfDonationAlertsTokens = new ArrayList<DonationAlertsToken>();
+    private final List<DonationAlertsToken> listOfDonationAlertsTokens = new ArrayList<>();
 
     //Таймер будет выполнять донаты из очередей игроков каждые 2 сек, если они живы и онлайн - выполняем донат и убираем его из очереди
     public StreamerPlayersManager() {
@@ -32,7 +33,7 @@ public class StreamerPlayersManager {
     }
 
     private void getTokensFromConfig() {
-        Set<String> tokensStringList = MainConfig.getConfig().getConfigurationSection("donation-amounts").getKeys(false);
+        Set<String> tokensStringList = Objects.requireNonNull(MainConfig.getConfig().getConfigurationSection("donation-amounts")).getKeys(false);
         for (String token : tokensStringList) {
             this.addTokenToList(token);
         }
@@ -58,9 +59,14 @@ public class StreamerPlayersManager {
         for (DonationAlertsToken token : listOfDonationAlertsTokens) {
             token.disconnect();
         }
-        Thread.sleep(1000);
-        listOfDonationAlertsTokens.clear();
-        getTokensFromConfig();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                listOfDonationAlertsTokens.clear();
+                getTokensFromConfig();
+            }
+        }.runTaskLater(DonationExecutor.getInstance(), 20);
+
     }
 
     public void stop() throws InterruptedException {
@@ -80,12 +86,5 @@ public class StreamerPlayersManager {
     private void addTokenToList(String token) {
         listOfDonationAlertsTokens.add(new DonationAlertsToken(token));
     }
-
-    private int getNumberOfTokens() {
-        return listOfDonationAlertsTokens.size();
-    }
-
-
-
 
 }

@@ -10,11 +10,12 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DonationAlertsToken {
-    private static DonationAlertsConnection donationAlertsConnection;
-    private List<StreamerPlayer> listOfStreamerPlayers = new ArrayList<StreamerPlayer>();
-    private String token;
+    private DonationAlertsConnection donationAlertsConnection;
+    private final List<StreamerPlayer> listOfStreamerPlayers = new ArrayList<>();
+    private final String token;
 
     public DonationAlertsToken(String token) {
         this.token = token;
@@ -25,7 +26,7 @@ public class DonationAlertsToken {
             e.printStackTrace();
         }
 
-        for (String spName : MainConfig.getConfig().getConfigurationSection("donation-amounts." + token).getKeys(false)) {
+        for (String spName : Objects.requireNonNull(MainConfig.getConfig().getConfigurationSection("donation-amounts." + token)).getKeys(false)) {
             listOfStreamerPlayers.add(new StreamerPlayer(spName, this));
         }
     }
@@ -43,8 +44,7 @@ public class DonationAlertsToken {
                         continue;
                     }
                     Utils.logToConsole("Отправлен на выполнение донат §b" + donation.getexecutionName() + "§f для стримера §b" + sp.getName() + "§f от донатера §b" + donation.getName());
-                    Executor.DoExecute(donation.getSender(), sp.getName(), donation.getName(), donation.getAmount(), donation.getMessage(), donation.getexecutionName());
-                }
+                    Executor.DoExecute(sp.getName(), donation.getName(), donation.getAmount(), donation.getexecutionName());
             }
 
         }

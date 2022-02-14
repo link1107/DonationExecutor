@@ -6,15 +6,14 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
     private static Boolean _isPluginActive = true;
+    protected static HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<>();
+    public static int donationSummary = 0;
 
     //Вывод сообщения в консоль
     public static void logToConsole(String text){
@@ -37,7 +36,7 @@ public class Utils {
     }
 
    public static Boolean CheckNameAndToken() {
-        Set<String> tokensSet = MainConfig.getConfig().getConfigurationSection("donation-amounts").getKeys(false);
+        Set<String> tokensSet = Objects.requireNonNull(MainConfig.getConfig().getConfigurationSection("donation-amounts")).getKeys(false);
         if ( ((tokensSet.contains("xxxxxxxxxxxxxxxxxxxx")) && (tokensSet.size() == 1)) || (tokensSet.isEmpty()) ) {
             logToConsole("Вы не указали свой токен DonationAlerts в файле конфигурации плагина, поэтому сейчас плагин не работает.");
             _isPluginActive = false;
@@ -51,24 +50,25 @@ public class Utils {
         return _isPluginActive;
     }
 
-    public static void announce(String donaterName, String subText, String alterSubtext, Player player, Boolean bigAnnounce) {
+    public static void announce(String donaterName, String subText, String alterSubtext, Player player, String donationAmount, Boolean bigAnnounce) {
         String _donaterName = donaterName;
 
         if  (bigAnnounce) {
             if (donaterName.equals("")) {
                 _donaterName = "Кто-то";
             }
-            Title title = new Title("§c" + _donaterName, "§f" + subText);
-            player.sendTitle(title);
-            player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText);
+            if (MainConfig.getshowBigAnnouncement()) {
+                player.sendTitle("§c" + _donaterName, "§f" + subText + " за §b" + donationAmount + "§f руб.", 7, MainConfig.getTimeForAnnouncement() * 20, 7);
+            }
+            player.sendMessage("§c[DE] §fДонатер §c" + _donaterName, "§f" + subText + " за §b" + donationAmount + "§f руб.");
         }
 
-        if (_donaterName == "") {
+        if (_donaterName.equals("")) {
             _donaterName = "Кто-то";
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!(p.getName() == player.getName())) {
-                p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName());
+            if ( !(p.getName().equals(player.getName())) ) {
+                p.sendMessage("§c[DE] §fДонатер §c" + _donaterName + " §f" + alterSubtext + " §b" + player.getName() + " за §b" + donationAmount + "§f руб.");
             }
         }
 
@@ -90,36 +90,31 @@ public class Utils {
     }
 
     public static Vector locToVec(Location loc) {
-        Vector vec = new Vector(loc.getX(), loc.getY(), loc.getZ());
-        return vec;
+        return new Vector(loc.getX(), loc.getY(), loc.getZ());
     }
 
     public static String cutOffKopeykis(String donationAmountWithKopeykis) {
-        String amountWithoutKopeykis = "";
+        StringBuilder amountWithoutKopeykis = new StringBuilder();
         for (int i = 0; i <= donationAmountWithKopeykis.length() - 1; i++) {
             if (donationAmountWithKopeykis.charAt(i) == '.') {
                 break;
-            } else if (donationAmountWithKopeykis.charAt(i) == ' ') {
-                continue;
-            } else {
-                amountWithoutKopeykis = amountWithoutKopeykis + donationAmountWithKopeykis.charAt(i);
+            } else if (donationAmountWithKopeykis.charAt(i) != ' ') {
+                amountWithoutKopeykis.append(donationAmountWithKopeykis.charAt(i));
             }
         }
 
-        return amountWithoutKopeykis;
+        return amountWithoutKopeykis.toString();
     }
 
-    public static Boolean isBlackListed(String text) {
-        HashMap<Character, List<Character>> mapOfSynonimousChars = new HashMap<Character, List<Character>>();
-
+    public static void fillTheSynonimousCharsHashMap() {
         mapOfSynonimousChars.put('h', (Arrays.asList('x', 'х', 'н', 'n'))); //eng
         mapOfSynonimousChars.put('n', (Arrays.asList('н', 'й', 'и'))); //eng
         mapOfSynonimousChars.put('н', (Arrays.asList('h', 'n', 'й', 'и'))); //rus
         mapOfSynonimousChars.put('e', (Arrays.asList('е', '3', 'з'))); //eng
         mapOfSynonimousChars.put('е', (Arrays.asList('e', '3', 'з'))); //rus
-        mapOfSynonimousChars.put('г', (Arrays.asList('r', 'я', 'g', '7'))); //rus
-        mapOfSynonimousChars.put('r', (Arrays.asList('г', 'я', 'g', '7'))); //eng
-        mapOfSynonimousChars.put('g', (Arrays.asList('г', 'r', '7'))); //eng
+        mapOfSynonimousChars.put('г', (Arrays.asList('r', 'я', 'g', '7', '6'))); //rus
+        mapOfSynonimousChars.put('r', (Arrays.asList('г', 'я', 'g', '7', '6'))); //eng
+        mapOfSynonimousChars.put('g', (Arrays.asList('г', 'r', '7', '6'))); //eng
         mapOfSynonimousChars.put('p', (Arrays.asList('п', 'р', 'n', 'я', 'r'))); //eng
         mapOfSynonimousChars.put('р', (Arrays.asList('p', 'r', 'я'))); //rus
         mapOfSynonimousChars.put('п', (Arrays.asList('p', 'n', 'и', 'р'))); //rus
@@ -142,17 +137,17 @@ public class Utils {
         mapOfSynonimousChars.put('x', (Arrays.asList('х', 'h'))); //eng
         mapOfSynonimousChars.put('х', (Arrays.asList('x', 'h'))); //rus
         mapOfSynonimousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
-        mapOfSynonimousChars.put('ы', (Arrays.asList('у', 'u', 'y'))); //rus
         mapOfSynonimousChars.put('ч', (Arrays.asList('4')));//rus
         mapOfSynonimousChars.put('k', (Arrays.asList('к')));//eng
         mapOfSynonimousChars.put('к', (Arrays.asList('k')));//rus
-        mapOfSynonimousChars.put('0', (Arrays.asList('o', 'о'))); //num
-        mapOfSynonimousChars.put('1', (Arrays.asList('i', 'l'))); //num
+        mapOfSynonimousChars.put('0', (Arrays.asList('о', 'o'))); //num
         mapOfSynonimousChars.put('3', (Arrays.asList('e', 'е','з')));
         mapOfSynonimousChars.put('4', (Arrays.asList('ч')));
         mapOfSynonimousChars.put('5', (Arrays.asList('с', 'c', 's')));
         mapOfSynonimousChars.put('9', (Arrays.asList('r', 'я')));
+    }
 
+    public static Boolean isBlackListed(String text) {
 
         String validationText = text.toLowerCase();
 
@@ -175,58 +170,47 @@ public class Utils {
             return false;
         }
 
-//        for (String ss : MainConfig.listOfWhiteListedSubstrings) {
-//            if (validationText.contains(ss)) {
-//                validationText = validationText.replace(ss, "");
-//            }
-//        }
-
 
         if (!(validationText.matches("[a-zа-я0-9$!ё]*"))) {
             return true;
         }
 
 
-        for (String ss : MainConfig.listOfBlackListedSubstrings) {
+        for (String ss : MainConfig.getListOfBlackListedSubstrings()) {
             for (int i = 0; i <= validationText.length() - ss.length(); i++) {
                 int tempi = i;
                 for (int j = 0; j <= ss.length(); j++) {
 
                     if (j == ss.length()) {
+                        //если мы прошли всю субстроку до конца - значит слово содержит субстроку из блеклиста
                         return true;
                     }
 
+                    //Если текущая буква субстроки равна или синонимична текущей букве в слове, значит идем дальше смотреть следующий символ
                     if (validationText.charAt(tempi + j) == ss.charAt(j)) {
                         continue;
-                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j)))) {
-                        if ((mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
-                            continue;
-                        }
+                    } else if ((mapOfSynonimousChars.containsKey(ss.charAt(j))) && (mapOfSynonimousChars.get(ss.charAt(j)).contains(validationText.charAt(tempi + j)))) {
+                        continue;
                     }
 
-                    Boolean repeated = true;
-                    Boolean finishCycle = false;
-                    while ((repeated) && (!finishCycle)) {
+                    while (true) {
                         if (j==0) {
                             break;
                         }
-                        if (!(validationText.charAt(tempi + j) == validationText.charAt(tempi + j - 1))) {
+                        if (validationText.charAt(tempi + j) != validationText.charAt(tempi + j - 1)) {
                             if (!(mapOfSynonimousChars.containsKey(validationText.charAt(tempi + j)))) {
-                                repeated = false;
                                 break;
                             } else if (!(mapOfSynonimousChars.get(validationText.charAt(tempi + j)).contains(validationText.charAt(tempi + j - 1)))) {
-                                repeated = false;
                                 break;
                             }
                         }
                         tempi++;
                         if ((validationText.length()-tempi-j) < (ss.length()-j)) {
-                            finishCycle=true;
                             break;
                         }
                     }
 
-                    if (finishCycle) {
+                    if ((validationText.length()-tempi-j) < (ss.length()-j)) {
                         break;
                     }
 
@@ -247,6 +231,13 @@ public class Utils {
         return false;
     }
 
+    public static int getSum() {
+        return donationSummary;
+    }
+
+    public static void addSum(int sum) {
+        donationSummary = donationSummary + sum;
+    }
 
 }
 

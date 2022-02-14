@@ -30,6 +30,13 @@ public class DonateSubCommand {
         for (i++; i <= args.length - 1; i++) {
             donationMessageBuilder.append(args[i]).append(' ');
         }
+            if (i == 1) {
+                donationUsername.append(args[i]);
+            } else {
+                donationUsername.append(' ');
+                donationUsername.append(args[i]);
+            }
+        }
 
         String donationUsername = donationUsernameBuilder.toString();
         String donationMessage = donationMessageBuilder.toString();
@@ -41,5 +48,6 @@ public class DonateSubCommand {
                         donationUsername,
                         donationAmount + ".00",
                         donationMessage));
+        DonationExecutor.getInstance().streamerPlayersManager.addToDonationsQueue(new Donation(sender, donationUsername, donationAmount+".00"));
     }
 }

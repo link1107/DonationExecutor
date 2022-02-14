@@ -1,24 +1,13 @@
 package igorlink.donationexecutor.executionsstaff.giantmobs;
-import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
-import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import igorlink.donationexecutor.executionsstaff.giantmobs.GiantMob;
-import io.papermc.paper.event.entity.EntityMoveEvent;
+
 import org.bukkit.*;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
-
-import org.bukkit.event.Listener;
-
 public class GiantMobManager {
-    private HashMap<String, HashMap> listOfMobLists = new HashMap<String, HashMap>();
-    private HashMap<UUID, GiantMob> listOfGiantMob = new HashMap<UUID, GiantMob>();
+    private final HashMap<String, HashMap<UUID, GiantMob>> listOfMobLists = new HashMap<>();
 
     //Конструктор класса. Регистрируем в нем слушателя событий GiantEventListener
     public GiantMobManager(Plugin thisPlugin) {
@@ -63,7 +52,7 @@ public class GiantMobManager {
         if (listOfMobLists.containsKey(newGiantMob.getName())) {
             listOfMobLists.get(newGiantMob.getName()).put(newGiantMob.getUUID(), newGiantMob);
         } else {
-            listOfMobLists.put(newGiantMob.getName(), new HashMap());
+            listOfMobLists.put(newGiantMob.getName(), new HashMap<>());
             listOfMobLists.get(newGiantMob.getName()).put(newGiantMob.getUUID(), newGiantMob);
         }
 

@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 
 class GiantMobEventListener implements Listener {
 
-    private GiantMobManager thisInstanceOfGiantMobManager;
+    private final GiantMobManager thisInstanceOfGiantMobManager;
 
     GiantMobEventListener(GiantMobManager _thisInstanceOfGiantMobManager) {
         thisInstanceOfGiantMobManager = _thisInstanceOfGiantMobManager;
@@ -39,21 +39,18 @@ class GiantMobEventListener implements Listener {
         //Нашему мобу отменяем дамаг от падения
         if ( (e.getEntity() instanceof Giant) && ((e.getCause() == EntityDamageEvent.DamageCause.FALL) || (e.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) || (e.getCause() == EntityDamageEvent.DamageCause.FIRE) ||  (e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK))) {
             e.setCancelled(true);
-            // sendSysMsgToPlayer(getPlayerExact(Executor.nameOfStreamerPlayer), "Cancelled DMG from: " + e.getCause().toString());
-        } else if (e.getEntity() instanceof Giant) {
-            // sendSysMsgToPlayer(getPlayerExact(Executor.nameOfStreamerPlayer), "Passed DMG from: " + e.getCause().toString());
         }
     }
 
     //Обрабатываем попадание снежка и файербола
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent e) {
-        if (e.getEntity() instanceof Snowball) {
+        if ( (e.getEntity() instanceof Snowball) && (((Snowball) e.getEntity()).getItem().getLore().contains("Stalinball")) ) {
             //Урон от снежка
             if ((e.getHitEntity()) instanceof LivingEntity) {
                 ((LivingEntity) e.getHitEntity()).damage(1.0D);
             }
-        } else if (e.getEntity() instanceof Fireball) {
+        } else if ( (e.getEntity() instanceof Fireball) && (e.getEntity().hasMetadata("type")) ) {
             //Взрыв от файербола
             if (!(e.getHitEntity() instanceof Giant)) {
                 e.getEntity().getWorld().createExplosion(e.getEntity().getLocation(), 2.0F, true);
