@@ -46,7 +46,7 @@ public final class DonationExecutor extends JavaPlugin {
                 streamerPlayersManager.stop();
             }
         } catch (InterruptedException e) {
-            logToConsole("Какая-то ебаная ошибка, похуй на нее вообще");
+            logToConsole("Не удалось отсоединится от токенов, хотя похуй, сервер и так выключается.");
         }
     }
 
