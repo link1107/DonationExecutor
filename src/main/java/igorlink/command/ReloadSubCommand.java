@@ -13,8 +13,8 @@ public class ReloadSubCommand {
         MainConfig.loadMainConfig(true);
         DonationExecutor.getInstance().streamerPlayersManager.reload();
         Utils.logToConsole("Настройки успешно обновлены!");
-        if (sender instanceof Player) {
-            Utils.sendSysMsgToPlayer(Objects.requireNonNull(((Player) sender).getPlayer()), "Настройки успешно обновлены!");
+        if (sender instanceof Player player) {
+            Utils.sendSysMsgToPlayer(player.getPlayer(), "Настройки успешно обновлены!");
         }
     }
 }

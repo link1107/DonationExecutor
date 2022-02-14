@@ -64,24 +64,12 @@ public class Executor {
             return;
         }
 
+        Location streamerPlayerLocation = streamerPlayer.getLocation();
+        World world = streamerPlayer.getWorld();
+        Vector direction = streamerPlayerLocation.getDirection();
+
 
         switch (executionName) {
-            case "ShitToInventory" -> shitToInventory(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "Lesch" -> lesch(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "DropActiveItem" -> dropActiveItem(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "PowerKick" -> powerKick(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "ClearLastDeathDrop" -> clearLastDeathDrop(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "SpawnCreeper" -> spawnCreeper(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "GiveDiamonds" -> giveDiamonds(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "GiveStackOfDiamonds" -> giveStackOfDiamonds(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "GiveBread" -> giveBread(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "CallNKVD" -> callNKVD(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "CallStalin" -> callStalin(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "RandomChange" -> randomChange(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "TamedBecomesEnemies" -> tamedBecomesEnemies(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "HalfHeart" -> halfHeart(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "BigBoom" -> bigBoom(streamerPlayer, validDonationUsername,fullDonationAmount);
-            case "Nekoglai" -> nekoglai(streamerPlayer, validDonationUsername,fullDonationAmount);
             case "SetDay" -> setDay(streamerPlayer, validDonationUsername,fullDonationAmount);
             case "SetNight" -> setNight(streamerPlayer, validDonationUsername,fullDonationAmount);
             case "GiveIronSet" -> giveIronSet(streamerPlayer, validDonationUsername,fullDonationAmount);
@@ -265,13 +253,19 @@ public class Executor {
 
         }
 
-        StringBuilder replacedItems = new StringBuilder();
+        StringBuilder replacedItemsBuilder = new StringBuilder();
         int replacedCounter = 0;
         for (int i = 0; i <= 4; i++) {
-            if (!(player.getInventory().getItem(randoms[i]) == null)) {
+            if (player.getInventory().getItem(randoms[i]) != null) {
                 replacedCounter++;
                 if (replacedCounter > 1) {
-                    replacedItems.append("§f, ");
+                    replacedItemsBuilder.append("§f, ");
+                }
+                replacedItemsBuilder
+                        .append("§b")
+                        .append(player.getInventory().getItem(randoms[i]).getAmount())
+                        .append(" §f")
+                        .append(player.getInventory().getItem(randoms[i]).getI18NDisplayName());
                 }
                 replacedItems.append("§b").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getAmount()).append(" §f").append(Objects.requireNonNull(player.getInventory().getItem(randoms[i])).getI18NDisplayName());
             }
@@ -281,7 +275,7 @@ public class Executor {
         if (replacedCounter == 0) {
             sendSysMsgToPlayer(player,"§cТебе повезло: все камни попали в пустые слоты!");
         } else {
-            sendSysMsgToPlayer(player,"§cБыли заменены следующие предметусы: §f" + replacedItems);
+            sendSysMsgToPlayer(player,"§cБыли заменены следующие предметусы: §f" + replacedItemsBuilder.toString());
         }
     }
 
@@ -293,11 +287,11 @@ public class Executor {
     public static void tamedBecomesEnemies (Player player, String donationUsername, String donationAmount) {
         announce(donationUsername, "настроил твоих питомцев против тебя", "настроил прирученных питомцев против", player, donationAmount, true);
         for (Entity e : player.getWorld().getEntitiesByClasses(Wolf.class, Cat.class)) {
-            if (((Tameable) e).isTamed() && Objects.equals(Objects.requireNonNull(((Tameable) e).getOwner()).getName(), player.getName())) {
-                if (e instanceof Cat) {
-                    ((Tameable) e).setOwner(null);
-                    ((Cat) e).setSitting(false);
-                    ((Cat) e).setTarget(player);
+            if (((Tameable) e).isTamed() && ((Tameable) e).getOwner().getName().equals(player.getName())) {
+                if (e instanceof Cat cat) {
+                    cat.setOwner(null);
+                    cat.setSitting(false);
+                    cat.setTarget(player);
                     player.sendMessage("+");
                 } else {
                     ((Wolf) e).setSitting(false);

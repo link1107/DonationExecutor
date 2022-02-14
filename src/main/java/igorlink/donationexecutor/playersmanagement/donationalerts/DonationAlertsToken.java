@@ -37,7 +37,8 @@ public class DonationAlertsToken {
 
     public void executeDonationsInQueues() {
         for (StreamerPlayer sp : listOfStreamerPlayers) {
-            if ( (Bukkit.getPlayerExact(sp.getName()) != null) && (!(Objects.requireNonNull(Bukkit.getPlayerExact(sp.getName())).isDead())) ) {
+            if ( Bukkit.getPlayerExact(sp.getName()) != null ) {
+                if (!(Bukkit.getPlayerExact(sp.getName()).isDead())) {
                     Donation donation = sp.takeDonationFromQueue();
                     if (donation==null) {
                         continue;
@@ -67,7 +68,7 @@ public class DonationAlertsToken {
         String execution;
         for (StreamerPlayer sp : listOfStreamerPlayers) {
             execution = sp.checkExecution(Utils.cutOffKopeykis(donation.getAmount()));
-            if (!(execution == null)) {
+            if (execution != null) {
                 donation.setexecutionName(execution);
                 sp.putDonationToQueue(donation);
                 Utils.logToConsole("Донат от §b" + donation.getName() + "§f в размере §b" + donation.getAmount() + " руб.§f был обработан и отправлен в очередь на выполнение.");
